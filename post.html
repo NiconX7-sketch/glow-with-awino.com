@@ -121,18 +121,16 @@
             line-height: 1.8;
             color: #334155;
         }
-        .post-content h2 {
-            font-size: 1.8rem;
-            margin: 1.5rem 0 1rem;
+        .post-content h1, .post-content h2, .post-content h3, .post-content h4 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
             color: #0f172a;
         }
-        .post-content h3 {
-            font-size: 1.4rem;
-            margin: 1.2rem 0 0.8rem;
-            color: #0f172a;
-        }
+        .post-content h1 { font-size: 2rem; }
+        .post-content h2 { font-size: 1.6rem; }
+        .post-content h3 { font-size: 1.3rem; }
         .post-content p {
-            margin-bottom: 1.2rem;
+            margin-bottom: 1rem;
         }
         .post-content ul, .post-content ol {
             margin: 1rem 0 1rem 2rem;
@@ -151,6 +149,20 @@
             margin: 1.5rem 0;
             font-style: italic;
             color: #475569;
+        }
+        .post-content code {
+            background: #f1f5f9;
+            padding: 0.2rem 0.4rem;
+            border-radius: 6px;
+            font-family: monospace;
+        }
+        .post-content pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin: 1rem 0;
         }
         .back-button {
             display: inline-flex;
@@ -301,33 +313,33 @@
         const SUPABASE_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
         
-        // Initialize Supabase
         let supabaseClient = null;
         
         function initSupabase() {
             if (typeof supabase === 'undefined') {
-                console.log('Waiting for Supabase library...');
                 setTimeout(initSupabase, 500);
                 return;
             }
             supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            console.log('Supabase initialized');
             loadPost();
         }
         
-        // Get post ID from URL parameter
         function getPostId() {
             const urlParams = new URLSearchParams(window.location.search);
-            const id = urlParams.get('id');
-            console.log('Post ID from URL:', id);
-            return id;
+            return urlParams.get('id');
+        }
+        
+        // Function to safely render HTML content without escaping
+        function renderContent(htmlContent) {
+            if (!htmlContent) return '<p>No content available.</p>';
+            // Return the HTML content as-is (not escaped)
+            return htmlContent;
         }
         
         async function loadPost() {
             const container = document.getElementById('post-container');
             const postId = getPostId();
             
-            // If no post ID, show error
             if (!postId) {
                 container.innerHTML = `
                     <div class="error-container">
@@ -340,14 +352,11 @@
                 return;
             }
             
-            // Make sure supabase is initialized
             if (!supabaseClient) {
-                container.innerHTML = '<div class="loading-container"><div class="loading"></div><p>Initializing...</p></div>';
                 return;
             }
             
             try {
-                console.log('Fetching post with ID:', postId);
                 const { data: post, error } = await supabaseClient
                     .from('blog_posts')
                     .select('*')
@@ -355,42 +364,25 @@
                     .eq('published', true)
                     .single();
                 
-                if (error) {
-                    console.error('Supabase error:', error);
+                if (error || !post) {
                     container.innerHTML = `
                         <div class="error-container">
                             <i class="fas fa-exclamation-circle"></i>
                             <h2>Post Not Found</h2>
                             <p>The blog post you're looking for doesn't exist or has been removed.</p>
-                            <p style="font-size: 0.9rem; margin-top: 1rem;">Error: ${escapeHtml(error.message)}</p>
                             <a href="blog.html" class="back-button" style="margin-top: 1rem; display: inline-block;">← Back to Blog</a>
                         </div>
                     `;
                     return;
                 }
                 
-                if (!post) {
-                    container.innerHTML = `
-                        <div class="error-container">
-                            <i class="fas fa-exclamation-circle"></i>
-                            <h2>Post Not Found</h2>
-                            <p>The blog post you're looking for doesn't exist.</p>
-                            <a href="blog.html" class="back-button" style="margin-top: 1rem; display: inline-block;">← Back to Blog</a>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                console.log('Post loaded:', post.title);
-                
-                // Format the date
                 const postDate = post.created_at ? new Date(post.created_at).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric'
                 }) : 'Date unknown';
                 
-                // Render the post
+                // IMPORTANT: Use innerHTML to render the HTML content, not textContent
                 container.innerHTML = `
                     <a href="blog.html" class="back-button"><i class="fas fa-arrow-left"></i> Back to Blog</a>
                     <div class="post-header">
@@ -407,13 +399,11 @@
                 `;
                 
             } catch (err) {
-                console.error('Unexpected error:', err);
                 container.innerHTML = `
                     <div class="error-container">
                         <i class="fas fa-exclamation-circle"></i>
                         <h2>Something Went Wrong</h2>
                         <p>There was an error loading this post. Please try again later.</p>
-                        <p style="font-size: 0.9rem; margin-top: 1rem;">Error: ${escapeHtml(err.message)}</p>
                         <a href="blog.html" class="back-button" style="margin-top: 1rem; display: inline-block;">← Back to Blog</a>
                     </div>
                 `;
@@ -431,7 +421,6 @@
             document.getElementById('navLinks').classList.toggle('active');
         }
         
-        // Start initialization
         initSupabase();
     </script>
 </body>

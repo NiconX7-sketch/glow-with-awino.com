@@ -5,273 +5,871 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel - Grow With Awino</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- Quill Rich Text Editor (Free, no API key needed) -->
+    <!-- Quill Rich Text Editor -->
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <!-- Google Fonts - Modern Professional Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f1f5f9; }
-        .navbar { background: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .logo { background: #1e3a8a; color: white; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-weight: bold; }
-        .nav-links { display: flex; list-style: none; gap: 1.5rem; }
-        .nav-links a { text-decoration: none; color: #333; }
-        .admin-container { display: flex; min-height: calc(100vh - 70px); }
-        .sidebar { width: 280px; background: white; border-right: 1px solid #e2e8f0; padding: 1.5rem 0; }
-        .sidebar-menu { list-style: none; }
-        .sidebar-menu li { padding: 0.75rem 1.5rem; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; transition: all 0.3s; }
-        .sidebar-menu li:hover { background: #f1f5f9; }
-        .sidebar-menu li.active { background: #1e3a8a; color: white; }
-        .content { flex: 1; padding: 2rem; }
-        .card { background: white; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid #e2e8f0; }
-        .card h3 { margin: 0; }
-        .form-group { margin-bottom: 1rem; }
-        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
-        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 0.75rem; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; }
-        .form-group input[type="file"] { padding: 0.5rem; }
-        .btn-primary { background: #1e3a8a; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 8px; cursor: pointer; }
-        .btn-secondary { background: #64748b; color: white; padding: 0.5rem 1rem; border: none; border-radius: 6px; cursor: pointer; }
-        .btn-danger { background: #dc2626; color: white; padding: 0.5rem 1rem; border: none; border-radius: 6px; cursor: pointer; }
-        .btn-success { background: #22c55e; color: white; padding: 0.5rem 1rem; border: none; border-radius: 6px; cursor: pointer; }
-        .admin-item { display: flex; justify-content: space-between; align-items: center; padding: 1rem; border-bottom: 1px solid #e2e8f0; }
-        .image-preview { margin-top: 0.5rem; max-width: 150px; }
-        .image-preview img { width: 100%; border-radius: 8px; border: 1px solid #e2e8f0; }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; }
-        .modal-content { background: white; padding: 2rem; border-radius: 16px; width: 90%; max-width: 800px; max-height: 80vh; overflow-y: auto; }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid #e2e8f0; }
-        .close { cursor: pointer; font-size: 1.5rem; }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
-        .stat-card { background: linear-gradient(135deg, #1e3a8a, #3b82f6); color: white; padding: 1.5rem; border-radius: 12px; text-align: center; }
-        .stat-card p { font-size: 2rem; font-weight: bold; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        .notification { position: fixed; bottom: 20px; right: 20px; padding: 1rem 2rem; border-radius: 50px; color: white; z-index: 1100; }
-        /* Rich Text Editor Styles */
-        #editor-container { height: 350px; margin-bottom: 1rem; }
-        .ql-editor { min-height: 300px; }
-        .category-row { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
-        .category-row input { flex: 1; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f1f5f9;
+            color: #0f172a;
+            line-height: 1.5;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+
+        /* Modern Navbar */
+        .admin-navbar {
+            background: #ffffff;
+            padding: 0.875rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+        }
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .logo-icon {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+            font-family: 'Space Grotesk', monospace;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+        .brand-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        .nav-link {
+            color: #64748b;
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+        }
+        .nav-link:hover {
+            color: #1e3a8a;
+            background: #f1f5f9;
+        }
+        .logout-btn {
+            color: #dc2626;
+        }
+        .logout-btn:hover {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        /* Admin Layout */
+        .admin-wrapper {
+            display: flex;
+            min-height: calc(100vh - 69px);
+        }
+
+        /* Modern Sidebar */
+        .admin-sidebar {
+            width: 280px;
+            background: #ffffff;
+            border-right: 1px solid #e2e8f0;
+            padding: 1.5rem 0;
+            position: sticky;
+            top: 69px;
+            height: calc(100vh - 69px);
+            overflow-y: auto;
+        }
+        .sidebar-section {
+            padding: 0 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+        .sidebar-section-title {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #94a3b8;
+            margin-bottom: 0.75rem;
+            padding-left: 0.75rem;
+        }
+        .sidebar-menu {
+            list-style: none;
+        }
+        .sidebar-item {
+            margin-bottom: 0.25rem;
+        }
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.625rem 1rem;
+            border-radius: 10px;
+            color: #475569;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .sidebar-link i {
+            width: 1.25rem;
+            font-size: 1rem;
+            color: #94a3b8;
+        }
+        .sidebar-link:hover {
+            background: #f1f5f9;
+            color: #1e3a8a;
+        }
+        .sidebar-link:hover i {
+            color: #1e3a8a;
+        }
+        .sidebar-link.active {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: white;
+        }
+        .sidebar-link.active i {
+            color: white;
+        }
+
+        /* Main Content */
+        .admin-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        /* Page Header */
+        .page-header {
+            margin-bottom: 2rem;
+        }
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #0f172a;
+            letter-spacing: -0.01em;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .page-subtitle {
+            color: #64748b;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 1.5rem;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.08);
+        }
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            background: #eff6ff;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+        .stat-icon i {
+            font-size: 1.5rem;
+            color: #1e3a8a;
+        }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #0f172a;
+            font-family: 'Space Grotesk', monospace;
+        }
+        .stat-label {
+            color: #64748b;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 0.25rem;
+        }
+
+        /* Section Cards */
+        .section-card {
+            background: #ffffff;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            transition: box-shadow 0.2s;
+        }
+        .section-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .card-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            background: #fafbfc;
+        }
+        .card-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .card-title i {
+            color: #3b82f6;
+            font-size: 1rem;
+        }
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        .form-label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .form-label i {
+            margin-right: 0.5rem;
+            color: #94a3b8;
+            font-size: 0.75rem;
+        }
+        .form-control, .form-select, .form-textarea {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+            background: #ffffff;
+        }
+        .form-control:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+        }
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.6rem 1.25rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'Inter', sans-serif;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #475569;
+        }
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+        .btn-danger {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+        .btn-danger:hover {
+            background: #fecaca;
+        }
+        .btn-success {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+        .btn-success:hover {
+            background: #bbf7d0;
+        }
+        .btn-sm {
+            padding: 0.4rem 0.9rem;
+            font-size: 0.75rem;
+        }
+
+        /* Admin Items List */
+        .admin-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #f1f5f9;
+            transition: background 0.2s;
+        }
+        .admin-item:hover {
+            background: #f8fafc;
+        }
+        .admin-item:last-child {
+            border-bottom: none;
+        }
+        .item-title {
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 0.25rem;
+            font-size: 0.9rem;
+        }
+        .item-meta {
+            font-size: 0.7rem;
+            color: #94a3b8;
+        }
+        .item-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Image Preview */
+        .image-preview {
+            margin-top: 0.75rem;
+            max-width: 100px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+        .image-preview img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-container {
+            background: white;
+            border-radius: 24px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            animation: modalSlideIn 0.2s ease;
+        }
+        @keyframes modalSlideIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .modal-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fafbfc;
+        }
+        .modal-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .modal-close {
+            cursor: pointer;
+            font-size: 1.25rem;
+            color: #94a3b8;
+            transition: color 0.2s;
+        }
+        .modal-close:hover {
+            color: #dc2626;
+        }
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        /* Rich Text Editor */
+        #editor-container {
+            height: 350px;
+            margin-bottom: 1rem;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .ql-toolbar {
+            border-radius: 12px 12px 0 0;
+            background: #f8fafc;
+            border-color: #e2e8f0;
+        }
+        .ql-container {
+            border-radius: 0 0 12px 12px;
+            border-color: #e2e8f0;
+            font-family: 'Inter', monospace;
+        }
+
+        /* Category Row */
+        .category-row {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        .category-row .form-control {
+            flex: 1;
+        }
+
+        /* Tab Content */
+        .tab-pane {
+            display: none;
+        }
+        .tab-pane.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 0.875rem 1.25rem;
+            border-radius: 12px;
+            color: white;
+            font-weight: 500;
+            font-size: 0.8rem;
+            z-index: 1100;
+            animation: slideInRight 0.3s ease;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .notification-success { background: #10b981; }
+        .notification-error { background: #ef4444; }
+        .notification-info { background: #3b82f6; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .admin-wrapper {
+                flex-direction: column;
+            }
+            .admin-sidebar {
+                width: 100%;
+                position: static;
+                height: auto;
+                padding: 1rem;
+            }
+            .sidebar-menu {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+            .sidebar-item {
+                margin: 0;
+            }
+            .sidebar-link {
+                padding: 0.5rem 1rem;
+            }
+            .admin-content {
+                padding: 1rem;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
     </style>
 </head>
 <body>
-    <nav class="navbar">
-        <div style="display:flex;align-items:center;gap:1rem;">
-            <div class="logo">GWA</div>
-            <span style="font-weight:bold;">Admin Panel</span>
+    <nav class="admin-navbar">
+        <div class="navbar-brand">
+            <div class="logo-icon">GWA</div>
+            <span class="brand-text">Admin Panel</span>
         </div>
-        <ul class="nav-links">
-            <li><a href="index.html" target="_blank">View Site</a></li>
-            <li><a href="#" id="logout-btn">Logout</a></li>
-        </ul>
+        <div class="nav-actions">
+            <a href="index.html" target="_blank" class="nav-link"><i class="fas fa-external-link-alt"></i> View Site</a>
+            <a href="#" id="logout-btn" class="nav-link logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
     </nav>
 
-    <div class="admin-container">
-        <div class="sidebar">
-            <ul class="sidebar-menu">
-                <li data-tab="dashboard">📊 Dashboard</li>
-                <li data-tab="blogs">📝 Manage Blogs</li>
-                <li data-tab="products">📚 Manage Ebooks</li>
-                <li data-tab="categories">🏷️ Categories</li>
-                <li data-tab="logo">🖼️ Logo & Branding</li>
-                <li data-tab="profile">👤 Profile Picture</li>
-                <li data-tab="payments">💰 Payment Settings</li>
-                <li data-tab="affiliates">🔗 Affiliate Links</li>
-                <li data-tab="settings">⚙️ General Settings</li>
-            </ul>
-        </div>
+    <div class="admin-wrapper">
+        <aside class="admin-sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">MAIN</div>
+                <ul class="sidebar-menu">
+                    <li class="sidebar-item"><div class="sidebar-link" data-tab="dashboard"><i class="fas fa-chart-line"></i> Dashboard</div></li>
+                    <li class="sidebar-item"><div class="sidebar-link" data-tab="blogs"><i class="fas fa-newspaper"></i> Blog Posts</div></li>
+                    <li class="sidebar-item"><div class="sidebar-link" data-tab="products"><i class="fas fa-book"></i> Ebooks</div></li>
+                    <li class="sidebar-item"><div class="sidebar-link" data-tab="categories"><i class="fas fa-tags"></i> Categories</div></li>
+                </ul>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">BRANDING</div>
+                <ul class="sidebar-menu">
+                    <li class="sidebar-item"><div class="sidebar-link" data-tab="logo"><i class="fas fa-image"></i> Logo</div></li>
+                    <li class="sidebar-item"><div class="sidebar-link" data-tab="profile"><i class="fas fa-user-circle"></i> Profile Picture</div></li>
+                </ul>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">SETTINGS</div>
+                <ul class="sidebar-menu">
+                    <li class="sidebar-item"><div class="sidebar-link" data-tab="payments"><i class="fas fa-credit-card"></i> Payments</div></li>
+                    <li class="sidebar-item"><div class="sidebar-link" data-tab="affiliates"><i class="fas fa-link"></i> Affiliates</div></li>
+                    <li class="sidebar-item"><div class="sidebar-link" data-tab="settings"><i class="fas fa-sliders-h"></i> General</div></li>
+                </ul>
+            </div>
+        </aside>
 
-        <div class="content">
+        <main class="admin-content">
             <!-- Dashboard Tab -->
-            <div id="dashboard" class="tab-content active">
-                <h2>Dashboard</h2>
+            <div id="dashboard" class="tab-pane active">
+                <div class="page-header">
+                    <h1 class="page-title">Dashboard</h1>
+                    <p class="page-subtitle">Welcome back! Here's what's happening with your website.</p>
+                </div>
                 <div class="stats-grid">
-                    <div class="stat-card"><h4>Total Blogs</h4><p id="total-blogs">0</p></div>
-                    <div class="stat-card"><h4>Total Ebooks</h4><p id="total-products">0</p></div>
-                    <div class="stat-card"><h4>Categories</h4><p id="total-categories">0</p></div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-newspaper"></i></div>
+                        <div class="stat-value" id="total-blogs">0</div>
+                        <div class="stat-label">Total Blog Posts</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-book"></i></div>
+                        <div class="stat-value" id="total-products">0</div>
+                        <div class="stat-label">Total Ebooks</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-tags"></i></div>
+                        <div class="stat-value" id="total-categories">0</div>
+                        <div class="stat-label">Categories</div>
+                    </div>
                 </div>
             </div>
 
             <!-- Manage Blogs Tab -->
-            <div id="blogs" class="tab-content">
-                <div class="card">
+            <div id="blogs" class="tab-pane">
+                <div class="section-card">
                     <div class="card-header">
-                        <h3>Blog Posts</h3>
-                        <button class="btn-success" onclick="refreshBlogs()"><i class="fas fa-sync-alt"></i> Refresh</button>
+                        <div class="card-title"><i class="fas fa-newspaper"></i> Blog Posts</div>
+                        <button class="btn btn-primary btn-sm" onclick="openBlogModal()"><i class="fas fa-plus"></i> Add New Post</button>
                     </div>
-                    <button class="btn-primary" onclick="openBlogModal()">+ Add New Blog Post</button>
-                    <div id="blogs-list" style="margin-top:1rem;"></div>
+                    <div class="card-body">
+                        <div id="blogs-list"></div>
+                    </div>
                 </div>
             </div>
 
             <!-- Manage Products Tab -->
-            <div id="products" class="tab-content">
-                <div class="card">
+            <div id="products" class="tab-pane">
+                <div class="section-card">
                     <div class="card-header">
-                        <h3>Ebooks</h3>
-                        <button class="btn-success" onclick="refreshProducts()"><i class="fas fa-sync-alt"></i> Refresh</button>
+                        <div class="card-title"><i class="fas fa-book"></i> Ebooks</div>
+                        <button class="btn btn-primary btn-sm" onclick="openProductModal()"><i class="fas fa-plus"></i> Add New Ebook</button>
                     </div>
-                    <button class="btn-primary" onclick="openProductModal()">+ Add New Ebook</button>
-                    <div id="products-list" style="margin-top:1rem;"></div>
+                    <div class="card-body">
+                        <div id="products-list"></div>
+                    </div>
                 </div>
             </div>
 
             <!-- Categories Tab -->
-            <div id="categories" class="tab-content">
-                <div class="card">
+            <div id="categories" class="tab-pane">
+                <div class="section-card">
                     <div class="card-header">
-                        <h3>Categories</h3>
-                        <button class="btn-success" onclick="refreshCategories()"><i class="fas fa-sync-alt"></i> Refresh</button>
+                        <div class="card-title"><i class="fas fa-tags"></i> Categories</div>
+                        <button class="btn btn-success btn-sm" onclick="refreshCategories()"><i class="fas fa-sync-alt"></i> Refresh</button>
                     </div>
-                    <div class="category-row">
-                        <input type="text" id="new-category-name" placeholder="Enter new category name">
-                        <button class="btn-primary" onclick="addCategory()">Add Category</button>
+                    <div class="card-body">
+                        <div class="category-row">
+                            <input type="text" id="new-category-name" class="form-control" placeholder="Enter new category name">
+                            <button class="btn btn-primary" onclick="addCategory()"><i class="fas fa-plus"></i> Add</button>
+                        </div>
+                        <div id="categories-list"></div>
                     </div>
-                    <div id="categories-list"></div>
                 </div>
             </div>
 
             <!-- Logo Tab -->
-            <div id="logo" class="tab-content">
-                <div class="card">
-                    <h3>Site Logo</h3>
-                    <div class="form-group">
-                        <label>Upload Logo from Computer</label>
-                        <input type="file" id="logo-upload" accept="image/*">
-                        <button class="btn-primary" onclick="uploadLogo()" style="margin-top:0.5rem;">Upload Logo</button>
-                        <div id="logo-preview" class="image-preview"></div>
+            <div id="logo" class="tab-pane">
+                <div class="section-card">
+                    <div class="card-header">
+                        <div class="card-title"><i class="fas fa-image"></i> Site Logo</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-upload"></i> Upload Logo</label>
+                            <input type="file" id="logo-upload" class="form-control" accept="image/*">
+                            <button class="btn btn-primary" onclick="uploadLogo()" style="margin-top: 1rem;"><i class="fas fa-cloud-upload-alt"></i> Upload Logo</button>
+                            <div id="logo-preview" class="image-preview" style="margin-top: 1rem;"></div>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Profile Tab -->
-            <div id="profile" class="tab-content">
-                <div class="card">
-                    <h3>Profile Picture (Awino's Photo)</h3>
-                    <p>This photo will appear on the About section of the homepage.</p>
-                    <div class="form-group">
-                        <label>Upload Profile Picture</label>
-                        <input type="file" id="profile-upload" accept="image/*">
-                        <button class="btn-primary" onclick="uploadProfile()" style="margin-top:0.5rem;">Upload Profile Picture</button>
-                        <div id="profile-preview" class="image-preview"></div>
+            <div id="profile" class="tab-pane">
+                <div class="section-card">
+                    <div class="card-header">
+                        <div class="card-title"><i class="fas fa-user-circle"></i> Profile Picture</div>
+                    </div>
+                    <div class="card-body">
+                        <p class="page-subtitle" style="margin-bottom: 1rem;">This photo appears on the About section of your homepage.</p>
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-upload"></i> Upload Profile Picture</label>
+                            <input type="file" id="profile-upload" class="form-control" accept="image/*">
+                            <button class="btn btn-primary" onclick="uploadProfile()" style="margin-top: 1rem;"><i class="fas fa-cloud-upload-alt"></i> Upload Picture</button>
+                            <div id="profile-preview" class="image-preview" style="margin-top: 1rem;"></div>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Payment Settings Tab -->
-            <div id="payments" class="tab-content">
-                <div class="card"><h3>PayPal Settings</h3>
-                    <div class="form-group"><label>Client ID</label><input type="text" id="paypal-client-id"></div>
-                    <div class="form-group"><label>Secret Key</label><input type="password" id="paypal-secret"></div>
-                    <div class="form-group"><label>Mode</label><select id="paypal-mode"><option value="sandbox">Sandbox</option><option value="live">Live</option></select></div>
+            <div id="payments" class="tab-pane">
+                <div class="section-card">
+                    <div class="card-header">
+                        <div class="card-title"><i class="fab fa-paypal"></i> PayPal</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group"><label class="form-label">Client ID</label><input type="text" id="paypal-client-id" class="form-control" placeholder="Enter PayPal Client ID"></div>
+                        <div class="form-group"><label class="form-label">Secret Key</label><input type="password" id="paypal-secret" class="form-control" placeholder="Enter PayPal Secret Key"></div>
+                        <div class="form-group"><label class="form-label">Mode</label><select id="paypal-mode" class="form-select"><option value="sandbox">Sandbox (Test)</option><option value="live">Live (Production)</option></select></div>
+                    </div>
                 </div>
-                <div class="card"><h3>Paystack Settings</h3>
-                    <div class="form-group"><label>Public Key</label><input type="text" id="paystack-public-key"></div>
-                    <div class="form-group"><label>Secret Key</label><input type="password" id="paystack-secret-key"></div>
+                <div class="section-card">
+                    <div class="card-header">
+                        <div class="card-title"><i class="fas fa-credit-card"></i> Paystack</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group"><label class="form-label">Public Key</label><input type="text" id="paystack-public-key" class="form-control" placeholder="Enter Paystack Public Key"></div>
+                        <div class="form-group"><label class="form-label">Secret Key</label><input type="password" id="paystack-secret-key" class="form-control" placeholder="Enter Paystack Secret Key"></div>
+                    </div>
                 </div>
-                <div class="card"><h3>M-Pesa Settings</h3>
-                    <div class="form-group"><label>Consumer Key</label><input type="text" id="mpesa-consumer-key"></div>
-                    <div class="form-group"><label>Consumer Secret</label><input type="password" id="mpesa-consumer-secret"></div>
-                    <div class="form-group"><label>Shortcode</label><input type="text" id="mpesa-shortcode"></div>
-                    <div class="form-group"><label>Passkey</label><input type="password" id="mpesa-passkey"></div>
-                    <div class="form-group"><label>Environment</label><select id="mpesa-environment"><option value="sandbox">Sandbox</option><option value="production">Production</option></select></div>
+                <div class="section-card">
+                    <div class="card-header">
+                        <div class="card-title"><i class="fas fa-mobile-alt"></i> M-Pesa</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group"><label class="form-label">Consumer Key</label><input type="text" id="mpesa-consumer-key" class="form-control" placeholder="Enter Consumer Key"></div>
+                        <div class="form-group"><label class="form-label">Consumer Secret</label><input type="password" id="mpesa-consumer-secret" class="form-control" placeholder="Enter Consumer Secret"></div>
+                        <div class="form-group"><label class="form-label">Shortcode</label><input type="text" id="mpesa-shortcode" class="form-control" placeholder="e.g., 174379"></div>
+                        <div class="form-group"><label class="form-label">Passkey</label><input type="password" id="mpesa-passkey" class="form-control" placeholder="Enter Passkey"></div>
+                        <div class="form-group"><label class="form-label">Environment</label><select id="mpesa-environment" class="form-select"><option value="sandbox">Sandbox (Test)</option><option value="production">Production (Live)</option></select></div>
+                    </div>
                 </div>
-                <button class="btn-primary" onclick="savePaymentSettings()">Save All Payment Settings</button>
+                <button class="btn btn-primary" onclick="savePaymentSettings()"><i class="fas fa-save"></i> Save All Payment Settings</button>
             </div>
 
             <!-- Affiliate Links Tab -->
-            <div id="affiliates" class="tab-content">
-                <div class="card"><h3>Affiliate IDs</h3>
-                    <div class="form-group"><label>Amazon</label><input type="text" id="amazon-id"></div>
-                    <div class="form-group"><label>Jumia</label><input type="text" id="jumia-id"></div>
-                    <div class="form-group"><label>Udemy</label><input type="text" id="udemy-id"></div>
-                    <div class="form-group"><label>Coursera</label><input type="text" id="coursera-id"></div>
-                    <button class="btn-primary" onclick="saveAffiliateSettings()">Save Affiliate Settings</button>
+            <div id="affiliates" class="tab-pane">
+                <div class="section-card">
+                    <div class="card-header">
+                        <div class="card-title"><i class="fas fa-link"></i> Affiliate IDs</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group"><label class="form-label">Amazon</label><input type="text" id="amazon-id" class="form-control" placeholder="yourname-20"></div>
+                        <div class="form-group"><label class="form-label">Jumia</label><input type="text" id="jumia-id" class="form-control" placeholder="Enter Jumia ID"></div>
+                        <div class="form-group"><label class="form-label">Udemy</label><input type="text" id="udemy-id" class="form-control" placeholder="Enter Udemy ID"></div>
+                        <div class="form-group"><label class="form-label">Coursera</label><input type="text" id="coursera-id" class="form-control" placeholder="Enter Coursera ID"></div>
+                        <button class="btn btn-primary" onclick="saveAffiliateSettings()"><i class="fas fa-save"></i> Save Affiliate Settings</button>
+                    </div>
                 </div>
             </div>
 
             <!-- General Settings Tab -->
-            <div id="settings" class="tab-content">
-                <div class="card"><h3>General Settings</h3>
-                    <div class="form-group"><label>Site Title</label><input type="text" id="site-title"></div>
-                    <div class="form-group"><label>Site Description</label><textarea id="site-description" rows="3"></textarea></div>
-                    <div class="form-group"><label>Admin Email</label><input type="email" id="admin-email"></div>
-                    <div class="form-group"><label>Contact Email</label><input type="email" id="contact-email" value="awinophoebe44@gmail.com"></div>
-                    <div class="form-group"><label>WhatsApp Number</label><input type="tel" id="whatsapp-number"></div>
-                    <div class="form-group"><label>Default Currency</label><select id="default-currency"><option value="USD">USD</option><option value="KES">KES</option></select></div>
-                    <button class="btn-primary" onclick="saveGeneralSettings()">Save Settings</button>
+            <div id="settings" class="tab-pane">
+                <div class="section-card">
+                    <div class="card-header">
+                        <div class="card-title"><i class="fas fa-globe"></i> General Settings</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group"><label class="form-label">Site Title</label><input type="text" id="site-title" class="form-control" placeholder="Grow With Awino"></div>
+                        <div class="form-group"><label class="form-label">Site Description</label><textarea id="site-description" class="form-textarea" rows="3" placeholder="Site description for SEO"></textarea></div>
+                        <div class="form-group"><label class="form-label">Admin Email</label><input type="email" id="admin-email" class="form-control" placeholder="admin@example.com"></div>
+                        <div class="form-group"><label class="form-label">Contact Email</label><input type="email" id="contact-email" class="form-control" value="awinophoebe44@gmail.com"></div>
+                        <div class="form-group"><label class="form-label">WhatsApp Number</label><input type="tel" id="whatsapp-number" class="form-control" placeholder="+254XXXXXXXXX"></div>
+                        <div class="form-group"><label class="form-label">Default Currency</label><select id="default-currency" class="form-select"><option value="USD">USD - US Dollar</option><option value="KES">KES - Kenyan Shilling</option></select></div>
+                        <button class="btn btn-primary" onclick="saveGeneralSettings()"><i class="fas fa-save"></i> Save Settings</button>
+                    </div>
                 </div>
-                <div class="card"><h3>Social Links</h3>
-                    <div class="form-group"><label>Twitter</label><input type="url" id="twitter-link"></div>
-                    <div class="form-group"><label>YouTube</label><input type="url" id="youtube-link"></div>
-                    <div class="form-group"><label>Facebook</label><input type="url" id="facebook-link"></div>
-                    <div class="form-group"><label>TikTok</label><input type="url" id="tiktok-link"></div>
-                    <div class="form-group"><label>Instagram</label><input type="url" id="instagram-link"></div>
-                    <button class="btn-primary" onclick="saveSocialLinks()">Save Social Links</button>
+                <div class="section-card">
+                    <div class="card-header">
+                        <div class="card-title"><i class="fas fa-share-alt"></i> Social Media</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group"><label class="form-label"><i class="fab fa-twitter"></i> Twitter/X</label><input type="url" id="twitter-link" class="form-control" placeholder="https://twitter.com/yourhandle"></div>
+                        <div class="form-group"><label class="form-label"><i class="fab fa-youtube"></i> YouTube</label><input type="url" id="youtube-link" class="form-control" placeholder="https://youtube.com/@yourchannel"></div>
+                        <div class="form-group"><label class="form-label"><i class="fab fa-facebook"></i> Facebook</label><input type="url" id="facebook-link" class="form-control" placeholder="https://facebook.com/yourpage"></div>
+                        <div class="form-group"><label class="form-label"><i class="fab fa-tiktok"></i> TikTok</label><input type="url" id="tiktok-link" class="form-control" placeholder="https://tiktok.com/@yourhandle"></div>
+                        <div class="form-group"><label class="form-label"><i class="fab fa-instagram"></i> Instagram</label><input type="url" id="instagram-link" class="form-control" placeholder="https://instagram.com/yourhandle"></div>
+                        <button class="btn btn-primary" onclick="saveSocialLinks()"><i class="fas fa-save"></i> Save Social Links</button>
+                    </div>
                 </div>
-                <div class="card"><h3>SEO Settings</h3>
-                    <div class="form-group"><label>Meta Keywords</label><input type="text" id="meta-keywords"></div>
-                    <div class="form-group"><label>Meta Description</label><textarea id="meta-description" rows="2"></textarea></div>
-                    <button class="btn-primary" onclick="saveSEOSettings()">Save SEO Settings</button>
+                <div class="section-card">
+                    <div class="card-header">
+                        <div class="card-title"><i class="fas fa-chart-line"></i> SEO Settings</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group"><label class="form-label">Meta Keywords</label><input type="text" id="meta-keywords" class="form-control" placeholder="digital skills, freelancing, online income"></div>
+                        <div class="form-group"><label class="form-label">Meta Description</label><textarea id="meta-description" class="form-textarea" rows="2" placeholder="Site description for search engines"></textarea></div>
+                        <button class="btn btn-primary" onclick="saveSEOSettings()"><i class="fas fa-save"></i> Save SEO Settings</button>
+                    </div>
                 </div>
             </div>
-        </div>
+        </main>
     </div>
 
-    <!-- Blog Modal with Rich Text Editor -->
-    <div id="blogModal" class="modal">
-        <div class="modal-content">
+    <!-- Blog Modal -->
+    <div id="blogModal" class="modal-overlay">
+        <div class="modal-container">
             <div class="modal-header">
-                <h3 id="blogModalTitle">Add New Blog Post</h3>
-                <span class="close" onclick="closeModal('blogModal')">&times;</span>
+                <h3 class="modal-title" id="blogModalTitle">Add New Blog Post</h3>
+                <span class="modal-close" onclick="closeModal('blogModal')">&times;</span>
             </div>
             <form id="blogForm">
                 <input type="hidden" id="blogId">
-                <div class="form-group">
-                    <label>Title</label>
-                    <input type="text" id="blogTitle" required>
+                <div class="modal-body">
+                    <div class="form-group"><label class="form-label">Title</label><input type="text" id="blogTitle" class="form-control" required></div>
+                    <div class="form-group"><label class="form-label">Category</label><select id="blogCategory" class="form-select" required><option value="">-- Select Category --</option></select></div>
+                    <div class="form-group"><label class="form-label">Featured Image</label><input type="file" id="blogImage" class="form-control" accept="image/*"><div id="blogImagePreview" class="image-preview"></div></div>
+                    <div class="form-group"><label class="form-label">Excerpt</label><textarea id="blogExcerpt" class="form-textarea" rows="2" placeholder="Short summary..."></textarea></div>
+                    <div class="form-group"><label class="form-label">Content</label></div>
+                    <div id="editor-container"></div>
+                    <input type="hidden" id="blogContent">
                 </div>
-                <div class="form-group">
-                    <label>Category</label>
-                    <select id="blogCategory" required>
-                        <option value="">-- Select Category --</option>
-                    </select>
+                <div class="modal-footer" style="padding: 1rem 1.5rem; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 1rem;">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('blogModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Blog Post</button>
                 </div>
-                <div class="form-group">
-                    <label>Featured Image</label>
-                    <input type="file" id="blogImage" accept="image/*">
-                    <div id="blogImagePreview" class="image-preview"></div>
-                </div>
-                <div class="form-group">
-                    <label>Excerpt (Short Description)</label>
-                    <textarea id="blogExcerpt" rows="2" placeholder="A short summary of your post..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Content (Rich Text Editor - Format your post)</label>
-                </div>
-                <div id="editor-container" style="height: 350px; margin-bottom: 1rem;"></div>
-                <input type="hidden" id="blogContent">
-                <button type="submit" class="btn-primary">Save Blog Post</button>
             </form>
         </div>
     </div>
 
     <!-- Product Modal -->
-    <div id="productModal" class="modal">
-        <div class="modal-content">
+    <div id="productModal" class="modal-overlay">
+        <div class="modal-container">
             <div class="modal-header">
-                <h3 id="productModalTitle">Add New Ebook</h3>
-                <span class="close" onclick="closeModal('productModal')">&times;</span>
+                <h3 class="modal-title" id="productModalTitle">Add New Ebook</h3>
+                <span class="modal-close" onclick="closeModal('productModal')">&times;</span>
             </div>
             <form id="productForm">
                 <input type="hidden" id="productId">
-                <div class="form-group"><label>Title</label><input type="text" id="productTitle" required></div>
-                <div class="form-group"><label>Description</label><textarea id="productDescription" rows="3" required></textarea></div>
-                <div class="form-group"><label>Price (USD)</label><input type="number" id="productPriceUsd" step="0.01" required></div>
-                <div class="form-group"><label>Price (KES)</label><input type="number" id="productPriceKes" step="1" required></div>
-                <div class="form-group"><label>Cover Image</label><input type="file" id="productImage" accept="image/*"><div id="productImagePreview" class="image-preview"></div></div>
-                <div class="form-group"><label>Download Link</label><input type="text" id="productDownloadLink"></div>
-                <button type="submit" class="btn-primary">Save Ebook</button>
+                <div class="modal-body">
+                    <div class="form-group"><label class="form-label">Title</label><input type="text" id="productTitle" class="form-control" required></div>
+                    <div class="form-group"><label class="form-label">Description</label><textarea id="productDescription" class="form-textarea" rows="3" required></textarea></div>
+                    <div class="form-group"><label class="form-label">Price (USD)</label><input type="number" id="productPriceUsd" class="form-control" step="0.01" required></div>
+                    <div class="form-group"><label class="form-label">Price (KES)</label><input type="number" id="productPriceKes" class="form-control" step="1" required></div>
+                    <div class="form-group"><label class="form-label">Cover Image</label><input type="file" id="productImage" class="form-control" accept="image/*"><div id="productImagePreview" class="image-preview"></div></div>
+                    <div class="form-group"><label class="form-label">Download Link</label><input type="text" id="productDownloadLink" class="form-control" placeholder="Link to download the ebook"></div>
+                </div>
+                <div class="modal-footer" style="padding: 1rem 1.5rem; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 1rem;">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('productModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Ebook</button>
+                </div>
             </form>
         </div>
     </div>
@@ -288,7 +886,6 @@
         let quillEditor = null;
         let allCategories = [];
 
-        // Initialize
         async function init() {
             if (typeof supabase === 'undefined') {
                 setTimeout(init, 500);
@@ -299,7 +896,6 @@
             await loadAllData();
             setupTabs();
             
-            // Initialize Quill Rich Text Editor
             quillEditor = new Quill('#editor-container', {
                 theme: 'snow',
                 modules: {
@@ -314,11 +910,10 @@
                         ['clean']
                     ]
                 },
-                placeholder: 'Write your blog post content here... You can format text, add colors, lists, and images...'
+                placeholder: 'Write your blog post content here... Format text, add colors, lists, and images...'
             });
         }
 
-        // Check authentication
         async function checkAuth() {
             const { data: { session } } = await supabaseClient.auth.getSession();
             if (!session) {
@@ -326,10 +921,8 @@
                 return;
             }
             currentUser = session.user;
-            console.log('Logged in as:', currentUser.email);
         }
 
-        // Load all data
         async function loadAllData() {
             await loadBlogs();
             await loadProducts();
@@ -341,67 +934,60 @@
             await loadSocialLinks();
         }
 
-        // Load blogs
         async function loadBlogs() {
             const { data } = await supabaseClient.from('blog_posts').select('*').order('created_at', { ascending: false });
             const container = document.getElementById('blogs-list');
             if (container && data) {
                 if (data.length === 0) {
-                    container.innerHTML = '<p>No blog posts yet. Click "Add New Blog Post" to get started.</p>';
+                    container.innerHTML = '<div class="admin-item"><div class="item-title">No blog posts yet. Click "Add New Post" to get started.</div></div>';
                 } else {
                     container.innerHTML = data.map(blog => `
                         <div class="admin-item">
-                            <div><strong>${escapeHtml(blog.title)}</strong><br><small>${escapeHtml(blog.category)} | ${new Date(blog.created_at).toLocaleDateString()}</small></div>
-                            <div><button class="btn-secondary" onclick="editBlog(${blog.id})">Edit</button> <button class="btn-danger" onclick="deleteBlog(${blog.id})">Delete</button></div>
+                            <div><div class="item-title">${escapeHtml(blog.title)}</div><div class="item-meta">${escapeHtml(blog.category)} | ${new Date(blog.created_at).toLocaleDateString()}</div></div>
+                            <div class="item-actions"><button class="btn btn-secondary btn-sm" onclick="editBlog(${blog.id})">Edit</button> <button class="btn btn-danger btn-sm" onclick="deleteBlog(${blog.id})">Delete</button></div>
                         </div>
                     `).join('');
                 }
             }
         }
 
-        // Load products
         async function loadProducts() {
             const { data } = await supabaseClient.from('products').select('*').order('created_at', { ascending: false });
             const container = document.getElementById('products-list');
             if (container && data) {
                 if (data.length === 0) {
-                    container.innerHTML = '<p>No ebooks yet. Click "Add New Ebook" to get started.</p>';
+                    container.innerHTML = '<div class="admin-item"><div class="item-title">No ebooks yet. Click "Add New Ebook" to get started.</div></div>';
                 } else {
                     container.innerHTML = data.map(product => `
                         <div class="admin-item">
-                            <div><strong>${escapeHtml(product.title)}</strong><br><small>$${product.price_usd} / KES ${product.price_kes}</small></div>
-                            <div><button class="btn-secondary" onclick="editProduct(${product.id})">Edit</button> <button class="btn-danger" onclick="deleteProduct(${product.id})">Delete</button></div>
+                            <div><div class="item-title">${escapeHtml(product.title)}</div><div class="item-meta">$${product.price_usd} / KES ${product.price_kes}</div></div>
+                            <div class="item-actions"><button class="btn btn-secondary btn-sm" onclick="editProduct(${product.id})">Edit</button> <button class="btn btn-danger btn-sm" onclick="deleteProduct(${product.id})">Delete</button></div>
                         </div>
                     `).join('');
                 }
             }
         }
 
-        // Load categories and update dropdowns
         async function loadCategories() {
             const { data } = await supabaseClient.from('categories').select('*').order('name');
             allCategories = data || [];
             
-            // Update categories list in admin panel
             const container = document.getElementById('categories-list');
             if (container && allCategories) {
                 if (allCategories.length === 0) {
-                    container.innerHTML = '<p>No categories yet. Add one above.</p>';
+                    container.innerHTML = '<div class="admin-item"><div class="item-title">No categories yet. Add one above.</div></div>';
                 } else {
                     container.innerHTML = allCategories.map(cat => `
                         <div class="admin-item">
-                            <span>${escapeHtml(cat.name)}</span>
-                            <button class="btn-danger" onclick="deleteCategory(${cat.id})">Delete</button>
+                            <span class="item-title">${escapeHtml(cat.name)}</span>
+                            <button class="btn btn-danger btn-sm" onclick="deleteCategory(${cat.id})">Delete</button>
                         </div>
                     `).join('');
                 }
             }
-            
-            // Update category dropdown in blog form
             updateCategoryDropdown();
         }
         
-        // Update category dropdown in blog modal
         function updateCategoryDropdown() {
             const categorySelect = document.getElementById('blogCategory');
             if (categorySelect && allCategories) {
@@ -410,7 +996,6 @@
             }
         }
 
-        // Load stats
         async function loadStats() {
             const { count: blogs } = await supabaseClient.from('blog_posts').select('*', { count: 'exact', head: true });
             const { count: products } = await supabaseClient.from('products').select('*', { count: 'exact', head: true });
@@ -420,7 +1005,6 @@
             document.getElementById('total-categories').textContent = categories || 0;
         }
 
-        // Load settings
         async function loadSettings() {
             const { data } = await supabaseClient.from('site_settings').select('*').single();
             if (data) {
@@ -431,11 +1015,10 @@
                 document.getElementById('whatsapp-number').value = data.whatsapp_number || '';
                 document.getElementById('default-currency').value = data.default_currency || 'USD';
                 if (data.logo_url) document.getElementById('logo-preview').innerHTML = `<img src="${data.logo_url}">`;
-                if (data.profile_image_url) document.getElementById('profile-preview').innerHTML = `<img src="${data.profile_image_url}" style="border-radius: 50%; width: 150px; height: 150px; object-fit: cover;">`;
+                if (data.profile_image_url) document.getElementById('profile-preview').innerHTML = `<img src="${data.profile_image_url}" style="border-radius: 50%; width: 100px; height: 100px; object-fit: cover;">`;
             }
         }
 
-        // Load payment settings
         async function loadPaymentSettings() {
             const { data } = await supabaseClient.from('site_settings').select('payment_settings').single();
             if (data?.payment_settings) {
@@ -452,7 +1035,6 @@
             }
         }
 
-        // Load affiliate settings
         async function loadAffiliateSettings() {
             const { data } = await supabaseClient.from('site_settings').select('affiliate_settings').single();
             if (data?.affiliate_settings) {
@@ -463,7 +1045,6 @@
             }
         }
 
-        // Load social links
         async function loadSocialLinks() {
             const { data } = await supabaseClient.from('site_settings').select('social_links').single();
             if (data?.social_links) {
@@ -475,32 +1056,26 @@
             }
         }
 
-        // Upload image to Supabase Storage
         async function uploadImage(file, folder) {
             const fileName = `${folder}_${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
-            const { error: uploadError } = await supabaseClient.storage
-                .from('site-assets')
-                .upload(fileName, file);
+            const { error: uploadError } = await supabaseClient.storage.from('site-assets').upload(fileName, file);
             if (uploadError) throw uploadError;
             const { data: { publicUrl } } = supabaseClient.storage.from('site-assets').getPublicUrl(fileName);
             return publicUrl;
         }
 
-        // Add category
         async function addCategory() {
             const name = document.getElementById('new-category-name').value.trim();
             if (!name) {
                 showNotification('Please enter a category name', 'error');
                 return;
             }
-            
             const slug = name.toLowerCase().replace(/\s+/g, '-');
             const { error } = await supabaseClient.from('categories').insert([{ name: name, slug: slug }]);
-            
             if (error) {
                 showNotification('Error: ' + error.message, 'error');
             } else {
-                showNotification('Category added successfully! It will appear in blog post dropdown.', 'success');
+                showNotification('Category added successfully!', 'success');
                 document.getElementById('new-category-name').value = '';
                 await loadCategories();
                 await loadStats();
@@ -508,9 +1083,8 @@
             }
         }
 
-        // Delete category
         async function deleteCategory(id) {
-            if (!confirm('Delete this category? This will not affect existing blog posts.')) return;
+            if (!confirm('Delete this category?')) return;
             const { error } = await supabaseClient.from('categories').delete().eq('id', id);
             if (error) {
                 showNotification('Error: ' + error.message, 'error');
@@ -522,43 +1096,32 @@
             }
         }
 
-        // Open blog modal
         function openBlogModal(blog = null) {
             currentBlogId = blog?.id || null;
             document.getElementById('blogModalTitle').textContent = blog ? 'Edit Blog Post' : 'Add New Blog Post';
             document.getElementById('blogId').value = blog?.id || '';
             document.getElementById('blogTitle').value = blog?.title || '';
             document.getElementById('blogExcerpt').value = blog?.excerpt || '';
-            
-            // Set content in Quill editor
             if (blog?.content) {
                 quillEditor.root.innerHTML = blog.content;
             } else {
                 quillEditor.root.innerHTML = '';
             }
-            
             if (blog?.image_url) {
                 document.getElementById('blogImagePreview').innerHTML = `<img src="${blog.image_url}">`;
-            } else {
-                document.getElementById('blogImagePreview').innerHTML = '';
             }
-            
             if (blog?.category) {
                 document.getElementById('blogCategory').value = blog.category;
             }
-            
-            // Refresh category dropdown before showing modal
             updateCategoryDropdown();
             document.getElementById('blogModal').style.display = 'flex';
         }
 
-        // Edit blog
         async function editBlog(id) {
             const { data } = await supabaseClient.from('blog_posts').select('*').eq('id', id).single();
             if (data) openBlogModal(data);
         }
 
-        // Delete blog
         async function deleteBlog(id) {
             if (!confirm('Delete this blog post?')) return;
             const { error } = await supabaseClient.from('blog_posts').delete().eq('id', id);
@@ -571,13 +1134,11 @@
             }
         }
 
-        // Save blog form with rich text content
         document.getElementById('blogForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
             let imageUrl = null;
             const imageFile = document.getElementById('blogImage').files[0];
-            
             if (imageFile) {
                 try {
                     showNotification('Uploading image...', 'info');
@@ -588,9 +1149,7 @@
                 }
             }
             
-            // Get HTML content from Quill editor
             const content = quillEditor.root.innerHTML;
-            
             const data = {
                 title: document.getElementById('blogTitle').value,
                 category: document.getElementById('blogCategory').value,
@@ -624,7 +1183,6 @@
             }
         });
 
-        // Product functions
         function openProductModal(product = null) {
             currentProductId = product?.id || null;
             document.getElementById('productModalTitle').textContent = product ? 'Edit Ebook' : 'Add New Ebook';
@@ -662,7 +1220,6 @@
             
             let imageUrl = null;
             const imageFile = document.getElementById('productImage').files[0];
-            
             if (imageFile) {
                 try {
                     showNotification('Uploading image...', 'info');
@@ -700,7 +1257,6 @@
             }
         });
 
-        // Upload logo
         async function uploadLogo() {
             const file = document.getElementById('logo-upload').files[0];
             if (!file) { showNotification('Select an image', 'error'); return; }
@@ -712,19 +1268,17 @@
             } catch (err) { showNotification('Upload failed: ' + err.message, 'error'); }
         }
 
-        // Upload profile picture
         async function uploadProfile() {
             const file = document.getElementById('profile-upload').files[0];
             if (!file) { showNotification('Select an image', 'error'); return; }
             try {
                 const imageUrl = await uploadImage(file, 'profile');
                 await supabaseClient.from('site_settings').update({ profile_image_url: imageUrl }).eq('id', 1);
-                document.getElementById('profile-preview').innerHTML = `<img src="${imageUrl}" style="border-radius: 50%; width: 150px; height: 150px; object-fit: cover;">`;
+                document.getElementById('profile-preview').innerHTML = `<img src="${imageUrl}" style="border-radius: 50%; width: 100px; height: 100px; object-fit: cover;">`;
                 showNotification('Profile picture uploaded!', 'success');
             } catch (err) { showNotification('Upload failed: ' + err.message, 'error'); }
         }
 
-        // Save settings
         async function saveGeneralSettings() {
             const updates = {
                 site_title: document.getElementById('site-title').value,
@@ -788,19 +1342,15 @@
             if (error) { showNotification('Error', 'error'); } else { showNotification('SEO settings saved!', 'success'); }
         }
 
-        // Refresh functions
-        async function refreshBlogs() { await loadBlogs(); showNotification('Blogs refreshed!', 'success'); }
-        async function refreshProducts() { await loadProducts(); showNotification('Products refreshed!', 'success'); }
         async function refreshCategories() { await loadCategories(); showNotification('Categories refreshed!', 'success'); }
 
-        // UI Helpers
         function setupTabs() {
-            document.querySelectorAll('.sidebar-menu li').forEach(item => {
-                item.addEventListener('click', () => {
-                    const tabId = item.dataset.tab;
-                    document.querySelectorAll('.sidebar-menu li').forEach(li => li.classList.remove('active'));
-                    item.classList.add('active');
-                    document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.sidebar-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    const tabId = link.dataset.tab;
+                    document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+                    document.querySelectorAll('.tab-pane').forEach(tab => tab.classList.remove('active'));
                     document.getElementById(tabId).classList.add('active');
                 });
             });
@@ -812,8 +1362,7 @@
 
         function showNotification(message, type = 'success') {
             const notification = document.createElement('div');
-            notification.className = 'notification';
-            notification.style.background = type === 'error' ? '#dc2626' : type === 'info' ? '#3b82f6' : '#22c55e';
+            notification.className = `notification notification-${type}`;
             notification.textContent = message;
             document.body.appendChild(notification);
             setTimeout(() => notification.remove(), 3000);
@@ -826,7 +1375,6 @@
             return div.innerHTML;
         }
 
-        // Image previews
         document.getElementById('blogImage')?.addEventListener('change', function(e) {
             const preview = document.getElementById('blogImagePreview');
             preview.innerHTML = '';
@@ -851,13 +1399,11 @@
             }
         });
 
-        // Logout
         document.getElementById('logout-btn')?.addEventListener('click', async () => {
             await supabaseClient.auth.signOut();
             window.location.href = 'login.html';
         });
 
-        // Make functions global
         window.openBlogModal = openBlogModal;
         window.editBlog = editBlog;
         window.deleteBlog = deleteBlog;
@@ -873,12 +1419,9 @@
         window.saveAffiliateSettings = saveAffiliateSettings;
         window.saveSocialLinks = saveSocialLinks;
         window.saveSEOSettings = saveSEOSettings;
-        window.refreshBlogs = refreshBlogs;
-        window.refreshProducts = refreshProducts;
         window.refreshCategories = refreshCategories;
         window.closeModal = closeModal;
 
-        // Start
         init();
     </script>
 </body>

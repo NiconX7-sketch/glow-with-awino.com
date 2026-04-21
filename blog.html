@@ -90,7 +90,7 @@
                         <span class="post-category">${escapeHtml(post.category)}</span>
                         <h3 class="post-title">${escapeHtml(post.title)}</h3>
                         <p class="post-excerpt">${escapeHtml(post.excerpt || (post.content ? post.content.substring(0, 150).replace(/<[^>]*>/g, '') : ''))}...</p>
-                       <a href="#" onclick="viewFullPost('${post.id}'); return false;" class="read-more">Read More →</a>
+                       <a href="post.html?id=${post.id}" class="read-more">Read More →</a>
                     </div>
                 </div>
             `).join('');

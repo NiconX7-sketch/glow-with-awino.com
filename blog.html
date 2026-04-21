@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - Grow With Awino</title>
+    <meta name="description" content="Read the latest articles on freelancing, digital skills, and making money online.">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        .cart-badge { position: absolute; top: -8px; right: -12px; background: #dc2626; color: white; border-radius: 50%; padding: 2px 6px; font-size: 11px; font-weight: bold; }
+        .cart-icon-container { position: relative; cursor: pointer; }
+        .mobile-menu { display: none; cursor: pointer; font-size: 1.5rem; }
+        @media (max-width: 768px) { .nav-links { display: none; flex-direction: column; position: absolute; top: 70px; left: 0; right: 0; background: white; padding: 1rem; z-index: 1000; } .nav-links.active { display: flex; } .mobile-menu { display: block; } .blog-container { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <header><nav class="navbar"><div class="logo-container"><img id="site-logo" src="images/logo-placeholder.png" class="logo" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2250%22 height=%2250%22 viewBox=%220 0 50 50%22%3E%3Crect width=%2250%22 height=%2250%22 fill=%22%231e3a8a%22/%3E%3Ctext x=%2250%%22 y=%2250%%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22white%22 font-size=%2220%22%3EGWA%3C/text%3E%3C/svg%3E'"><span class="site-title">Grow With Awino</span></div><ul class="nav-links" id="navLinks"><li><a href="index.html">Home</a></li><li><a href="blog.html" class="active">Blog</a></li><li><a href="shop.html">Ebooks</a></li><li><a href="contact.html">Contact</a></li><li><a href="admin.html" class="admin-link">Admin</a></li><li class="cart-icon-container"><a href="#" onclick="viewCart(); return false;"><i class="fas fa-shopping-cart"></i><span id="cart-count" class="cart-badge">0</span></a></li></ul><div class="mobile-menu" onclick="toggleMobileMenu()"><i class="fas fa-bars"></i></div></nav></header>
+
+    <main class="blog-main"><div class="blog-container"><aside class="blog-sidebar"><div class="sidebar-widget"><h3>Categories</h3><ul id="categories-list"><li>Loading...</li></ul></div><div class="sidebar-widget"><h3>Recent Posts</h3><ul id="recent-posts"><li>Loading...</li></ul></div><div class="sidebar-widget"><h3>Follow Me</h3><div class="social-links"><a href="https://x.com/GrowWithAwino" target="_blank"><i class="fab fa-twitter"></i></a><a href="https://youtube.com/@growwithawino" target="_blank"><i class="fab fa-youtube"></i></a><a href="https://www.facebook.com/share/1GKJsnVMuM/" target="_blank"><i class="fab fa-facebook"></i></a><a href="https://www.tiktok.com/@grow.with.awino" target="_blank"><i class="fab fa-tiktok"></i></a></div></div></aside><div class="blog-content"><div class="blog-header"><h1>Blog Posts</h1><div class="blog-controls"><select id="category-filter"><option value="all">All Categories</option></select><input type="text" id="search-posts" placeholder="Search posts..."></div></div><div id="blog-posts-grid" class="blog-posts-grid"><div style="text-align:center;padding:2rem;">Loading blog posts...</div></div></div></div></main>
+
+    <div id="cart-modal" class="modal"><div class="modal-content modal-large"><span class="close" onclick="closeCartModal()">&times;</span><h2>Your Cart</h2><div id="cart-items"></div><div id="cart-total"></div><button onclick="proceedToCheckout()" class="btn-primary" style="width:100%;margin-top:1rem;">Checkout</button></div></div>
+    <div id="post-modal" class="modal"><div class="modal-content modal-large"><span class="close" onclick="closePostModal()">&times;</span><div id="full-post-content"></div></div></div>
+
+    <footer><div class="footer-content"><div class="footer-section"><h3>Grow With Awino</h3><p>Empowering beginners to learn digital skills and earn online.</p><div class="social-links"><a href="https://x.com/GrowWithAwino" target="_blank"><i class="fab fa-twitter"></i></a><a href="https://youtube.com/@growwithawino" target="_blank"><i class="fab fa-youtube"></i></a><a href="https://www.facebook.com/share/1GKJsnVMuM/" target="_blank"><i class="fab fa-facebook"></i></a><a href="https://www.tiktok.com/@grow.with.awino" target="_blank"><i class="fab fa-tiktok"></i></a></div></div><div class="footer-section"><h3>Quick Links</h3><ul><li><a href="index.html">Home</a></li><li><a href="blog.html">Blog</a></li><li><a href="shop.html">Ebooks</a></li><li><a href="contact.html">Contact</a></li></ul></div><div class="footer-section"><h3>Contact</h3><p><i class="fas fa-envelope"></i> awinophoebe44@gmail.com</p><div class="whatsapp-btn" onclick="openWhatsApp()"><i class="fab fa-whatsapp"></i> WhatsApp</div></div></div><div class="footer-bottom"><p>&copy; 2026 Grow With Awino. All rights reserved.</p></div></footer>
+
+    <script>
+        // Supabase Configuration - declared ONCE
+        const SUPABASE_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        let allPosts = [];
+        let allCategories = [];
+        let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        
+        // Load blog posts from Supabase
+        async function loadBlogPosts() {
+            const { data, error } = await supabaseClient
+                .from('blog_posts')
+                .select('*')
+                .eq('published', true)
+                .order('created_at', { ascending: false });
+            
+            if (error) {
+                console.error('Error loading blogs:', error);
+                document.getElementById('blog-posts-grid').innerHTML = '<p style="text-align:center;padding:2rem;">Error loading posts. Please refresh.</p>';
+                return;
+            }
+            
+            allPosts = data || [];
+            renderBlogPosts();
+        }
+        
+        // Render blog posts
+        function renderBlogPosts() {
+            const container = document.getElementById('blog-posts-grid');
+            const categoryFilter = document.getElementById('category-filter');
+            const searchInput = document.getElementById('search-posts');
+            
+            let filteredPosts = [...allPosts];
+            
+            if (categoryFilter && categoryFilter.value !== 'all') {
+                filteredPosts = filteredPosts.filter(post => post.category === categoryFilter.value);
+            }
+            
+            if (searchInput && searchInput.value) {
+                const searchTerm = searchInput.value.toLowerCase();
+                filteredPosts = filteredPosts.filter(post => 
+                    post.title.toLowerCase().includes(searchTerm) || 
+                    (post.content && post.content.toLowerCase().includes(searchTerm))
+                );
+            }
+            
+            if (filteredPosts.length === 0) {
+                container.innerHTML = '<p style="text-align:center;padding:2rem;">No blog posts found. Check back soon!</p>';
+                return;
+            }
+            
+            container.innerHTML = filteredPosts.map(post => `
+                <div class="post-card">
+                    <img src="${post.image_url || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22350%22 height=%22200%22 viewBox=%220 0 350 200%22%3E%3Crect width=%22350%22 height=%22200%22 fill=%22%231e3a8a%22/%3E%3Ctext x=%2250%%22 y=%2250%%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22white%22%3ENo Image%3C/text%3E%3C/svg%3E'}" class="post-image">
+                    <div class="post-content">
+                        <span class="post-category">${escapeHtml(post.category)}</span>
+                        <h3 class="post-title">${escapeHtml(post.title)}</h3>
+                        <p class="post-excerpt">${escapeHtml(post.excerpt || (post.content ? post.content.substring(0, 150) : ''))}...</p>
+                        <a href="#" onclick="viewFullPost('${post.id}'); return false;" class="read-more">Read More →</a>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // Load categories from Supabase
+        async function loadCategories() {
+            const { data, error } = await supabaseClient.from('categories').select('*').order('name');
+            
+            if (error) {
+                console.error('Error loading categories:', error);
+                document.getElementById('categories-list').innerHTML = '<li>Error loading categories</li>';
+                return;
+            }
+            
+            allCategories = data || [];
+            
+            // Update categories list in sidebar
+            const categoriesList = document.getElementById('categories-list');
+            if (categoriesList && allCategories.length > 0) {
+                categoriesList.innerHTML = allCategories.map(cat => 
+                    `<li><a href="#" onclick="filterByCategory('${escapeHtml(cat.name)}'); return false;">${escapeHtml(cat.name)}</a></li>`
+                ).join('');
+            } else if (categoriesList) {
+                categoriesList.innerHTML = '<li>No categories yet. Add some in admin panel.</li>';
+            }
+            
+            // Update category filter dropdown
+            const categoryFilter = document.getElementById('category-filter');
+            if (categoryFilter && allCategories.length > 0) {
+                categoryFilter.innerHTML = '<option value="all">All Categories</option>' + 
+                    allCategories.map(cat => `<option value="${escapeHtml(cat.name)}">${escapeHtml(cat.name)}</option>`).join('');
+            }
+        }
+        
+        // Load recent posts for sidebar
+        async function loadRecentPosts() {
+            const { data, error } = await supabaseClient
+                .from('blog_posts')
+                .select('id, title')
+                .eq('published', true)
+                .order('created_at', { ascending: false })
+                .limit(5);
+            
+            if (error) {
+                console.error('Error loading recent posts:', error);
+                return;
+            }
+            
+            const recentContainer = document.getElementById('recent-posts');
+            if (recentContainer && data && data.length > 0) {
+                recentContainer.innerHTML = data.map(post => 
+                    `<li><a href="#" onclick="viewFullPost('${post.id}'); return false;">${escapeHtml(post.title)}</a></li>`
+                ).join('');
+            } else if (recentContainer) {
+                recentContainer.innerHTML = '<li>No posts yet</li>';
+            }
+        }
+        
+        // View full post
+        async function viewFullPost(postId) {
+            const { data: post, error } = await supabaseClient
+                .from('blog_posts')
+                .select('*')
+                .eq('id', postId)
+                .single();
+            
+            if (error || !post) {
+                alert('Post not found');
+                return;
+            }
+            
+            const modal = document.getElementById('post-modal');
+            const content = document.getElementById('full-post-content');
+            
+            content.innerHTML = `
+                <h2>${escapeHtml(post.title)}</h2>
+                <p><strong>Category:</strong> ${escapeHtml(post.category)} | <strong>Date:</strong> ${new Date(post.created_at).toLocaleDateString()}</p>
+                <img src="${post.image_url || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22400%22 viewBox=%220 0 800 400%22%3E%3Crect width=%22800%22 height=%22400%22 fill=%22%231e3a8a%22/%3E%3Ctext x=%2250%%22 y=%2250%%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22white%22%3ENo Image%3C/text%3E%3C/svg%3E'}" style="width: 100%; margin: 1rem 0; border-radius: 12px;">
+                <div style="line-height: 1.8;">${post.content}</div>
+            `;
+            
+            modal.style.display = 'block';
+        }
+        
+        // Filter by category
+        function filterByCategory(category) {
+            const filterSelect = document.getElementById('category-filter');
+            if (filterSelect) {
+                filterSelect.value = category;
+                renderBlogPosts();
+            }
+        }
+        
+        // Cart functions
+        function updateCartCount() { let c = document.getElementById('cart-count'); if (c) c.textContent = cart.length; }
+        
+        function viewCart() {
+            let m = document.getElementById('cart-modal'), items = document.getElementById('cart-items'), totalDiv = document.getElementById('cart-total');
+            if (cart.length === 0) { items.innerHTML = '<p style="text-align:center;padding:2rem;">Cart empty</p>'; totalDiv.innerHTML = ''; }
+            else {
+                let t = 0;
+                items.innerHTML = cart.map((item, i) => {
+                    let p = item.price_usd || 29.99;
+                    t += p;
+                    return `<div style="display:flex;justify-content:space-between;padding:1rem;border-bottom:1px solid #ddd;"><div><h4>${escapeHtml(item.title)}</h4><p>$${p}</p></div><button onclick="removeFromCart(${i})" style="background:#dc2626;color:white;border:none;padding:0.5rem 1rem;border-radius:8px;">Remove</button></div>`;
+                }).join('');
+                totalDiv.innerHTML = `<div style="text-align:right;padding:1rem;"><strong>Total: $${t.toFixed(2)}</strong></div>`;
+            }
+            m.style.display = 'block';
+        }
+        
+        function removeFromCart(i) { cart.splice(i, 1); localStorage.setItem('cart', JSON.stringify(cart)); updateCartCount(); viewCart(); }
+        function proceedToCheckout() { if (cart.length === 0) { alert('Cart empty'); return; } sessionStorage.setItem('checkoutCart', JSON.stringify(cart)); window.location.href = 'checkout.html'; }
+        function closeCartModal() { document.getElementById('cart-modal').style.display = 'none'; }
+        function closePostModal() { document.getElementById('post-modal').style.display = 'none'; }
+        function openWhatsApp() { window.open('https://wa.me/254704817504', '_blank'); }
+        function toggleMobileMenu() { document.getElementById('navLinks').classList.toggle('active'); }
+        function escapeHtml(text) { if (!text) return ''; const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+        
+        // Event listeners
+        document.getElementById('category-filter')?.addEventListener('change', renderBlogPosts);
+        document.getElementById('search-posts')?.addEventListener('input', renderBlogPosts);
+        
+        // Initialize
+        loadBlogPosts();
+        loadCategories();
+        loadRecentPosts();
+        updateCartCount();
+        
+        window.onclick = function(e) { if (e.target.classList.contains('modal')) e.target.style.display = 'none'; }
+    </script>
+</body>
+</html>

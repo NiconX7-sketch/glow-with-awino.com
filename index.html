@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grow With Awino - Digital Skills & Freelancing Hub</title>
+    <meta name="description" content="Learn digital skills, freelancing, graphic design, and online income strategies. Start your journey to financial freedom with Grow With Awino.">
+    <meta name="keywords" content="digital skills, freelancing, online income, graphic design, earn money online, Kenya freelancing">
+    <meta name="author" content="Awino">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://growwithawinoo.netlify.app/">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -12px;
+            background: #dc2626;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 11px;
+            font-weight: bold;
+            min-width: 18px;
+            text-align: center;
+        }
+        .cart-icon-container {
+            position: relative;
+            cursor: pointer;
+        }
+        .mobile-menu {
+            display: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: white;
+                padding: 1rem;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                z-index: 1000;
+            }
+            .nav-links.active {
+                display: flex;
+            }
+            .mobile-menu {
+                display: block;
+            }
+        }
+        /* SVG Placeholder Styles */
+        .logo-placeholder {
+            width: 50px;
+            height: 50px;
+            background: #1e3a8a;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .profile-placeholder {
+            width: 250px;
+            height: 250px;
+            background: #1e3a8a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo-container">
+                <!-- SVG Logo as inline HTML (no external URL) -->
+                <div id="site-logo" class="logo-placeholder">GWA</div>
+                <span class="site-title">Grow With Awino</span>
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="shop.html">Ebooks</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="admin.html" class="admin-link">Admin</a></li>
+                <li class="cart-icon-container">
+                    <a href="#" onclick="viewCart(); return false;">
+                        <i class="fas fa-shopping-cart" style="font-size: 1.2rem;"></i>
+                        <span id="cart-count" class="cart-badge">0</span>
+                    </a>
+                </li>
+            </ul>
+            <div class="mobile-menu" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Welcome to Grow With Awino!</h1>
+            <p>Your journey to digital skills, freelancing, and online income starts here!</p>
+            <p class="hero-subtitle">Learn, implement, and start seeing results today.</p>
+            <div class="hero-buttons">
+                <a href="blog.html" class="btn-primary">Explore Blogs</a>
+                <a href="shop.html" class="btn-secondary">Shop Ebooks</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="features">
+        <h2>What We Offer</h2>
+        <div class="features-grid">
+            <div class="feature-card"><i class="fas fa-graduation-cap"></i><h3>Digital Skills</h3><p>Basic IT skills, online tools, and practical tutorials</p></div>
+            <div class="feature-card"><i class="fas fa-laptop-code"></i><h3>Freelancing Guides</h3><p>Step-by-step help to succeed on freelancing platforms</p></div>
+            <div class="feature-card"><i class="fas fa-chart-line"></i><h3>Online Income</h3><p>Legit opportunities including surveys and microtasks</p></div>
+            <div class="feature-card"><i class="fas fa-palette"></i><h3>Graphic Design</h3><p>Master design skills from basics to advanced</p></div>
+        </div>
+    </section>
+
+    <section class="about-preview">
+        <div class="about-content">
+            <div class="about-text">
+                <h2>About Awino</h2>
+                <p>Awino is the founder of Grow With Awino, a platform dedicated to helping beginners learn digital skills, start freelancing, and build sustainable online income streams.</p>
+                <p>Through practical guides and beginner-friendly resources, Awino shares insights about freelancing, online business, and digital growth.</p>
+                <a href="contact.html" class="btn-outline">Learn More</a>
+            </div>
+            <div class="about-image">
+                <!-- SVG Profile Placeholder -->
+                <div id="profile-image" class="profile-placeholder">Awino</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="latest-posts">
+        <h2>Latest Blog Posts</h2>
+        <div class="posts-grid" id="latest-posts">
+            <div style="text-align:center;padding:2rem;">Loading posts...</div>
+        </div>
+        <div class="view-all" style="text-align:center;margin-top:2rem;">
+            <a href="blog.html" class="btn-primary">View All Blogs</a>
+        </div>
+    </section>
+
+    <section class="newsletter">
+        <h2>Stay Updated!</h2>
+        <p>Subscribe to get the latest guides and tutorials directly to your inbox</p>
+        <form id="newsletter-form">
+            <input type="email" placeholder="Enter your email" required>
+            <button type="submit" class="btn-primary">Subscribe</button>
+        </form>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Grow With Awino</h3>
+                <p>Empowering beginners to learn digital skills, master graphic design, and earn online.</p>
+                <div class="social-links">
+                    <a href="https://x.com/GrowWithAwino" target="_blank"><i class="fab fa-twitter"></i></a>
+                    <a href="https://youtube.com/@growwithawino" target="_blank"><i class="fab fa-youtube"></i></a>
+                    <a href="https://www.facebook.com/share/1GKJsnVMuM/" target="_blank"><i class="fab fa-facebook"></i></a>
+                    <a href="https://www.tiktok.com/@grow.with.awino" target="_blank"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul><li><a href="index.html">Home</a></li><li><a href="blog.html">Blog</a></li><li><a href="shop.html">Ebooks</a></li><li><a href="contact.html">Contact</a></li></ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Info</h3>
+                <p><i class="fas fa-envelope"></i> awinophoebe44@gmail.com</p>
+                <div class="whatsapp-btn" onclick="openWhatsApp()"><i class="fab fa-whatsapp"></i> Chat on WhatsApp</div>
+            </div>
+            <div class="footer-section">
+                <h3>Legal</h3>
+                <ul><li><a href="#" onclick="showPrivacyPolicy()">Privacy Policy</a></li><li><a href="#" onclick="showDisclaimer()">Disclaimer</a></li><li><a href="#" onclick="showTerms()">Terms & Conditions</a></li></ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Grow With Awino. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <div id="cart-modal" class="modal"><div class="modal-content modal-large"><span class="close" onclick="closeCartModal()">&times;</span><h2><i class="fas fa-shopping-cart"></i> Your Cart</h2><div id="cart-items"></div><div id="cart-total"></div><button onclick="proceedToCheckout()" class="btn-primary" style="width:100%;margin-top:1rem;">Proceed to Checkout</button></div></div>
+    <div id="modal" class="modal"><div class="modal-content"><span class="close" onclick="closeModal()">&times;</span><div id="modal-body"></div></div></div>
+    <div id="post-modal" class="modal"><div class="modal-content modal-large"><span class="close" onclick="closePostModal()">&times;</span><div id="full-post-content"></div></div></div>
+
+    <script>
+        // Supabase Configuration
+        const SUPABASE_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        
+        async function loadLatestPosts() {
+            const { data, error } = await supabaseClient
+                .from('blog_posts')
+                .select('*')
+                .eq('published', true)
+                .order('created_at', { ascending: false })
+                .limit(3);
+            
+            const container = document.getElementById('latest-posts');
+            if (error || !data || data.length === 0) {
+                container.innerHTML = '<p style="text-align:center;padding:2rem;">No blog posts yet. Check back soon!</p>';
+                return;
+            }
+            
+            container.innerHTML = data.map(post => `
+                <div class="post-card">
+                    <img src="${post.image_url || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22350%22 height=%22200%22 viewBox=%220 0 350 200%22%3E%3Crect width=%22350%22 height=%22200%22 fill=%22%231e3a8a%22/%3E%3Ctext x=%2250%%22 y=%2250%%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22white%22%3ENo Image%3C/text%3E%3C/svg%3E'}" class="post-image">
+                    <div class="post-content">
+                        <span class="post-category">${escapeHtml(post.category)}</span>
+                        <h3 class="post-title">${escapeHtml(post.title)}</h3>
+                        <p class="post-excerpt">${escapeHtml(post.excerpt || (post.content ? post.content.substring(0, 100) : ''))}...</p>
+                        <a href="blog.html" class="read-more">Read More →</a>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        async function loadProfileImage() {
+            const { data } = await supabaseClient.from('site_settings').select('profile_image_url').single();
+            if (data && data.profile_image_url) {
+                const profileDiv = document.getElementById('profile-image');
+                if (profileDiv) {
+                    // Replace the placeholder div with an actual image
+                    const img = document.createElement('img');
+                    img.src = data.profile_image_url;
+                    img.alt = 'Awino';
+                    img.style.width = '100%';
+                    img.style.borderRadius = '50%';
+                    img.style.maxWidth = '250px';
+                    profileDiv.parentNode.replaceChild(img, profileDiv);
+                }
+            }
+        }
+        
+        async function loadSiteLogo() {
+            const { data } = await supabaseClient.from('site_settings').select('logo_url').single();
+            if (data && data.logo_url) {
+                const logoDiv = document.getElementById('site-logo');
+                if (logoDiv) {
+                    // Replace the placeholder div with an actual image
+                    const img = document.createElement('img');
+                    img.src = data.logo_url;
+                    img.alt = 'Logo';
+                    img.className = 'logo';
+                    img.style.height = '50px';
+                    logoDiv.parentNode.replaceChild(img, logoDiv);
+                }
+            }
+        }
+        
+        function updateCartCount() { let c = document.getElementById('cart-count'); if (c) c.textContent = cart.length; }
+        
+        function viewCart() {
+            let m = document.getElementById('cart-modal'), items = document.getElementById('cart-items'), totalDiv = document.getElementById('cart-total');
+            if (cart.length === 0) { items.innerHTML = '<p style="text-align:center;padding:2rem;">Cart empty</p>'; totalDiv.innerHTML = ''; }
+            else {
+                let t = 0;
+                items.innerHTML = cart.map((item, i) => {
+                    let p = item.price_usd || 29.99;
+                    t += p;
+                    return `<div style="display:flex;justify-content:space-between;padding:1rem;border-bottom:1px solid #ddd;"><div><h4>${escapeHtml(item.title)}</h4><p>$${p}</p></div><button onclick="removeFromCart(${i})" style="background:#dc2626;color:white;border:none;padding:0.5rem 1rem;border-radius:8px;">Remove</button></div>`;
+                }).join('');
+                totalDiv.innerHTML = `<div style="text-align:right;padding:1rem;"><strong>Total: $${t.toFixed(2)}</strong></div>`;
+            }
+            m.style.display = 'block';
+        }
+        
+        function removeFromCart(i) { cart.splice(i, 1); localStorage.setItem('cart', JSON.stringify(cart)); updateCartCount(); viewCart(); }
+        function proceedToCheckout() { if (cart.length === 0) { alert('Cart empty'); return; } sessionStorage.setItem('checkoutCart', JSON.stringify(cart)); window.location.href = 'checkout.html'; }
+        function closeCartModal() { document.getElementById('cart-modal').style.display = 'none'; }
+        function closeModal() { document.getElementById('modal').style.display = 'none'; }
+        function closePostModal() { document.getElementById('post-modal').style.display = 'none'; }
+        function openWhatsApp() { window.open('https://wa.me/254704817504', '_blank'); }
+        function toggleMobileMenu() { document.getElementById('navLinks').classList.toggle('active'); }
+        function showPrivacyPolicy() { let m = document.getElementById('modal'), b = document.getElementById('modal-body'); b.innerHTML = '<h2>Privacy Policy</h2><p>Your privacy is important to us.</p>'; m.style.display = 'block'; }
+        function showDisclaimer() { let m = document.getElementById('modal'), b = document.getElementById('modal-body'); b.innerHTML = '<h2>Disclaimer</h2><p>Information provided is for educational purposes only.</p>'; m.style.display = 'block'; }
+        function showTerms() { let m = document.getElementById('modal'), b = document.getElementById('modal-body'); b.innerHTML = '<h2>Terms & Conditions</h2><p>By using this site you agree to our terms.</p>'; m.style.display = 'block'; }
+        function escapeHtml(text) { if (!text) return ''; const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+        
+        document.getElementById('newsletter-form')?.addEventListener('submit', (e) => { e.preventDefault(); alert('Thank you for subscribing!'); e.target.reset(); });
+        
+        loadLatestPosts();
+        loadProfileImage();
+        loadSiteLogo();
+        updateCartCount();
+        
+        window.onclick = function(e) { if (e.target.classList.contains('modal')) e.target.style.display = 'none'; }
+    </script>
+</body>
+</html>

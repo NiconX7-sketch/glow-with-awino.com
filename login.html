@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Grow With Awino</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); min-height: 100vh; }
+        .navbar { background: white; padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center; }
+        .nav-links { display: flex; list-style: none; gap: 2rem; }
+        .nav-links a { text-decoration: none; color: #333; }
+        .auth-container { min-height: 80vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+        .auth-card { background: white; border-radius: 20px; padding: 2.5rem; max-width: 450px; width: 100%; box-shadow: 0 20px 35px rgba(0,0,0,0.2); }
+        .auth-card h2 { text-align: center; color: #1e3a8a; margin-bottom: 1rem; }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
+        .form-group input { width: 100%; padding: 0.8rem; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem; }
+        .btn-primary { background: #1e3a8a; color: white; padding: 0.8rem; border: none; border-radius: 50px; cursor: pointer; width: 100%; font-weight: 600; }
+        .btn-primary:hover { background: #2563eb; }
+        .auth-footer { text-align: center; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e2e8f0; }
+        .auth-footer a { color: #1e3a8a; text-decoration: none; }
+        .error-message { background: #fee2e2; color: #dc2626; padding: 0.8rem; border-radius: 10px; margin-bottom: 1rem; display: none; }
+        .success-message { background: #dcfce7; color: #16a34a; padding: 0.8rem; border-radius: 10px; margin-bottom: 1rem; display: none; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo-container"><span style="font-weight:700;">Grow With Awino</span></div>
+            <ul class="nav-links"><li><a href="index.html">Home</a></li><li><a href="blog.html">Blog</a></li><li><a href="shop.html">Ebooks</a></li><li><a href="contact.html">Contact</a></li></ul>
+        </nav>
+    </header>
+
+    <main class="auth-container">
+        <div class="auth-card">
+            <h2>Admin Login</h2>
+            <p style="text-align:center;margin-bottom:2rem;color:#666;">Authorized personnel only</p>
+            <div id="error-message" class="error-message"></div>
+            <div id="success-message" class="success-message"></div>
+            <form id="login-form">
+                <div class="form-group"><label>Email</label><input type="email" id="email" required></div>
+                <div class="form-group"><label>Password</label><input type="password" id="password" required></div>
+                <button type="submit" class="btn-primary">Login</button>
+            </form>
+            <div class="auth-footer"><a href="index.html">← Back to Website</a></div>
+        </div>
+    </main>
+
+    <script>
+        // Supabase configuration - declared ONLY ONCE
+        const SUPABASE_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
+        
+        // Create client with a unique variable name
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        // Handle login
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('error-message');
+            const successDiv = document.getElementById('success-message');
+            
+            // Hide previous messages
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+            
+            try {
+                const { data, error } = await supabaseClient.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+                
+                if (error) {
+                    errorDiv.textContent = error.message;
+                    errorDiv.style.display = 'block';
+                } else {
+                    successDiv.textContent = 'Login successful! Redirecting...';
+                    successDiv.style.display = 'block';
+                    
+                    setTimeout(() => {
+                        window.location.href = 'admin.html';
+                    }, 1500);
+                }
+            } catch (err) {
+                errorDiv.textContent = 'An error occurred. Please try again.';
+                errorDiv.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

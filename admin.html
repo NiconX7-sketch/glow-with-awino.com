@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Grow With Awino</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Quill Rich Text Editor (Free, no API key needed) -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f1f5f9; }
+        .navbar { background: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .logo { background: #1e3a8a; color: white; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-weight: bold; }
+        .nav-links { display: flex; list-style: none; gap: 1.5rem; }
+        .nav-links a { text-decoration: none; color: #333; }
+        .admin-container { display: flex; min-height: calc(100vh - 70px); }
+        .sidebar { width: 280px; background: white; border-right: 1px solid #e2e8f0; padding: 1.5rem 0; }
+        .sidebar-menu { list-style: none; }
+        .sidebar-menu li { padding: 0.75rem 1.5rem; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; transition: all 0.3s; }
+        .sidebar-menu li:hover { background: #f1f5f9; }
+        .sidebar-menu li.active { background: #1e3a8a; color: white; }
+        .content { flex: 1; padding: 2rem; }
+        .card { background: white; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid #e2e8f0; }
+        .card h3 { margin: 0; }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 0.75rem; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; }
+        .form-group input[type="file"] { padding: 0.5rem; }
+        .btn-primary { background: #1e3a8a; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 8px; cursor: pointer; }
+        .btn-secondary { background: #64748b; color: white; padding: 0.5rem 1rem; border: none; border-radius: 6px; cursor: pointer; }
+        .btn-danger { background: #dc2626; color: white; padding: 0.5rem 1rem; border: none; border-radius: 6px; cursor: pointer; }
+        .btn-success { background: #22c55e; color: white; padding: 0.5rem 1rem; border: none; border-radius: 6px; cursor: pointer; }
+        .admin-item { display: flex; justify-content: space-between; align-items: center; padding: 1rem; border-bottom: 1px solid #e2e8f0; }
+        .image-preview { margin-top: 0.5rem; max-width: 150px; }
+        .image-preview img { width: 100%; border-radius: 8px; border: 1px solid #e2e8f0; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: white; padding: 2rem; border-radius: 16px; width: 90%; max-width: 800px; max-height: 80vh; overflow-y: auto; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid #e2e8f0; }
+        .close { cursor: pointer; font-size: 1.5rem; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        .stat-card { background: linear-gradient(135deg, #1e3a8a, #3b82f6); color: white; padding: 1.5rem; border-radius: 12px; text-align: center; }
+        .stat-card p { font-size: 2rem; font-weight: bold; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .notification { position: fixed; bottom: 20px; right: 20px; padding: 1rem 2rem; border-radius: 50px; color: white; z-index: 1100; }
+        /* Rich Text Editor Styles */
+        #editor-container { height: 350px; margin-bottom: 1rem; }
+        .ql-editor { min-height: 300px; }
+        .category-row { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+        .category-row input { flex: 1; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div style="display:flex;align-items:center;gap:1rem;">
+            <div class="logo">GWA</div>
+            <span style="font-weight:bold;">Admin Panel</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html" target="_blank">View Site</a></li>
+            <li><a href="#" id="logout-btn">Logout</a></li>
+        </ul>
+    </nav>
+
+    <div class="admin-container">
+        <div class="sidebar">
+            <ul class="sidebar-menu">
+                <li data-tab="dashboard">📊 Dashboard</li>
+                <li data-tab="blogs">📝 Manage Blogs</li>
+                <li data-tab="products">📚 Manage Ebooks</li>
+                <li data-tab="categories">🏷️ Categories</li>
+                <li data-tab="logo">🖼️ Logo & Branding</li>
+                <li data-tab="profile">👤 Profile Picture</li>
+                <li data-tab="payments">💰 Payment Settings</li>
+                <li data-tab="affiliates">🔗 Affiliate Links</li>
+                <li data-tab="settings">⚙️ General Settings</li>
+            </ul>
+        </div>
+
+        <div class="content">
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="tab-content active">
+                <h2>Dashboard</h2>
+                <div class="stats-grid">
+                    <div class="stat-card"><h4>Total Blogs</h4><p id="total-blogs">0</p></div>
+                    <div class="stat-card"><h4>Total Ebooks</h4><p id="total-products">0</p></div>
+                    <div class="stat-card"><h4>Categories</h4><p id="total-categories">0</p></div>
+                </div>
+            </div>
+
+            <!-- Manage Blogs Tab -->
+            <div id="blogs" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Blog Posts</h3>
+                        <button class="btn-success" onclick="refreshBlogs()"><i class="fas fa-sync-alt"></i> Refresh</button>
+                    </div>
+                    <button class="btn-primary" onclick="openBlogModal()">+ Add New Blog Post</button>
+                    <div id="blogs-list" style="margin-top:1rem;"></div>
+                </div>
+            </div>
+
+            <!-- Manage Products Tab -->
+            <div id="products" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Ebooks</h3>
+                        <button class="btn-success" onclick="refreshProducts()"><i class="fas fa-sync-alt"></i> Refresh</button>
+                    </div>
+                    <button class="btn-primary" onclick="openProductModal()">+ Add New Ebook</button>
+                    <div id="products-list" style="margin-top:1rem;"></div>
+                </div>
+            </div>
+
+            <!-- Categories Tab -->
+            <div id="categories" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Categories</h3>
+                        <button class="btn-success" onclick="refreshCategories()"><i class="fas fa-sync-alt"></i> Refresh</button>
+                    </div>
+                    <div class="category-row">
+                        <input type="text" id="new-category-name" placeholder="Enter new category name">
+                        <button class="btn-primary" onclick="addCategory()">Add Category</button>
+                    </div>
+                    <div id="categories-list"></div>
+                </div>
+            </div>
+
+            <!-- Logo Tab -->
+            <div id="logo" class="tab-content">
+                <div class="card">
+                    <h3>Site Logo</h3>
+                    <div class="form-group">
+                        <label>Upload Logo from Computer</label>
+                        <input type="file" id="logo-upload" accept="image/*">
+                        <button class="btn-primary" onclick="uploadLogo()" style="margin-top:0.5rem;">Upload Logo</button>
+                        <div id="logo-preview" class="image-preview"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Tab -->
+            <div id="profile" class="tab-content">
+                <div class="card">
+                    <h3>Profile Picture (Awino's Photo)</h3>
+                    <p>This photo will appear on the About section of the homepage.</p>
+                    <div class="form-group">
+                        <label>Upload Profile Picture</label>
+                        <input type="file" id="profile-upload" accept="image/*">
+                        <button class="btn-primary" onclick="uploadProfile()" style="margin-top:0.5rem;">Upload Profile Picture</button>
+                        <div id="profile-preview" class="image-preview"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Settings Tab -->
+            <div id="payments" class="tab-content">
+                <div class="card"><h3>PayPal Settings</h3>
+                    <div class="form-group"><label>Client ID</label><input type="text" id="paypal-client-id"></div>
+                    <div class="form-group"><label>Secret Key</label><input type="password" id="paypal-secret"></div>
+                    <div class="form-group"><label>Mode</label><select id="paypal-mode"><option value="sandbox">Sandbox</option><option value="live">Live</option></select></div>
+                </div>
+                <div class="card"><h3>Paystack Settings</h3>
+                    <div class="form-group"><label>Public Key</label><input type="text" id="paystack-public-key"></div>
+                    <div class="form-group"><label>Secret Key</label><input type="password" id="paystack-secret-key"></div>
+                </div>
+                <div class="card"><h3>M-Pesa Settings</h3>
+                    <div class="form-group"><label>Consumer Key</label><input type="text" id="mpesa-consumer-key"></div>
+                    <div class="form-group"><label>Consumer Secret</label><input type="password" id="mpesa-consumer-secret"></div>
+                    <div class="form-group"><label>Shortcode</label><input type="text" id="mpesa-shortcode"></div>
+                    <div class="form-group"><label>Passkey</label><input type="password" id="mpesa-passkey"></div>
+                    <div class="form-group"><label>Environment</label><select id="mpesa-environment"><option value="sandbox">Sandbox</option><option value="production">Production</option></select></div>
+                </div>
+                <button class="btn-primary" onclick="savePaymentSettings()">Save All Payment Settings</button>
+            </div>
+
+            <!-- Affiliate Links Tab -->
+            <div id="affiliates" class="tab-content">
+                <div class="card"><h3>Affiliate IDs</h3>
+                    <div class="form-group"><label>Amazon</label><input type="text" id="amazon-id"></div>
+                    <div class="form-group"><label>Jumia</label><input type="text" id="jumia-id"></div>
+                    <div class="form-group"><label>Udemy</label><input type="text" id="udemy-id"></div>
+                    <div class="form-group"><label>Coursera</label><input type="text" id="coursera-id"></div>
+                    <button class="btn-primary" onclick="saveAffiliateSettings()">Save Affiliate Settings</button>
+                </div>
+            </div>
+
+            <!-- General Settings Tab -->
+            <div id="settings" class="tab-content">
+                <div class="card"><h3>General Settings</h3>
+                    <div class="form-group"><label>Site Title</label><input type="text" id="site-title"></div>
+                    <div class="form-group"><label>Site Description</label><textarea id="site-description" rows="3"></textarea></div>
+                    <div class="form-group"><label>Admin Email</label><input type="email" id="admin-email"></div>
+                    <div class="form-group"><label>Contact Email</label><input type="email" id="contact-email" value="awinophoebe44@gmail.com"></div>
+                    <div class="form-group"><label>WhatsApp Number</label><input type="tel" id="whatsapp-number"></div>
+                    <div class="form-group"><label>Default Currency</label><select id="default-currency"><option value="USD">USD</option><option value="KES">KES</option></select></div>
+                    <button class="btn-primary" onclick="saveGeneralSettings()">Save Settings</button>
+                </div>
+                <div class="card"><h3>Social Links</h3>
+                    <div class="form-group"><label>Twitter</label><input type="url" id="twitter-link"></div>
+                    <div class="form-group"><label>YouTube</label><input type="url" id="youtube-link"></div>
+                    <div class="form-group"><label>Facebook</label><input type="url" id="facebook-link"></div>
+                    <div class="form-group"><label>TikTok</label><input type="url" id="tiktok-link"></div>
+                    <div class="form-group"><label>Instagram</label><input type="url" id="instagram-link"></div>
+                    <button class="btn-primary" onclick="saveSocialLinks()">Save Social Links</button>
+                </div>
+                <div class="card"><h3>SEO Settings</h3>
+                    <div class="form-group"><label>Meta Keywords</label><input type="text" id="meta-keywords"></div>
+                    <div class="form-group"><label>Meta Description</label><textarea id="meta-description" rows="2"></textarea></div>
+                    <button class="btn-primary" onclick="saveSEOSettings()">Save SEO Settings</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Blog Modal with Rich Text Editor -->
+    <div id="blogModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="blogModalTitle">Add New Blog Post</h3>
+                <span class="close" onclick="closeModal('blogModal')">&times;</span>
+            </div>
+            <form id="blogForm">
+                <input type="hidden" id="blogId">
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" id="blogTitle" required>
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="blogCategory" required>
+                        <option value="">-- Select Category --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Featured Image</label>
+                    <input type="file" id="blogImage" accept="image/*">
+                    <div id="blogImagePreview" class="image-preview"></div>
+                </div>
+                <div class="form-group">
+                    <label>Excerpt (Short Description)</label>
+                    <textarea id="blogExcerpt" rows="2" placeholder="A short summary of your post..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Content (Rich Text Editor - Format your post)</label>
+                </div>
+                <div id="editor-container" style="height: 350px; margin-bottom: 1rem;"></div>
+                <input type="hidden" id="blogContent">
+                <button type="submit" class="btn-primary">Save Blog Post</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Product Modal -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="productModalTitle">Add New Ebook</h3>
+                <span class="close" onclick="closeModal('productModal')">&times;</span>
+            </div>
+            <form id="productForm">
+                <input type="hidden" id="productId">
+                <div class="form-group"><label>Title</label><input type="text" id="productTitle" required></div>
+                <div class="form-group"><label>Description</label><textarea id="productDescription" rows="3" required></textarea></div>
+                <div class="form-group"><label>Price (USD)</label><input type="number" id="productPriceUsd" step="0.01" required></div>
+                <div class="form-group"><label>Price (KES)</label><input type="number" id="productPriceKes" step="1" required></div>
+                <div class="form-group"><label>Cover Image</label><input type="file" id="productImage" accept="image/*"><div id="productImagePreview" class="image-preview"></div></div>
+                <div class="form-group"><label>Download Link</label><input type="text" id="productDownloadLink"></div>
+                <button type="submit" class="btn-primary">Save Ebook</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Supabase Configuration
+        const SUPABASE_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
+        
+        let supabaseClient = null;
+        let currentUser = null;
+        let currentBlogId = null;
+        let currentProductId = null;
+        let quillEditor = null;
+        let allCategories = [];
+
+        // Initialize
+        async function init() {
+            if (typeof supabase === 'undefined') {
+                setTimeout(init, 500);
+                return;
+            }
+            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            await checkAuth();
+            await loadAllData();
+            setupTabs();
+            
+            // Initialize Quill Rich Text Editor
+            quillEditor = new Quill('#editor-container', {
+                theme: 'snow',
+                modules: {
+                    toolbar: [
+                        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                        ['bold', 'italic', 'underline', 'strike'],
+                        [{ 'color': [] }, { 'background': [] }],
+                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                        [{ 'align': [] }],
+                        ['blockquote', 'code-block'],
+                        ['link', 'image'],
+                        ['clean']
+                    ]
+                },
+                placeholder: 'Write your blog post content here... You can format text, add colors, lists, and images...'
+            });
+        }
+
+        // Check authentication
+        async function checkAuth() {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (!session) {
+                window.location.href = 'login.html';
+                return;
+            }
+            currentUser = session.user;
+            console.log('Logged in as:', currentUser.email);
+        }
+
+        // Load all data
+        async function loadAllData() {
+            await loadBlogs();
+            await loadProducts();
+            await loadCategories();
+            await loadStats();
+            await loadSettings();
+            await loadPaymentSettings();
+            await loadAffiliateSettings();
+            await loadSocialLinks();
+        }
+
+        // Load blogs
+        async function loadBlogs() {
+            const { data } = await supabaseClient.from('blog_posts').select('*').order('created_at', { ascending: false });
+            const container = document.getElementById('blogs-list');
+            if (container && data) {
+                if (data.length === 0) {
+                    container.innerHTML = '<p>No blog posts yet. Click "Add New Blog Post" to get started.</p>';
+                } else {
+                    container.innerHTML = data.map(blog => `
+                        <div class="admin-item">
+                            <div><strong>${escapeHtml(blog.title)}</strong><br><small>${escapeHtml(blog.category)} | ${new Date(blog.created_at).toLocaleDateString()}</small></div>
+                            <div><button class="btn-secondary" onclick="editBlog(${blog.id})">Edit</button> <button class="btn-danger" onclick="deleteBlog(${blog.id})">Delete</button></div>
+                        </div>
+                    `).join('');
+                }
+            }
+        }
+
+        // Load products
+        async function loadProducts() {
+            const { data } = await supabaseClient.from('products').select('*').order('created_at', { ascending: false });
+            const container = document.getElementById('products-list');
+            if (container && data) {
+                if (data.length === 0) {
+                    container.innerHTML = '<p>No ebooks yet. Click "Add New Ebook" to get started.</p>';
+                } else {
+                    container.innerHTML = data.map(product => `
+                        <div class="admin-item">
+                            <div><strong>${escapeHtml(product.title)}</strong><br><small>$${product.price_usd} / KES ${product.price_kes}</small></div>
+                            <div><button class="btn-secondary" onclick="editProduct(${product.id})">Edit</button> <button class="btn-danger" onclick="deleteProduct(${product.id})">Delete</button></div>
+                        </div>
+                    `).join('');
+                }
+            }
+        }
+
+        // Load categories and update dropdowns
+        async function loadCategories() {
+            const { data } = await supabaseClient.from('categories').select('*').order('name');
+            allCategories = data || [];
+            
+            // Update categories list in admin panel
+            const container = document.getElementById('categories-list');
+            if (container && allCategories) {
+                if (allCategories.length === 0) {
+                    container.innerHTML = '<p>No categories yet. Add one above.</p>';
+                } else {
+                    container.innerHTML = allCategories.map(cat => `
+                        <div class="admin-item">
+                            <span>${escapeHtml(cat.name)}</span>
+                            <button class="btn-danger" onclick="deleteCategory(${cat.id})">Delete</button>
+                        </div>
+                    `).join('');
+                }
+            }
+            
+            // Update category dropdown in blog form
+            updateCategoryDropdown();
+        }
+        
+        // Update category dropdown in blog modal
+        function updateCategoryDropdown() {
+            const categorySelect = document.getElementById('blogCategory');
+            if (categorySelect && allCategories) {
+                categorySelect.innerHTML = '<option value="">-- Select Category --</option>' + 
+                    allCategories.map(cat => `<option value="${escapeHtml(cat.name)}">${escapeHtml(cat.name)}</option>`).join('');
+            }
+        }
+
+        // Load stats
+        async function loadStats() {
+            const { count: blogs } = await supabaseClient.from('blog_posts').select('*', { count: 'exact', head: true });
+            const { count: products } = await supabaseClient.from('products').select('*', { count: 'exact', head: true });
+            const { count: categories } = await supabaseClient.from('categories').select('*', { count: 'exact', head: true });
+            document.getElementById('total-blogs').textContent = blogs || 0;
+            document.getElementById('total-products').textContent = products || 0;
+            document.getElementById('total-categories').textContent = categories || 0;
+        }
+
+        // Load settings
+        async function loadSettings() {
+            const { data } = await supabaseClient.from('site_settings').select('*').single();
+            if (data) {
+                document.getElementById('site-title').value = data.site_title || '';
+                document.getElementById('site-description').value = data.site_description || '';
+                document.getElementById('admin-email').value = data.admin_email || '';
+                document.getElementById('contact-email').value = data.contact_email || 'awinophoebe44@gmail.com';
+                document.getElementById('whatsapp-number').value = data.whatsapp_number || '';
+                document.getElementById('default-currency').value = data.default_currency || 'USD';
+                if (data.logo_url) document.getElementById('logo-preview').innerHTML = `<img src="${data.logo_url}">`;
+                if (data.profile_image_url) document.getElementById('profile-preview').innerHTML = `<img src="${data.profile_image_url}" style="border-radius: 50%; width: 150px; height: 150px; object-fit: cover;">`;
+            }
+        }
+
+        // Load payment settings
+        async function loadPaymentSettings() {
+            const { data } = await supabaseClient.from('site_settings').select('payment_settings').single();
+            if (data?.payment_settings) {
+                document.getElementById('paypal-client-id').value = data.payment_settings.paypal_client_id || '';
+                document.getElementById('paypal-secret').value = data.payment_settings.paypal_secret || '';
+                document.getElementById('paypal-mode').value = data.payment_settings.paypal_mode || 'sandbox';
+                document.getElementById('paystack-public-key').value = data.payment_settings.paystack_public_key || '';
+                document.getElementById('paystack-secret-key').value = data.payment_settings.paystack_secret_key || '';
+                document.getElementById('mpesa-consumer-key').value = data.payment_settings.mpesa_consumer_key || '';
+                document.getElementById('mpesa-consumer-secret').value = data.payment_settings.mpesa_consumer_secret || '';
+                document.getElementById('mpesa-shortcode').value = data.payment_settings.mpesa_shortcode || '';
+                document.getElementById('mpesa-passkey').value = data.payment_settings.mpesa_passkey || '';
+                document.getElementById('mpesa-environment').value = data.payment_settings.mpesa_environment || 'sandbox';
+            }
+        }
+
+        // Load affiliate settings
+        async function loadAffiliateSettings() {
+            const { data } = await supabaseClient.from('site_settings').select('affiliate_settings').single();
+            if (data?.affiliate_settings) {
+                document.getElementById('amazon-id').value = data.affiliate_settings.amazon || '';
+                document.getElementById('jumia-id').value = data.affiliate_settings.jumia || '';
+                document.getElementById('udemy-id').value = data.affiliate_settings.udemy || '';
+                document.getElementById('coursera-id').value = data.affiliate_settings.coursera || '';
+            }
+        }
+
+        // Load social links
+        async function loadSocialLinks() {
+            const { data } = await supabaseClient.from('site_settings').select('social_links').single();
+            if (data?.social_links) {
+                document.getElementById('twitter-link').value = data.social_links.twitter || '';
+                document.getElementById('youtube-link').value = data.social_links.youtube || '';
+                document.getElementById('facebook-link').value = data.social_links.facebook || '';
+                document.getElementById('tiktok-link').value = data.social_links.tiktok || '';
+                document.getElementById('instagram-link').value = data.social_links.instagram || '';
+            }
+        }
+
+        // Upload image to Supabase Storage
+        async function uploadImage(file, folder) {
+            const fileName = `${folder}_${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
+            const { error: uploadError } = await supabaseClient.storage
+                .from('site-assets')
+                .upload(fileName, file);
+            if (uploadError) throw uploadError;
+            const { data: { publicUrl } } = supabaseClient.storage.from('site-assets').getPublicUrl(fileName);
+            return publicUrl;
+        }
+
+        // Add category
+        async function addCategory() {
+            const name = document.getElementById('new-category-name').value.trim();
+            if (!name) {
+                showNotification('Please enter a category name', 'error');
+                return;
+            }
+            
+            const slug = name.toLowerCase().replace(/\s+/g, '-');
+            const { error } = await supabaseClient.from('categories').insert([{ name: name, slug: slug }]);
+            
+            if (error) {
+                showNotification('Error: ' + error.message, 'error');
+            } else {
+                showNotification('Category added successfully! It will appear in blog post dropdown.', 'success');
+                document.getElementById('new-category-name').value = '';
+                await loadCategories();
+                await loadStats();
+                updateCategoryDropdown();
+            }
+        }
+
+        // Delete category
+        async function deleteCategory(id) {
+            if (!confirm('Delete this category? This will not affect existing blog posts.')) return;
+            const { error } = await supabaseClient.from('categories').delete().eq('id', id);
+            if (error) {
+                showNotification('Error: ' + error.message, 'error');
+            } else {
+                showNotification('Category deleted!', 'success');
+                await loadCategories();
+                await loadStats();
+                updateCategoryDropdown();
+            }
+        }
+
+        // Open blog modal
+        function openBlogModal(blog = null) {
+            currentBlogId = blog?.id || null;
+            document.getElementById('blogModalTitle').textContent = blog ? 'Edit Blog Post' : 'Add New Blog Post';
+            document.getElementById('blogId').value = blog?.id || '';
+            document.getElementById('blogTitle').value = blog?.title || '';
+            document.getElementById('blogExcerpt').value = blog?.excerpt || '';
+            
+            // Set content in Quill editor
+            if (blog?.content) {
+                quillEditor.root.innerHTML = blog.content;
+            } else {
+                quillEditor.root.innerHTML = '';
+            }
+            
+            if (blog?.image_url) {
+                document.getElementById('blogImagePreview').innerHTML = `<img src="${blog.image_url}">`;
+            } else {
+                document.getElementById('blogImagePreview').innerHTML = '';
+            }
+            
+            if (blog?.category) {
+                document.getElementById('blogCategory').value = blog.category;
+            }
+            
+            // Refresh category dropdown before showing modal
+            updateCategoryDropdown();
+            document.getElementById('blogModal').style.display = 'flex';
+        }
+
+        // Edit blog
+        async function editBlog(id) {
+            const { data } = await supabaseClient.from('blog_posts').select('*').eq('id', id).single();
+            if (data) openBlogModal(data);
+        }
+
+        // Delete blog
+        async function deleteBlog(id) {
+            if (!confirm('Delete this blog post?')) return;
+            const { error } = await supabaseClient.from('blog_posts').delete().eq('id', id);
+            if (error) {
+                showNotification('Error: ' + error.message, 'error');
+            } else {
+                showNotification('Blog deleted!', 'success');
+                await loadBlogs();
+                await loadStats();
+            }
+        }
+
+        // Save blog form with rich text content
+        document.getElementById('blogForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            let imageUrl = null;
+            const imageFile = document.getElementById('blogImage').files[0];
+            
+            if (imageFile) {
+                try {
+                    showNotification('Uploading image...', 'info');
+                    imageUrl = await uploadImage(imageFile, 'blog');
+                } catch (err) {
+                    showNotification('Image upload failed: ' + err.message, 'error');
+                    return;
+                }
+            }
+            
+            // Get HTML content from Quill editor
+            const content = quillEditor.root.innerHTML;
+            
+            const data = {
+                title: document.getElementById('blogTitle').value,
+                category: document.getElementById('blogCategory').value,
+                content: content,
+                excerpt: document.getElementById('blogExcerpt').value,
+                image_url: imageUrl,
+                published: true
+            };
+            
+            if (!data.category) {
+                showNotification('Please select a category', 'error');
+                return;
+            }
+            
+            try {
+                if (currentBlogId) {
+                    await supabaseClient.from('blog_posts').update(data).eq('id', currentBlogId);
+                    showNotification('Blog updated!', 'success');
+                } else {
+                    await supabaseClient.from('blog_posts').insert([data]);
+                    showNotification('Blog created!', 'success');
+                }
+                closeModal('blogModal');
+                document.getElementById('blogForm').reset();
+                quillEditor.root.innerHTML = '';
+                document.getElementById('blogImagePreview').innerHTML = '';
+                await loadBlogs();
+                await loadStats();
+            } catch (err) {
+                showNotification('Error: ' + err.message, 'error');
+            }
+        });
+
+        // Product functions
+        function openProductModal(product = null) {
+            currentProductId = product?.id || null;
+            document.getElementById('productModalTitle').textContent = product ? 'Edit Ebook' : 'Add New Ebook';
+            document.getElementById('productId').value = product?.id || '';
+            document.getElementById('productTitle').value = product?.title || '';
+            document.getElementById('productDescription').value = product?.description || '';
+            document.getElementById('productPriceUsd').value = product?.price_usd || '';
+            document.getElementById('productPriceKes').value = product?.price_kes || '';
+            document.getElementById('productDownloadLink').value = product?.download_link || '';
+            if (product?.image_url) {
+                document.getElementById('productImagePreview').innerHTML = `<img src="${product.image_url}">`;
+            }
+            document.getElementById('productModal').style.display = 'flex';
+        }
+
+        async function editProduct(id) {
+            const { data } = await supabaseClient.from('products').select('*').eq('id', id).single();
+            if (data) openProductModal(data);
+        }
+
+        async function deleteProduct(id) {
+            if (!confirm('Delete this ebook?')) return;
+            const { error } = await supabaseClient.from('products').delete().eq('id', id);
+            if (error) {
+                showNotification('Error: ' + error.message, 'error');
+            } else {
+                showNotification('Ebook deleted!', 'success');
+                await loadProducts();
+                await loadStats();
+            }
+        }
+
+        document.getElementById('productForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            let imageUrl = null;
+            const imageFile = document.getElementById('productImage').files[0];
+            
+            if (imageFile) {
+                try {
+                    showNotification('Uploading image...', 'info');
+                    imageUrl = await uploadImage(imageFile, 'product');
+                } catch (err) {
+                    showNotification('Image upload failed: ' + err.message, 'error');
+                    return;
+                }
+            }
+            
+            const data = {
+                title: document.getElementById('productTitle').value,
+                description: document.getElementById('productDescription').value,
+                price_usd: parseFloat(document.getElementById('productPriceUsd').value),
+                price_kes: parseInt(document.getElementById('productPriceKes').value),
+                image_url: imageUrl,
+                download_link: document.getElementById('productDownloadLink').value
+            };
+            
+            try {
+                if (currentProductId) {
+                    await supabaseClient.from('products').update(data).eq('id', currentProductId);
+                    showNotification('Ebook updated!', 'success');
+                } else {
+                    await supabaseClient.from('products').insert([data]);
+                    showNotification('Ebook created!', 'success');
+                }
+                closeModal('productModal');
+                document.getElementById('productForm').reset();
+                document.getElementById('productImagePreview').innerHTML = '';
+                await loadProducts();
+                await loadStats();
+            } catch (err) {
+                showNotification('Error: ' + err.message, 'error');
+            }
+        });
+
+        // Upload logo
+        async function uploadLogo() {
+            const file = document.getElementById('logo-upload').files[0];
+            if (!file) { showNotification('Select an image', 'error'); return; }
+            try {
+                const imageUrl = await uploadImage(file, 'logo');
+                await supabaseClient.from('site_settings').update({ logo_url: imageUrl }).eq('id', 1);
+                document.getElementById('logo-preview').innerHTML = `<img src="${imageUrl}">`;
+                showNotification('Logo uploaded!', 'success');
+            } catch (err) { showNotification('Upload failed: ' + err.message, 'error'); }
+        }
+
+        // Upload profile picture
+        async function uploadProfile() {
+            const file = document.getElementById('profile-upload').files[0];
+            if (!file) { showNotification('Select an image', 'error'); return; }
+            try {
+                const imageUrl = await uploadImage(file, 'profile');
+                await supabaseClient.from('site_settings').update({ profile_image_url: imageUrl }).eq('id', 1);
+                document.getElementById('profile-preview').innerHTML = `<img src="${imageUrl}" style="border-radius: 50%; width: 150px; height: 150px; object-fit: cover;">`;
+                showNotification('Profile picture uploaded!', 'success');
+            } catch (err) { showNotification('Upload failed: ' + err.message, 'error'); }
+        }
+
+        // Save settings
+        async function saveGeneralSettings() {
+            const updates = {
+                site_title: document.getElementById('site-title').value,
+                site_description: document.getElementById('site-description').value,
+                admin_email: document.getElementById('admin-email').value,
+                contact_email: document.getElementById('contact-email').value,
+                whatsapp_number: document.getElementById('whatsapp-number').value,
+                default_currency: document.getElementById('default-currency').value
+            };
+            const { error } = await supabaseClient.from('site_settings').update(updates).eq('id', 1);
+            if (error) { showNotification('Error: ' + error.message, 'error'); } 
+            else { showNotification('Settings saved!', 'success'); }
+        }
+
+        async function savePaymentSettings() {
+            const settings = {
+                paypal_client_id: document.getElementById('paypal-client-id').value,
+                paypal_secret: document.getElementById('paypal-secret').value,
+                paypal_mode: document.getElementById('paypal-mode').value,
+                paystack_public_key: document.getElementById('paystack-public-key').value,
+                paystack_secret_key: document.getElementById('paystack-secret-key').value,
+                mpesa_consumer_key: document.getElementById('mpesa-consumer-key').value,
+                mpesa_consumer_secret: document.getElementById('mpesa-consumer-secret').value,
+                mpesa_shortcode: document.getElementById('mpesa-shortcode').value,
+                mpesa_passkey: document.getElementById('mpesa-passkey').value,
+                mpesa_environment: document.getElementById('mpesa-environment').value
+            };
+            const { error } = await supabaseClient.from('site_settings').update({ payment_settings: settings }).eq('id', 1);
+            if (error) { showNotification('Error', 'error'); } else { showNotification('Payment settings saved!', 'success'); }
+        }
+
+        async function saveAffiliateSettings() {
+            const settings = {
+                amazon: document.getElementById('amazon-id').value,
+                jumia: document.getElementById('jumia-id').value,
+                udemy: document.getElementById('udemy-id').value,
+                coursera: document.getElementById('coursera-id').value
+            };
+            const { error } = await supabaseClient.from('site_settings').update({ affiliate_settings: settings }).eq('id', 1);
+            if (error) { showNotification('Error', 'error'); } else { showNotification('Affiliate settings saved!', 'success'); }
+        }
+
+        async function saveSocialLinks() {
+            const links = {
+                twitter: document.getElementById('twitter-link').value,
+                youtube: document.getElementById('youtube-link').value,
+                facebook: document.getElementById('facebook-link').value,
+                tiktok: document.getElementById('tiktok-link').value,
+                instagram: document.getElementById('instagram-link').value
+            };
+            const { error } = await supabaseClient.from('site_settings').update({ social_links: links }).eq('id', 1);
+            if (error) { showNotification('Error', 'error'); } else { showNotification('Social links saved!', 'success'); }
+        }
+
+        async function saveSEOSettings() {
+            const seo = {
+                meta_keywords: document.getElementById('meta-keywords').value,
+                meta_description: document.getElementById('meta-description').value
+            };
+            const { error } = await supabaseClient.from('site_settings').update({ seo: seo }).eq('id', 1);
+            if (error) { showNotification('Error', 'error'); } else { showNotification('SEO settings saved!', 'success'); }
+        }
+
+        // Refresh functions
+        async function refreshBlogs() { await loadBlogs(); showNotification('Blogs refreshed!', 'success'); }
+        async function refreshProducts() { await loadProducts(); showNotification('Products refreshed!', 'success'); }
+        async function refreshCategories() { await loadCategories(); showNotification('Categories refreshed!', 'success'); }
+
+        // UI Helpers
+        function setupTabs() {
+            document.querySelectorAll('.sidebar-menu li').forEach(item => {
+                item.addEventListener('click', () => {
+                    const tabId = item.dataset.tab;
+                    document.querySelectorAll('.sidebar-menu li').forEach(li => li.classList.remove('active'));
+                    item.classList.add('active');
+                    document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.style.background = type === 'error' ? '#dc2626' : type === 'info' ? '#3b82f6' : '#22c55e';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Image previews
+        document.getElementById('blogImage')?.addEventListener('change', function(e) {
+            const preview = document.getElementById('blogImagePreview');
+            preview.innerHTML = '';
+            if (this.files && this.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    preview.innerHTML = `<img src="${ev.target.result}">`;
+                };
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+
+        document.getElementById('productImage')?.addEventListener('change', function(e) {
+            const preview = document.getElementById('productImagePreview');
+            preview.innerHTML = '';
+            if (this.files && this.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    preview.innerHTML = `<img src="${ev.target.result}">`;
+                };
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+
+        // Logout
+        document.getElementById('logout-btn')?.addEventListener('click', async () => {
+            await supabaseClient.auth.signOut();
+            window.location.href = 'login.html';
+        });
+
+        // Make functions global
+        window.openBlogModal = openBlogModal;
+        window.editBlog = editBlog;
+        window.deleteBlog = deleteBlog;
+        window.openProductModal = openProductModal;
+        window.editProduct = editProduct;
+        window.deleteProduct = deleteProduct;
+        window.addCategory = addCategory;
+        window.deleteCategory = deleteCategory;
+        window.uploadLogo = uploadLogo;
+        window.uploadProfile = uploadProfile;
+        window.saveGeneralSettings = saveGeneralSettings;
+        window.savePaymentSettings = savePaymentSettings;
+        window.saveAffiliateSettings = saveAffiliateSettings;
+        window.saveSocialLinks = saveSocialLinks;
+        window.saveSEOSettings = saveSEOSettings;
+        window.refreshBlogs = refreshBlogs;
+        window.refreshProducts = refreshProducts;
+        window.refreshCategories = refreshCategories;
+        window.closeModal = closeModal;
+
+        // Start
+        init();
+    </script>
+</body>
+</html>

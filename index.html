@@ -8,7 +8,7 @@
     <meta name="keywords" content="digital skills, freelancing, online income, graphic design, earn money online, Kenya freelancing">
     <meta name="author" content="Awino">
     <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://glow-with-awino-com.vercel.app/">
+    <link rel="canonical" href="https://glow-with-awino.vercel.app/">
     <link rel="stylesheet" href="css/style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -34,6 +34,32 @@
             display: none;
             cursor: pointer;
             font-size: 1.5rem;
+        }
+        /* SVG Placeholder Styles */
+        .logo-placeholder {
+            width: 50px;
+            height: 50px;
+            background: #1e3a8a;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .profile-placeholder {
+            width: 250px;
+            height: 250px;
+            background: #1e3a8a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            margin: 0 auto;
         }
         @media (max-width: 768px) {
             .nav-links {
@@ -61,7 +87,8 @@
     <header>
         <nav class="navbar">
             <div class="logo-container">
-                <img id="site-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='50' viewBox='0 0 50 50'%3E%3Crect width='50' height='50' fill='%231e3a8a'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='20'%3EGWA%3C/text%3E%3C/svg%3E" class="logo">
+                <!-- SVG Logo placeholder (no external URL) -->
+                <div id="site-logo" class="logo-placeholder">GWA</div>
                 <span class="site-title">Grow With Awino</span>
             </div>
             <ul class="nav-links" id="navLinks">
@@ -99,10 +126,26 @@
     <section class="features">
         <h2>What We Offer</h2>
         <div class="features-grid">
-            <div class="feature-card"><i class="fas fa-graduation-cap"></i><h3>Digital Skills</h3><p>Basic IT skills, online tools, and practical tutorials</p></div>
-            <div class="feature-card"><i class="fas fa-laptop-code"></i><h3>Freelancing Guides</h3><p>Step-by-step help to succeed on freelancing platforms</p></div>
-            <div class="feature-card"><i class="fas fa-chart-line"></i><h3>Online Income</h3><p>Legit opportunities including surveys and microtasks</p></div>
-            <div class="feature-card"><i class="fas fa-palette"></i><h3>Graphic Design</h3><p>Master design skills from basics to advanced</p></div>
+            <div class="feature-card">
+                <i class="fas fa-graduation-cap"></i>
+                <h3>Digital Skills</h3>
+                <p>Basic IT skills, online tools, and practical tutorials</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-laptop-code"></i>
+                <h3>Freelancing Guides</h3>
+                <p>Step-by-step help to succeed on freelancing platforms</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-chart-line"></i>
+                <h3>Online Income</h3>
+                <p>Legit opportunities including surveys and microtasks</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-palette"></i>
+                <h3>Graphic Design</h3>
+                <p>Master design skills from basics to advanced</p>
+            </div>
         </div>
     </section>
 
@@ -115,7 +158,8 @@
                 <a href="contact.html" class="btn-outline">Learn More</a>
             </div>
             <div class="about-image">
-                <img id="profile-image" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'%3E%3Crect width='300' height='300' fill='%231e3a8a'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='40'%3EAwino%3C/text%3E%3C/svg%3E" alt="Awino">
+                <!-- SVG Profile Placeholder (no external URL) -->
+                <div id="profile-image" class="profile-placeholder">Awino</div>
             </div>
         </div>
     </section>
@@ -154,7 +198,13 @@
             </div>
             <div class="footer-section">
                 <h3>Quick Links</h3>
-                <ul><li><a href="index.html">Home</a></li><li><a href="blog.html">Blog</a></li><li><a href="shop.html">Ebooks</a></li><li><a href="resources.html">Resources</a></li><li><a href="contact.html">Contact</a></li></ul>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="shop.html">Ebooks</a></li>
+                    <li><a href="resources.html">Resources</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
             </div>
             <div class="footer-section">
                 <h3>Contact Info</h3>
@@ -163,7 +213,11 @@
             </div>
             <div class="footer-section">
                 <h3>Legal</h3>
-                <ul><li><a href="#" onclick="showPrivacyPolicy()">Privacy Policy</a></li><li><a href="#" onclick="showDisclaimer()">Disclaimer</a></li><li><a href="#" onclick="showTerms()">Terms & Conditions</a></li></ul>
+                <ul>
+                    <li><a href="#" onclick="showPrivacyPolicy()">Privacy Policy</a></li>
+                    <li><a href="#" onclick="showDisclaimer()">Disclaimer</a></li>
+                    <li><a href="#" onclick="showTerms()">Terms & Conditions</a></li>
+                </ul>
             </div>
         </div>
         <div class="footer-bottom">
@@ -171,9 +225,212 @@
         </div>
     </footer>
 
-    <div id="cart-modal" class="modal"><div class="modal-content modal-large"><span class="close" onclick="closeCartModal()">&times;</span><h2><i class="fas fa-shopping-cart"></i> Your Cart</h2><div id="cart-items"></div><div id="cart-total"></div><button onclick="proceedToCheckout()" class="btn-primary" style="width:100%;margin-top:1rem;">Proceed to Checkout</button></div></div>
-    <div id="modal" class="modal"><div class="modal-content"><span class="close" onclick="closeModal()">&times;</span><div id="modal-body"></div></div></div>
+    <div id="cart-modal" class="modal">
+        <div class="modal-content modal-large">
+            <span class="close" onclick="closeCartModal()">&times;</span>
+            <h2><i class="fas fa-shopping-cart"></i> Your Cart</h2>
+            <div id="cart-items"></div>
+            <div id="cart-total"></div>
+            <button onclick="proceedToCheckout()" class="btn-primary" style="width:100%;margin-top:1rem;">Proceed to Checkout</button>
+        </div>
+    </div>
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="modal-body"></div>
+        </div>
+    </div>
 
-    <script src="js/main.js"></script>
+    <script>
+        // Supabase Configuration
+        const SUPABASE_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        
+        async function loadLatestPosts() {
+            const { data, error } = await supabaseClient
+                .from('blog_posts')
+                .select('*')
+                .eq('published', true)
+                .order('created_at', { ascending: false })
+                .limit(3);
+            
+            const container = document.getElementById('latest-posts');
+            if (error || !data || data.length === 0) {
+                container.innerHTML = '<p style="text-align:center;padding:2rem;">No blog posts yet. Check back soon!</p>';
+                return;
+            }
+            
+            container.innerHTML = data.map(post => `
+                <div class="post-card">
+                    <img src="${post.image_url || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22350%22 height=%22200%22 viewBox=%220 0 350 200%22%3E%3Crect width=%22350%22 height=%22200%22 fill=%22%231e3a8a%22/%3E%3Ctext x=%2250%%22 y=%2250%%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22white%22%3ENo Image%3C/text%3E%3C/svg%3E'}" class="post-image" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22350%22 height=%22200%22 viewBox=%220 0 350 200%22%3E%3Crect width=%22350%22 height=%22200%22 fill=%22%231e3a8a%22/%3E%3Ctext x=%2250%%22 y=%2250%%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22white%22%3ENo Image%3C/text%3E%3C/svg%3E'">
+                    <div class="post-content">
+                        <span class="post-category">${escapeHtml(post.category)}</span>
+                        <h3 class="post-title">${escapeHtml(post.title)}</h3>
+                        <p class="post-excerpt">${escapeHtml(post.excerpt || (post.content ? post.content.substring(0, 100).replace(/<[^>]*>/g, '') : ''))}...</p>
+                        <a href="blog.html" class="read-more">Read More →</a>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        async function loadProfileImage() {
+            const { data } = await supabaseClient.from('site_settings').select('profile_image_url').single();
+            if (data && data.profile_image_url) {
+                const profileDiv = document.getElementById('profile-image');
+                if (profileDiv) {
+                    const img = document.createElement('img');
+                    img.src = data.profile_image_url;
+                    img.alt = 'Awino';
+                    img.style.width = '100%';
+                    img.style.borderRadius = '50%';
+                    img.style.maxWidth = '250px';
+                    profileDiv.parentNode.replaceChild(img, profileDiv);
+                }
+            }
+        }
+        
+        async function loadSiteLogo() {
+            const { data } = await supabaseClient.from('site_settings').select('logo_url').single();
+            if (data && data.logo_url) {
+                const logoDiv = document.getElementById('site-logo');
+                if (logoDiv) {
+                    const img = document.createElement('img');
+                    img.src = data.logo_url;
+                    img.alt = 'Logo';
+                    img.className = 'logo';
+                    img.style.height = '50px';
+                    logoDiv.parentNode.replaceChild(img, logoDiv);
+                }
+            }
+        }
+        
+        function updateCartCount() { 
+            let c = document.getElementById('cart-count'); 
+            if (c) c.textContent = cart.length; 
+        }
+        
+        function viewCart() {
+            let m = document.getElementById('cart-modal'), 
+                items = document.getElementById('cart-items'), 
+                totalDiv = document.getElementById('cart-total');
+            
+            if (cart.length === 0) { 
+                items.innerHTML = '<p style="text-align:center;padding:2rem;">Cart empty</p>'; 
+                totalDiv.innerHTML = ''; 
+            } else {
+                let t = 0;
+                items.innerHTML = cart.map((item, i) => {
+                    let p = item.price_usd || 29.99;
+                    t += p;
+                    return `<div style="display:flex;justify-content:space-between;padding:1rem;border-bottom:1px solid #ddd;">
+                        <div>
+                            <h4>${escapeHtml(item.title)}</h4>
+                            <p>$${p}</p>
+                        </div>
+                        <button onclick="removeFromCart(${i})" style="background:#dc2626;color:white;border:none;padding:0.5rem 1rem;border-radius:8px;cursor:pointer;">Remove</button>
+                    </div>`;
+                }).join('');
+                totalDiv.innerHTML = `<div style="text-align:right;padding:1rem;"><strong>Total: $${t.toFixed(2)}</strong></div>`;
+            }
+            m.style.display = 'block';
+        }
+        
+        function removeFromCart(i) { 
+            cart.splice(i, 1); 
+            localStorage.setItem('cart', JSON.stringify(cart)); 
+            updateCartCount(); 
+            viewCart(); 
+        }
+        
+        function proceedToCheckout() { 
+            if (cart.length === 0) { 
+                alert('Cart empty'); 
+                return; 
+            } 
+            sessionStorage.setItem('checkoutCart', JSON.stringify(cart)); 
+            window.location.href = 'checkout.html'; 
+        }
+        
+        function closeCartModal() { 
+            document.getElementById('cart-modal').style.display = 'none'; 
+        }
+        
+        function closeModal() { 
+            document.getElementById('modal').style.display = 'none'; 
+        }
+        
+        function openWhatsApp() { 
+            window.open('https://wa.me/254704817504', '_blank'); 
+        }
+        
+        function toggleMobileMenu() { 
+            document.getElementById('navLinks').classList.toggle('active'); 
+        }
+        
+        function showPrivacyPolicy() { 
+            let m = document.getElementById('modal'), b = document.getElementById('modal-body'); 
+            b.innerHTML = '<h2>Privacy Policy</h2><p>Your privacy is important to us. We collect only necessary information to provide our services.</p>'; 
+            m.style.display = 'block'; 
+        }
+        
+        function showDisclaimer() { 
+            let m = document.getElementById('modal'), b = document.getElementById('modal-body'); 
+            b.innerHTML = '<h2>Disclaimer</h2><p>Information provided is for educational purposes only.</p>'; 
+            m.style.display = 'block'; 
+        }
+        
+        function showTerms() { 
+            let m = document.getElementById('modal'), b = document.getElementById('modal-body'); 
+            b.innerHTML = '<h2>Terms & Conditions</h2><p>By using this site you agree to our terms.</p>'; 
+            m.style.display = 'block'; 
+        }
+        
+        function escapeHtml(text) { 
+            if (!text) return ''; 
+            const div = document.createElement('div'); 
+            div.textContent = text; 
+            return div.innerHTML; 
+        }
+        
+        // Newsletter subscription
+        document.getElementById('newsletter-form')?.addEventListener('submit', async (e) => { 
+            e.preventDefault(); 
+            const email = document.getElementById('newsletter-email').value;
+            const messageDiv = document.getElementById('newsletter-message');
+            
+            try {
+                const { error } = await supabaseClient.from('newsletter_subscribers').insert([{ email: email }]);
+                if (error && error.code === '23505') {
+                    messageDiv.textContent = 'This email is already subscribed!';
+                    messageDiv.style.color = '#eab308';
+                } else if (error) {
+                    messageDiv.textContent = 'Error: ' + error.message;
+                    messageDiv.style.color = '#dc2626';
+                } else {
+                    messageDiv.textContent = 'Thank you for subscribing! Check your email for updates.';
+                    messageDiv.style.color = '#22c55e';
+                    document.getElementById('newsletter-form').reset();
+                }
+            } catch (err) {
+                messageDiv.textContent = 'An error occurred. Please try again.';
+                messageDiv.style.color = '#dc2626';
+            }
+            messageDiv.style.display = 'block';
+            setTimeout(() => messageDiv.style.display = 'none', 5000);
+        });
+        
+        // Initialize
+        loadLatestPosts();
+        loadProfileImage();
+        loadSiteLogo();
+        updateCartCount();
+        
+        window.onclick = function(e) { 
+            if (e.target.classList.contains('modal')) e.target.style.display = 'none'; 
+        }
+    </script>
 </body>
 </html>

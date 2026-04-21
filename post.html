@@ -8,6 +8,73 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+        .navbar {
+            background: white;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .logo-placeholder {
+            width: 40px;
+            height: 40px;
+            background: #1e3a8a;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        .site-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+        }
+        .admin-link {
+            background: #1e3a8a;
+            color: white !important;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+        }
+        .mobile-menu {
+            display: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
         .post-container {
             max-width: 900px;
             margin: 2rem auto;
@@ -15,6 +82,7 @@
             background: white;
             border-radius: 24px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            min-height: 60vh;
         }
         .post-header {
             margin-bottom: 2rem;
@@ -49,7 +117,7 @@
             margin: 1.5rem 0;
         }
         .post-content {
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             line-height: 1.8;
             color: #334155;
         }
@@ -96,6 +164,8 @@
             font-weight: 500;
             margin-bottom: 1.5rem;
             transition: all 0.2s;
+            border: none;
+            cursor: pointer;
         }
         .back-button:hover {
             background: #e2e8f0;
@@ -105,21 +175,70 @@
             text-align: center;
             padding: 4rem;
         }
+        .loading {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 4px solid #e2e8f0;
+            border-top-color: #1e3a8a;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
         .error-container {
             text-align: center;
             padding: 4rem;
             color: #dc2626;
         }
+        .error-container i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        footer {
+            background: #0f172a;
+            color: white;
+            padding: 3rem 5% 1rem;
+            margin-top: 3rem;
+        }
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
         @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: white;
+                padding: 1rem;
+                z-index: 1000;
+            }
+            .nav-links.active {
+                display: flex;
+            }
+            .mobile-menu {
+                display: block;
+            }
             .post-container {
-                padding: 1.5rem;
                 margin: 1rem;
+                padding: 1rem;
             }
             .post-title {
                 font-size: 1.8rem;
-            }
-            .post-content {
-                font-size: 1rem;
             }
         }
     </style>
@@ -128,7 +247,7 @@
     <header>
         <nav class="navbar">
             <div class="logo-container">
-                <div id="site-logo" style="width:40px;height:40px;background:#1e3a8a;border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;font-weight:bold;">GWA</div>
+                <div class="logo-placeholder">GWA</div>
                 <span class="site-title">Grow With Awino</span>
             </div>
             <ul class="nav-links" id="navLinks">
@@ -147,7 +266,7 @@
         <div class="post-container" id="post-container">
             <div class="loading-container">
                 <div class="loading"></div>
-                <p>Loading post...</p>
+                <p style="margin-top: 1rem;">Loading post...</p>
             </div>
         </div>
     </main>
@@ -178,69 +297,142 @@
     </footer>
 
     <script>
+        // Supabase Configuration
         const SUPABASE_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
+        
+        // Initialize Supabase
+        let supabaseClient = null;
+        
+        function initSupabase() {
+            if (typeof supabase === 'undefined') {
+                console.log('Waiting for Supabase library...');
+                setTimeout(initSupabase, 500);
+                return;
+            }
+            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            console.log('Supabase initialized');
+            loadPost();
+        }
+        
         // Get post ID from URL parameter
-        const urlParams = new URLSearchParams(window.location.search);
-        const postId = urlParams.get('id');
-
+        function getPostId() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+            console.log('Post ID from URL:', id);
+            return id;
+        }
+        
         async function loadPost() {
             const container = document.getElementById('post-container');
+            const postId = getPostId();
             
+            // If no post ID, show error
             if (!postId) {
-                container.innerHTML = '<div class="error-container"><i class="fas fa-exclamation-circle"></i><h2>No post specified</h2><p>Please go back to the <a href="blog.html">blog page</a>.</p></div>';
-                return;
-            }
-
-            const { data: post, error } = await supabase
-                .from('blog_posts')
-                .select('*')
-                .eq('id', postId)
-                .eq('published', true)
-                .single();
-
-            if (error || !post) {
-                container.innerHTML = '<div class="error-container"><i class="fas fa-exclamation-circle"></i><h2>Post not found</h2><p>The blog post you\'re looking for doesn\'t exist or has been removed.</p><a href="blog.html" class="back-button"><i class="fas fa-arrow-left"></i> Back to Blog</a></div>';
-                return;
-            }
-
-            // Format the date
-            const postDate = new Date(post.created_at).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            });
-
-            container.innerHTML = `
-                <a href="blog.html" class="back-button"><i class="fas fa-arrow-left"></i> Back to Blog</a>
-                <div class="post-header">
-                    <span class="post-category">${escapeHtml(post.category)}</span>
-                    <h1 class="post-title">${escapeHtml(post.title)}</h1>
-                    <div class="post-meta">
-                        <i class="fas fa-calendar-alt"></i> ${postDate}
+                container.innerHTML = `
+                    <div class="error-container">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <h2>No Post Selected</h2>
+                        <p>Please go back to the <a href="blog.html">blog page</a> and select a post to read.</p>
+                        <a href="blog.html" class="back-button" style="margin-top: 1rem; display: inline-block;">← Back to Blog</a>
                     </div>
-                </div>
-                ${post.image_url ? `<img src="${post.image_url}" class="post-image" alt="${escapeHtml(post.title)}" onerror="this.style.display='none'">` : ''}
-                <div class="post-content">
-                    ${post.content}
-                </div>
-            `;
+                `;
+                return;
+            }
+            
+            // Make sure supabase is initialized
+            if (!supabaseClient) {
+                container.innerHTML = '<div class="loading-container"><div class="loading"></div><p>Initializing...</p></div>';
+                return;
+            }
+            
+            try {
+                console.log('Fetching post with ID:', postId);
+                const { data: post, error } = await supabaseClient
+                    .from('blog_posts')
+                    .select('*')
+                    .eq('id', postId)
+                    .eq('published', true)
+                    .single();
+                
+                if (error) {
+                    console.error('Supabase error:', error);
+                    container.innerHTML = `
+                        <div class="error-container">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <h2>Post Not Found</h2>
+                            <p>The blog post you're looking for doesn't exist or has been removed.</p>
+                            <p style="font-size: 0.9rem; margin-top: 1rem;">Error: ${escapeHtml(error.message)}</p>
+                            <a href="blog.html" class="back-button" style="margin-top: 1rem; display: inline-block;">← Back to Blog</a>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                if (!post) {
+                    container.innerHTML = `
+                        <div class="error-container">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <h2>Post Not Found</h2>
+                            <p>The blog post you're looking for doesn't exist.</p>
+                            <a href="blog.html" class="back-button" style="margin-top: 1rem; display: inline-block;">← Back to Blog</a>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                console.log('Post loaded:', post.title);
+                
+                // Format the date
+                const postDate = post.created_at ? new Date(post.created_at).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                }) : 'Date unknown';
+                
+                // Render the post
+                container.innerHTML = `
+                    <a href="blog.html" class="back-button"><i class="fas fa-arrow-left"></i> Back to Blog</a>
+                    <div class="post-header">
+                        <span class="post-category">${escapeHtml(post.category)}</span>
+                        <h1 class="post-title">${escapeHtml(post.title)}</h1>
+                        <div class="post-meta">
+                            <i class="fas fa-calendar-alt"></i> ${postDate}
+                        </div>
+                    </div>
+                    ${post.image_url ? `<img src="${post.image_url}" class="post-image" alt="${escapeHtml(post.title)}" onerror="this.style.display='none'">` : ''}
+                    <div class="post-content">
+                        ${post.content || '<p>No content available for this post.</p>'}
+                    </div>
+                `;
+                
+            } catch (err) {
+                console.error('Unexpected error:', err);
+                container.innerHTML = `
+                    <div class="error-container">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <h2>Something Went Wrong</h2>
+                        <p>There was an error loading this post. Please try again later.</p>
+                        <p style="font-size: 0.9rem; margin-top: 1rem;">Error: ${escapeHtml(err.message)}</p>
+                        <a href="blog.html" class="back-button" style="margin-top: 1rem; display: inline-block;">← Back to Blog</a>
+                    </div>
+                `;
+            }
         }
-
+        
         function escapeHtml(text) {
             if (!text) return '';
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         }
-
+        
         function toggleMobileMenu() {
             document.getElementById('navLinks').classList.toggle('active');
         }
-
-        loadPost();
+        
+        // Start initialization
+        initSupabase();
     </script>
 </body>
 </html>

@@ -31,6 +31,7 @@ async function initMain() {
     setupEventListeners();
     updateCartCount();
     setupCurrencyToggle();
+    loadAffiliateSidebar();
 }
 
 // Load all data
@@ -98,6 +99,25 @@ async function loadCategories() {
     renderCategories();
 }
 
+// Load affiliate sidebar
+async function loadAffiliateSidebar() {
+    if (!supabaseClient) return;
+    
+    const { data: settings } = await supabaseClient.from('site_settings').select('affiliate_settings').single();
+    const ids = settings?.affiliate_settings || {};
+    
+    const container = document.getElementById('affiliate-sidebar');
+    if (!container) return;
+    
+    let html = '';
+    if (ids.amazon) html += `<li><a href="https://www.amazon.com/?tag=${ids.amazon}" target="_blank">Amazon</a></li>`;
+    if (ids.jumia) html += `<li><a href="https://www.jumia.co.ke/?utm_source=${ids.jumia}" target="_blank">Jumia</a></li>`;
+    if (ids.udemy) html += `<li><a href="https://www.udemy.com/?affcode=${ids.udemy}" target="_blank">Udemy</a></li>`;
+    if (ids.coursera) html += `<li><a href="https://www.coursera.org/?affiliate=${ids.coursera}" target="_blank">Coursera</a></li>`;
+    
+    container.innerHTML = html || '<li>Coming soon</li>';
+}
+
 // Render latest posts on homepage
 function renderLatestPosts() {
     const container = document.getElementById('latest-posts');
@@ -116,7 +136,7 @@ function renderLatestPosts() {
             <div class="post-content">
                 <span class="post-category">${escapeHtml(post.category)}</span>
                 <h3 class="post-title">${escapeHtml(post.title)}</h3>
-                <p class="post-excerpt">${escapeHtml(post.excerpt || (post.content ? post.content.substring(0, 100) : ''))}...</p>
+                <p class="post-excerpt">${escapeHtml(post.excerpt || (post.content ? post.content.substring(0, 100).replace(/<[^>]*>/g, '') : ''))}...</p>
                 <a href="blog.html" class="read-more">Read More →</a>
             </div>
         </div>
@@ -141,12 +161,13 @@ function renderBlogPosts() {
         const searchTerm = searchInput.value.toLowerCase();
         filteredPosts = filteredPosts.filter(post => 
             post.title.toLowerCase().includes(searchTerm) || 
+            (post.excerpt && post.excerpt.toLowerCase().includes(searchTerm)) ||
             (post.content && post.content.toLowerCase().includes(searchTerm))
         );
     }
     
     if (filteredPosts.length === 0) {
-        container.innerHTML = '<p style="text-align:center;padding:2rem;">No blog posts found.</p>';
+        container.innerHTML = '<p class="no-results">No blog posts found. Try a different search or category.</p>';
         return;
     }
     
@@ -156,7 +177,7 @@ function renderBlogPosts() {
             <div class="post-content">
                 <span class="post-category">${escapeHtml(post.category)}</span>
                 <h3 class="post-title">${escapeHtml(post.title)}</h3>
-                <p class="post-excerpt">${escapeHtml(post.excerpt || (post.content ? post.content.substring(0, 150) : ''))}...</p>
+                <p class="post-excerpt">${escapeHtml(post.excerpt || (post.content ? post.content.substring(0, 150).replace(/<[^>]*>/g, '') : ''))}...</p>
                 <a href="#" onclick="viewFullPost('${post.id}'); return false;" class="read-more">Read More →</a>
             </div>
         </div>
@@ -346,13 +367,6 @@ function removeFromCart(index) {
     viewCart();
 }
 
-function clearCart() {
-    cart = [];
-    localStorage.setItem('cart', JSON.stringify(cart));
-    updateCartCount();
-    showNotification('Cart cleared!');
-}
-
 function proceedToCheckout() {
     if (cart.length === 0) {
         showNotification('Your cart is empty!');
@@ -361,6 +375,10 @@ function proceedToCheckout() {
     sessionStorage.setItem('checkoutCart', JSON.stringify(cart));
     window.location.href = 'checkout.html';
 }
+
+function closeCartModal() { document.getElementById('cart-modal').style.display = 'none'; }
+function closeModal() { document.getElementById('modal').style.display = 'none'; }
+function closePostModal() { document.getElementById('post-modal').style.display = 'none'; }
 
 // Setup currency toggle
 function setupCurrencyToggle() {
@@ -386,19 +404,63 @@ function setupCurrencyToggle() {
 function setupEventListeners() {
     const newsletterForm = document.getElementById('newsletter-form');
     if (newsletterForm) {
-        newsletterForm.addEventListener('submit', (e) => {
+        newsletterForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            showNotification('Thank you for subscribing!');
-            newsletterForm.reset();
+            const email = document.getElementById('newsletter-email').value;
+            const messageDiv = document.getElementById('newsletter-message');
+            
+            try {
+                const { error } = await supabaseClient.from('newsletter_subscribers').insert([{ email: email }]);
+                if (error && error.code === '23505') {
+                    messageDiv.textContent = 'This email is already subscribed!';
+                    messageDiv.style.color = '#eab308';
+                } else if (error) {
+                    messageDiv.textContent = 'Error: ' + error.message;
+                    messageDiv.style.color = '#dc2626';
+                } else {
+                    messageDiv.textContent = 'Thank you for subscribing! Check your email for updates.';
+                    messageDiv.style.color = '#22c55e';
+                    newsletterForm.reset();
+                }
+            } catch (err) {
+                messageDiv.textContent = 'An error occurred. Please try again.';
+                messageDiv.style.color = '#dc2626';
+            }
+            messageDiv.style.display = 'block';
+            setTimeout(() => messageDiv.style.display = 'none', 5000);
         });
     }
     
     const contactForm = document.getElementById('contact-form');
     if (contactForm) {
-        contactForm.addEventListener('submit', (e) => {
+        contactForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            showNotification('Message sent! We\'ll get back to you soon.');
-            contactForm.reset();
+            const successDiv = document.getElementById('success-message');
+            const errorDiv = document.getElementById('error-message');
+            
+            successDiv.style.display = 'none';
+            errorDiv.style.display = 'none';
+            
+            const name = document.getElementById('contact-name').value;
+            const email = document.getElementById('contact-email').value;
+            const subject = document.getElementById('contact-subject').value;
+            const message = document.getElementById('contact-message').value;
+            
+            try {
+                const { error } = await supabaseClient.from('contact_messages').insert([{ name, email, subject, message }]);
+                if (error) {
+                    errorDiv.style.display = 'block';
+                } else {
+                    successDiv.style.display = 'block';
+                    contactForm.reset();
+                }
+            } catch (err) {
+                errorDiv.style.display = 'block';
+            }
+            setTimeout(() => {
+                successDiv.style.display = 'none';
+                errorDiv.style.display = 'none';
+            }, 5000);
         });
     }
     
@@ -412,7 +474,6 @@ function setupEventListeners() {
         categoryFilter.addEventListener('change', renderBlogPosts);
     }
     
-    // Close modals
     document.querySelectorAll('.close').forEach(btn => {
         btn.addEventListener('click', () => {
             document.querySelectorAll('.modal').forEach(modal => modal.style.display = 'none');
@@ -446,32 +507,17 @@ function showNotification(message) {
     setTimeout(() => notification.remove(), 3000);
 }
 
-// WhatsApp
-function openWhatsApp() {
-    window.open('https://wa.me/254704817504', '_blank');
-}
-
 // Legal modals
-function showPrivacyPolicy() {
-    showModalContent('<h2>Privacy Policy</h2><p>Your privacy is important to us...</p>');
-}
+function showPrivacyPolicy() { showModalContent('<h2>Privacy Policy</h2><p>Your privacy is important to us. We collect only necessary information to provide our services.</p>'); }
+function showDisclaimer() { showModalContent('<h2>Disclaimer</h2><p>Information provided is for educational purposes only.</p>'); }
+function showTerms() { showModalContent('<h2>Terms & Conditions</h2><p>By using this site you agree to our terms.</p>'); }
+function showModalContent(content) { const modal = document.getElementById('modal'); const body = document.getElementById('modal-body'); if (modal && body) { body.innerHTML = content; modal.style.display = 'block'; } }
 
-function showDisclaimer() {
-    showModalContent('<h2>Disclaimer</h2><p>Information for educational purposes only...</p>');
-}
+// WhatsApp
+function openWhatsApp() { window.open('https://wa.me/254704817504', '_blank'); }
 
-function showTerms() {
-    showModalContent('<h2>Terms & Conditions</h2><p>By using this site you agree to our terms...</p>');
-}
-
-function showModalContent(content) {
-    const modal = document.getElementById('modal');
-    const body = document.getElementById('modal-body');
-    if (modal && body) {
-        body.innerHTML = content;
-        modal.style.display = 'block';
-    }
-}
+// Mobile menu
+function toggleMobileMenu() { document.getElementById('navLinks').classList.toggle('active'); }
 
 // Escape HTML
 function escapeHtml(text) {

@@ -1,0 +1,13 @@
+{
+  "name": "grow-with-awino",
+  "version": "1.0.0",
+  "description": "Digital Skills & Freelancing Hub",
+  "type": "module",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
+    "node-fetch": "^2.7.0"
+  },
+  "devDependencies": {
+    "vercel": "^32.0.0"
+  }
+}

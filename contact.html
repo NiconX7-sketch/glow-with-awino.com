@@ -8,118 +8,79 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        .contact-page {
+        .contact-container {
             max-width: 1200px;
             margin: 3rem auto;
-            padding: 0 2rem;
-        }
-        .contact-grid {
+            padding: 0 20px;
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 3rem;
-            background: #1e293b;
-            border-radius: 32px;
-            overflow: hidden;
-            border: 1px solid #334155;
         }
         .contact-info {
-            background: linear-gradient(135deg, #0f172a, #1e293b);
-            padding: 3rem;
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid #e5e0db;
         }
         .contact-info h1 {
-            font-size: 2rem;
+            font-size: 1.8rem;
             margin-bottom: 1rem;
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #C66B3D;
         }
-        .contact-info p {
-            color: #94a3b8;
-            margin-bottom: 2rem;
-            line-height: 1.6;
-        }
-        .info-item {
+        .contact-item {
             display: flex;
             align-items: center;
             gap: 1rem;
-            margin-bottom: 1.5rem;
+            margin: 1.5rem 0;
             padding: 1rem;
-            background: rgba(255,255,255,0.05);
-            border-radius: 16px;
+            background: #fdf8f5;
+            border-radius: 12px;
         }
-        .info-item i {
+        .contact-item i {
             font-size: 1.5rem;
-            color: #3b82f6;
+            color: #C66B3D;
             width: 40px;
-        }
-        .info-item strong {
-            color: #f1f5f9;
-        }
-        .info-item p {
-            margin: 0;
-            color: #94a3b8;
-        }
-        .social-icons {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-        .social-icons a {
-            width: 40px;
-            height: 40px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #94a3b8;
-            transition: all 0.3s;
-        }
-        .social-icons a:hover {
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-            color: white;
-            transform: translateY(-3px);
         }
         .contact-form {
-            padding: 3rem;
-            background: #1e293b;
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid #e5e0db;
         }
         .contact-form h2 {
             font-size: 1.5rem;
-            color: #f1f5f9;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
+            color: #2C2B28;
         }
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
         }
         .form-group label {
             display: block;
             margin-bottom: 0.5rem;
-            color: #94a3b8;
             font-weight: 500;
+            color: #2C2B28;
         }
         .form-group input, .form-group textarea {
             width: 100%;
-            padding: 0.9rem 1rem;
-            background: #0f172a;
-            border: 1px solid #334155;
+            padding: 0.8rem 1rem;
+            border: 1px solid #e5e0db;
             border-radius: 12px;
-            color: #f1f5f9;
-            font-size: 1rem;
-            transition: all 0.3s;
+            font-size: 0.9rem;
             font-family: 'Inter', sans-serif;
         }
         .form-group input:focus, .form-group textarea:focus {
             outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+            border-color: #C66B3D;
         }
         .btn-submit {
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            background: #C66B3D;
             color: white;
             border: none;
-            padding: 1rem 2rem;
-            border-radius: 50px;
+            padding: 0.9rem 2rem;
+            border-radius: 40px;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
@@ -127,8 +88,8 @@
             transition: all 0.3s;
         }
         .btn-submit:hover {
+            background: #A8552E;
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(59,130,246,0.3);
         }
         .message {
             margin-top: 1rem;
@@ -137,31 +98,45 @@
             display: none;
         }
         .message.success {
-            background: rgba(34,197,94,0.2);
-            color: #22c55e;
-            border: 1px solid #22c55e;
+            background: #dcfce7;
+            color: #166534;
             display: block;
         }
         .message.error {
-            background: rgba(239,68,68,0.2);
-            color: #ef4444;
-            border: 1px solid #ef4444;
+            background: #fee2e2;
+            color: #991b1b;
             display: block;
         }
         @media (max-width: 768px) {
-            .contact-grid { grid-template-columns: 1fr; }
-            .contact-page { margin: 1rem; padding: 0; }
+            .contact-container { grid-template-columns: 1fr; }
+            .mobile-menu { display: block; }
+            .nav-links { display: none; }
+        }
+        .float-whatsapp {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #25D366;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: white;
+            cursor: pointer;
+            z-index: 1000;
         }
     </style>
 </head>
 <body>
+    <div class="float-whatsapp" onclick="window.open('https://wa.me/254704817504','_blank')"><i class="fab fa-whatsapp"></i></div>
+
     <header>
         <nav class="navbar">
-            <div class="logo-container">
-                <div class="logo">GWA</div>
-                <span class="site-title">Grow With Awino</span>
-            </div>
-            <ul class="nav-links">
+            <div class="logo-container"><img id="site-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='45' height='45' viewBox='0 0 45 45'%3E%3Crect width='45' height='45' fill='%23C66B3D'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='20'%3EGWA%3C/text%3E%3C/svg%3E" class="logo"><span class="site-title">Grow With Awino</span></div>
+            <ul class="nav-links" id="navLinks">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="blog.html">Blog</a></li>
                 <li><a href="shop.html">Ebooks</a></li>
@@ -169,84 +144,46 @@
                 <li><a href="contact.html" class="active">Contact</a></li>
                 <li><a href="admin.html" class="admin-link">Admin</a></li>
             </ul>
+            <div class="mobile-menu" onclick="document.getElementById('navLinks').classList.toggle('active')"><i class="fas fa-bars"></i></div>
         </nav>
     </header>
 
-    <div class="contact-page">
-        <div class="contact-grid">
+    <main>
+        <div class="contact-container">
             <div class="contact-info">
                 <h1>Get in Touch</h1>
                 <p>Have questions, suggestions, or partnership opportunities? We'd love to hear from you!</p>
-                <div class="info-item">
-                    <i class="fas fa-envelope"></i>
-                    <div><strong>Email</strong><p>awinophoebe44@gmail.com</p></div>
-                </div>
-                <div class="info-item">
-                    <i class="fab fa-whatsapp"></i>
-                    <div><strong>WhatsApp</strong><p>+254 704 817504</p></div>
-                </div>
-                <div class="info-item">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <div><strong>Location</strong><p>Nairobi, Kenya</p></div>
-                </div>
-                <div class="social-icons">
-                    <a href="https://x.com/GrowWithAwino" target="_blank"><i class="fab fa-twitter"></i></a>
-                    <a href="https://youtube.com/@growwithawino" target="_blank"><i class="fab fa-youtube"></i></a>
-                    <a href="https://www.facebook.com/share/1GKJsnVMuM/" target="_blank"><i class="fab fa-facebook"></i></a>
-                    <a href="https://www.tiktok.com/@grow.with.awino" target="_blank"><i class="fab fa-tiktok"></i></a>
+                <div class="contact-item"><i class="fas fa-envelope"></i><div><strong>Email</strong><br>awinophoebe44@gmail.com</div></div>
+                <div class="contact-item"><i class="fab fa-whatsapp"></i><div><strong>WhatsApp</strong><br>+254 704 817504</div></div>
+                <div class="contact-item"><i class="fas fa-map-marker-alt"></i><div><strong>Location</strong><br>Nairobi, Kenya</div></div>
+                <div class="social-links" style="margin-top: 2rem;">
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-tiktok"></i></a>
                 </div>
             </div>
             <div class="contact-form">
                 <h2>Send us a Message</h2>
                 <form id="contactForm">
-                    <div class="form-group">
-                        <label>Your Name</label>
-                        <input type="text" id="contactName" required placeholder="John Doe">
-                    </div>
-                    <div class="form-group">
-                        <label>Email Address</label>
-                        <input type="email" id="contactEmail" required placeholder="john@example.com">
-                    </div>
-                    <div class="form-group">
-                        <label>Subject</label>
-                        <input type="text" id="contactSubject" required placeholder="How can we help?">
-                    </div>
-                    <div class="form-group">
-                        <label>Message</label>
-                        <textarea id="contactMessage" rows="5" required placeholder="Write your message here..."></textarea>
-                    </div>
+                    <div class="form-group"><label>Your Name</label><input type="text" id="contactName" required></div>
+                    <div class="form-group"><label>Email Address</label><input type="email" id="contactEmail" required></div>
+                    <div class="form-group"><label>Subject</label><input type="text" id="contactSubject" required></div>
+                    <div class="form-group"><label>Message</label><textarea id="contactMessage" rows="5" required></textarea></div>
                     <button type="submit" class="btn-submit"><i class="fas fa-paper-plane"></i> Send Message</button>
                     <div id="formMessage" class="message"></div>
                 </form>
             </div>
         </div>
-    </div>
+    </main>
 
     <footer>
         <div class="footer-content">
-            <div class="footer-section">
-                <h3>Grow With Awino</h3>
-                <p>Empowering beginners to learn digital skills and earn online.</p>
-            </div>
-            <div class="footer-section">
-                <h3>Quick Links</h3>
-                <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="blog.html">Blog</a></li>
-                    <li><a href="shop.html">Ebooks</a></li>
-                    <li><a href="resources.html">Resources</a></li>
-                    <li><a href="contact.html">Contact</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>Contact</h3>
-                <p><i class="fas fa-envelope"></i> awinophoebe44@gmail.com</p>
-                <button onclick="window.open('https://wa.me/254704817504','_blank')" class="whatsapp-btn"><i class="fab fa-whatsapp"></i> WhatsApp</button>
-            </div>
+            <div class="footer-section"><h3>Grow With Awino</h3><p>Empowering beginners to learn digital skills and earn online.</p></div>
+            <div class="footer-section"><h3>Quick Links</h3><ul><li><a href="index.html">Home</a></li><li><a href="blog.html">Blog</a></li><li><a href="shop.html">Ebooks</a></li><li><a href="resources.html">Resources</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+            <div class="footer-section"><h3>Contact</h3><p><i class="fas fa-envelope"></i> awinophoebe44@gmail.com</p></div>
         </div>
-        <div class="footer-bottom">
-            <p>&copy; 2026 Grow With Awino. All rights reserved.</p>
-        </div>
+        <div class="footer-bottom"><p>&copy; 2026 Grow With Awino. All rights reserved.</p></div>
     </footer>
 
     <script>
@@ -262,23 +199,47 @@
             const subject = document.getElementById('contactSubject').value;
             const message = document.getElementById('contactMessage').value;
             const messageDiv = document.getElementById('formMessage');
-
-            const { error } = await supabase.from('contact_messages').insert([{ name, email, subject, message }]);
             
-            if (error) {
-                messageDiv.textContent = '❌ Failed to send message. Please try again.';
-                messageDiv.className = 'message error';
-            } else {
-                messageDiv.textContent = '✅ Message sent successfully! We\'ll get back to you soon.';
-                messageDiv.className = 'message success';
-                document.getElementById('contactForm').reset();
+            // Show loading
+            messageDiv.textContent = 'Sending message...';
+            messageDiv.style.background = '#e2e8f0';
+            messageDiv.style.color = '#475569';
+            messageDiv.style.display = 'block';
+            
+            try {
+                const { data, error } = await supabase
+                    .from('contact_messages')
+                    .insert([{ name, email, subject, message }]);
+                
+                if (error) {
+                    console.error('Supabase error:', error);
+                    messageDiv.textContent = '❌ Failed to send message. Please try again.';
+                    messageDiv.style.background = '#fee2e2';
+                    messageDiv.style.color = '#991b1b';
+                } else {
+                    messageDiv.textContent = '✅ Message sent successfully! We\'ll get back to you soon.';
+                    messageDiv.style.background = '#dcfce7';
+                    messageDiv.style.color = '#166534';
+                    document.getElementById('contactForm').reset();
+                }
+            } catch (err) {
+                console.error('Error:', err);
+                messageDiv.textContent = '❌ An error occurred. Please try again.';
+                messageDiv.style.background = '#fee2e2';
+                messageDiv.style.color = '#991b1b';
             }
             
+            // Hide message after 5 seconds
             setTimeout(() => {
                 messageDiv.style.display = 'none';
-                messageDiv.className = 'message';
             }, 5000);
         });
+        
+        async function loadSiteLogo() {
+            const { data } = await supabase.from('site_settings').select('logo_url').single();
+            if (data?.logo_url) document.getElementById('site-logo').src = data.logo_url;
+        }
+        loadSiteLogo();
     </script>
 </body>
 </html>

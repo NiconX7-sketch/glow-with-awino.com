@@ -10,29 +10,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #080808;
-            color: #ffffff;
-            line-height: 1.5;
-            min-height: 100vh;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #0a0a0f; color: #ffffff; line-height: 1.5; }
+        
         /* Scrollbar */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #141414; }
-        ::-webkit-scrollbar-thumb { background: #00FFC2; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #00CC9B; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #16161f; }
+        ::-webkit-scrollbar-thumb { background: #00e5ff; border-radius: 4px; }
 
         /* Navbar */
         .admin-navbar {
-            background: rgba(8, 8, 8, 0.95);
+            background: rgba(10, 10, 15, 0.95);
             backdrop-filter: blur(10px);
             padding: 0.875rem 2rem;
             display: flex;
@@ -41,25 +29,25 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            border-bottom: 1px solid rgba(0, 255, 194, 0.2);
+            border-bottom: 1px solid rgba(0, 229, 255, 0.2);
         }
         .navbar-brand { display: flex; align-items: center; gap: 0.75rem; }
         .logo-icon {
             width: 38px;
             height: 38px;
-            background: linear-gradient(135deg, #00FFC2, #00CC9B);
+            background: linear-gradient(135deg, #00e5ff, #ff00e5);
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #080808;
+            color: #0a0a0f;
             font-weight: 800;
             font-size: 1rem;
         }
         .brand-text {
             font-size: 1.25rem;
             font-weight: 700;
-            background: linear-gradient(135deg, #00FFC2, #00CC9B);
+            background: linear-gradient(135deg, #00e5ff, #ff00e5);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -76,19 +64,19 @@
             padding: 0.5rem 0.75rem;
             border-radius: 8px;
         }
-        .nav-link:hover { color: #00FFC2; background: rgba(0, 255, 194, 0.1); }
+        .nav-link:hover { color: #00e5ff; background: rgba(0, 229, 255, 0.1); }
         .logout-btn { color: #ff4444; }
         .logout-btn:hover { background: rgba(255, 68, 68, 0.1); color: #ff4444; }
 
-        /* Admin Layout */
+        /* Layout */
         .admin-wrapper { display: flex; min-height: calc(100vh - 69px); }
 
         /* Sidebar */
         .admin-sidebar {
             width: 280px;
-            background: rgba(8, 8, 8, 0.95);
+            background: rgba(10, 10, 15, 0.95);
             backdrop-filter: blur(10px);
-            border-right: 1px solid rgba(0, 255, 194, 0.1);
+            border-right: 1px solid rgba(0, 229, 255, 0.1);
             padding: 1.5rem 0;
             position: sticky;
             top: 69px;
@@ -120,25 +108,20 @@
             transition: all 0.2s;
         }
         .sidebar-link i { width: 1.25rem; font-size: 1rem; }
-        .sidebar-link:hover { background: rgba(0, 255, 194, 0.1); color: #00FFC2; }
-        .sidebar-link.active { background: linear-gradient(135deg, #00FFC2, #00CC9B); color: #080808; }
+        .sidebar-link:hover { background: rgba(0, 229, 255, 0.1); color: #00e5ff; }
+        .sidebar-link.active { background: linear-gradient(135deg, #00e5ff, #ff00e5); color: #0a0a0f; }
 
         /* Main Content */
         .admin-content {
             flex: 1;
             padding: 2rem;
             overflow-y: auto;
-            background: rgba(8, 8, 8, 0.8);
+            background: rgba(10, 10, 15, 0.8);
         }
 
         /* Page Header */
         .page-header { margin-bottom: 2rem; }
-        .page-title {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: #ffffff;
-            letter-spacing: -0.02em;
-        }
+        .page-title { font-size: 1.75rem; font-weight: 700; color: #ffffff; }
         .page-subtitle { color: #888888; font-size: 0.875rem; margin-top: 0.25rem; }
 
         /* Stats Cards */
@@ -149,40 +132,40 @@
             margin-bottom: 2rem;
         }
         .stat-card {
-            background: rgba(20, 20, 20, 0.9);
+            background: rgba(22, 22, 31, 0.9);
             backdrop-filter: blur(10px);
             border-radius: 20px;
             padding: 1.25rem;
-            border: 1px solid rgba(0, 255, 194, 0.1);
+            border: 1px solid rgba(0, 229, 255, 0.1);
             transition: all 0.2s;
         }
-        .stat-card:hover { transform: translateY(-2px); border-color: #00FFC2; }
+        .stat-card:hover { transform: translateY(-2px); border-color: #00e5ff; }
         .stat-icon {
             width: 48px;
             height: 48px;
-            background: rgba(0, 255, 194, 0.1);
+            background: rgba(0, 229, 255, 0.1);
             border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-bottom: 0.75rem;
         }
-        .stat-icon i { font-size: 1.5rem; color: #00FFC2; }
+        .stat-icon i { font-size: 1.5rem; color: #00e5ff; }
         .stat-value { font-size: 1.75rem; font-weight: 700; color: #ffffff; }
         .stat-label { color: #888888; font-size: 0.7rem; font-weight: 500; margin-top: 0.25rem; }
 
         /* Section Cards */
         .section-card {
-            background: rgba(20, 20, 20, 0.9);
+            background: rgba(22, 22, 31, 0.9);
             backdrop-filter: blur(10px);
             border-radius: 20px;
-            border: 1px solid rgba(0, 255, 194, 0.1);
+            border: 1px solid rgba(0, 229, 255, 0.1);
             overflow: hidden;
             margin-bottom: 1.5rem;
         }
         .card-header {
             padding: 1rem 1.5rem;
-            border-bottom: 1px solid rgba(0, 255, 194, 0.1);
+            border-bottom: 1px solid rgba(0, 229, 255, 0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -190,15 +173,8 @@
             gap: 1rem;
             background: rgba(8, 8, 8, 0.5);
         }
-        .card-title {
-            font-size: 1rem;
-            font-weight: 600;
-            color: #ffffff;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .card-title i { color: #00FFC2; }
+        .card-title { font-size: 1rem; font-weight: 600; color: #ffffff; display: flex; align-items: center; gap: 0.5rem; }
+        .card-title i { color: #00e5ff; }
         .card-body { padding: 1rem 1.5rem; }
 
         /* Forms */
@@ -215,18 +191,18 @@
         .form-control, .form-select, .form-textarea {
             width: 100%;
             padding: 0.7rem 1rem;
-            border: 1px solid rgba(0, 255, 194, 0.2);
+            border: 1px solid rgba(0, 229, 255, 0.2);
             border-radius: 12px;
             font-size: 0.875rem;
             font-family: 'Inter', sans-serif;
             transition: all 0.2s;
-            background: #0f0f0f;
+            background: #0f0f15;
             color: #ffffff;
         }
         .form-control:focus, .form-select:focus, .form-textarea:focus {
             outline: none;
-            border-color: #00FFC2;
-            box-shadow: 0 0 0 3px rgba(0, 255, 194, 0.1);
+            border-color: #00e5ff;
+            box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.1);
         }
 
         /* Buttons */
@@ -243,14 +219,14 @@
             gap: 0.5rem;
             font-family: 'Inter', sans-serif;
         }
-        .btn-primary { background: linear-gradient(135deg, #00FFC2, #00CC9B); color: #080808; }
-        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 0 15px rgba(0, 255, 194, 0.3); }
+        .btn-primary { background: linear-gradient(135deg, #00e5ff, #ff00e5); color: #0a0a0f; }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 0 15px rgba(0, 229, 255, 0.3); }
         .btn-secondary { background: rgba(255, 255, 255, 0.1); color: #ffffff; }
         .btn-secondary:hover { background: rgba(255, 255, 255, 0.2); }
         .btn-danger { background: rgba(255, 68, 68, 0.2); color: #ff4444; border: 1px solid #ff4444; }
-        .btn-danger:hover { background: #ff4444; color: #080808; }
-        .btn-success { background: rgba(0, 255, 194, 0.2); color: #00FFC2; border: 1px solid #00FFC2; }
-        .btn-success:hover { background: #00FFC2; color: #080808; }
+        .btn-danger:hover { background: #ff4444; color: #0a0a0f; }
+        .btn-success { background: rgba(0, 229, 255, 0.2); color: #00e5ff; border: 1px solid #00e5ff; }
+        .btn-success:hover { background: #00e5ff; color: #0a0a0f; }
         .btn-sm { padding: 0.4rem 0.9rem; font-size: 0.75rem; }
 
         /* Admin Items */
@@ -259,7 +235,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 0.75rem 0;
-            border-bottom: 1px solid rgba(0, 255, 194, 0.1);
+            border-bottom: 1px solid rgba(0, 229, 255, 0.1);
         }
         .admin-item:last-child { border-bottom: none; }
         .item-title { font-weight: 600; color: #ffffff; margin-bottom: 0.25rem; font-size: 0.9rem; }
@@ -267,7 +243,7 @@
         .item-actions { display: flex; gap: 0.5rem; }
 
         /* Image Preview */
-        .image-preview { margin-top: 0.75rem; max-width: 100px; border-radius: 12px; overflow: hidden; border: 1px solid rgba(0, 255, 194, 0.2); }
+        .image-preview { margin-top: 0.75rem; max-width: 100px; border-radius: 12px; overflow: hidden; border: 1px solid rgba(0, 229, 255, 0.2); }
         .image-preview img { width: 100%; height: auto; display: block; }
 
         /* Modal */
@@ -278,39 +254,39 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(0, 0, 0, 0.95);
             backdrop-filter: blur(4px);
             z-index: 1000;
             justify-content: center;
             align-items: center;
         }
         .modal-container {
-            background: #141414;
+            background: #16161f;
             border-radius: 24px;
             width: 90%;
             max-width: 700px;
             max-height: 85vh;
             overflow-y: auto;
-            border: 1px solid rgba(0, 255, 194, 0.2);
+            border: 1px solid rgba(0, 229, 255, 0.2);
         }
         .modal-header {
             padding: 1rem 1.5rem;
-            border-bottom: 1px solid rgba(0, 255, 194, 0.1);
+            border-bottom: 1px solid rgba(0, 229, 255, 0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: #0f0f0f;
+            background: #0f0f15;
         }
         .modal-title { font-size: 1.1rem; font-weight: 700; color: #ffffff; }
         .modal-close { cursor: pointer; font-size: 1.25rem; color: #888888; transition: color 0.2s; }
-        .modal-close:hover { color: #00FFC2; }
+        .modal-close:hover { color: #00e5ff; }
         .modal-body { padding: 1.5rem; }
-        .modal-footer { padding: 1rem 1.5rem; border-top: 1px solid rgba(0, 255, 194, 0.1); display: flex; justify-content: flex-end; gap: 1rem; }
+        .modal-footer { padding: 1rem 1.5rem; border-top: 1px solid rgba(0, 229, 255, 0.1); display: flex; justify-content: flex-end; gap: 1rem; }
 
         /* Rich Text Editor */
         #editor-container { height: 350px; margin-bottom: 1rem; border-radius: 12px; overflow: hidden; }
-        .ql-toolbar { background: #0f0f0f; border-color: rgba(0, 255, 194, 0.2); border-radius: 12px 12px 0 0; }
-        .ql-container { background: #0f0f0f; border-color: rgba(0, 255, 194, 0.2); border-radius: 0 0 12px 12px; color: #ffffff; }
+        .ql-toolbar { background: #0f0f15; border-color: rgba(0, 229, 255, 0.2); border-radius: 12px 12px 0 0; }
+        .ql-container { background: #0f0f15; border-color: rgba(0, 229, 255, 0.2); border-radius: 0 0 12px 12px; color: #ffffff; }
         .ql-editor { color: #ffffff; }
 
         /* Category Row */
@@ -320,7 +296,7 @@
         /* Tab Content */
         .tab-pane { display: none; }
         .tab-pane.active { display: block; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         /* Notification */
         .notification {
@@ -329,13 +305,13 @@
             right: 24px;
             padding: 0.875rem 1.25rem;
             border-radius: 12px;
-            color: #080808;
+            color: #0a0a0f;
             font-weight: 600;
             font-size: 0.8rem;
             z-index: 1100;
             animation: slideInRight 0.3s ease;
-            background: linear-gradient(135deg, #00FFC2, #00CC9B);
-            box-shadow: 0 0 20px rgba(0, 255, 194, 0.3);
+            background: linear-gradient(135deg, #00e5ff, #ff00e5);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
         }
         @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
@@ -347,19 +323,11 @@
             font-size: 0.7rem;
             font-weight: 600;
         }
-        .badge-pending { background: rgba(255, 184, 0, 0.2); color: #FFB800; border: 1px solid #FFB800; }
-        .badge-completed { background: rgba(0, 255, 194, 0.2); color: #00FFC2; border: 1px solid #00FFC2; }
+        .badge-pending { background: rgba(255, 184, 0, 0.2); color: #ffb800; border: 1px solid #ffb800; }
+        .badge-completed { background: rgba(0, 229, 255, 0.2); color: #00e5ff; border: 1px solid #00e5ff; }
 
         /* Message Preview */
-        .message-preview {
-            max-width: 300px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            color: #888888;
-            font-size: 0.8rem;
-            margin-top: 0.25rem;
-        }
+        .message-preview { max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #888888; font-size: 0.8rem; margin-top: 0.25rem; }
 
         /* Responsive */
         @media (max-width: 768px) {
@@ -370,26 +338,18 @@
             .sidebar-link { padding: 0.5rem 1rem; }
             .admin-content { padding: 1rem; }
             .stats-grid { grid-template-columns: 1fr; }
-            .card-header { flex-direction: column; align-items: flex-start; }
         }
     </style>
 </head>
 <body>
     <nav class="admin-navbar">
-        <div class="navbar-brand">
-            <div class="logo-icon">GWA</div>
-            <span class="brand-text">Admin Panel</span>
-        </div>
-        <div class="nav-actions">
-            <a href="index.html" target="_blank" class="nav-link"><i class="fas fa-external-link-alt"></i> View Site</a>
-            <a href="#" id="logout-btn" class="nav-link logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
-        </div>
+        <div class="navbar-brand"><div class="logo-icon">GWA</div><span class="brand-text">Admin Panel</span></div>
+        <div class="nav-actions"><a href="index.html" target="_blank" class="nav-link"><i class="fas fa-external-link-alt"></i> View Site</a><a href="#" id="logout-btn" class="nav-link logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a></div>
     </nav>
 
     <div class="admin-wrapper">
         <aside class="admin-sidebar">
-            <div class="sidebar-section">
-                <div class="sidebar-section-title">MAIN</div>
+            <div class="sidebar-section"><div class="sidebar-section-title">MAIN</div>
                 <ul class="sidebar-menu">
                     <li class="sidebar-item"><div class="sidebar-link" data-tab="dashboard"><i class="fas fa-chart-line"></i> Dashboard</div></li>
                     <li class="sidebar-item"><div class="sidebar-link" data-tab="blogs"><i class="fas fa-newspaper"></i> Blog Posts</div></li>
@@ -397,22 +357,19 @@
                     <li class="sidebar-item"><div class="sidebar-link" data-tab="categories"><i class="fas fa-tags"></i> Categories</div></li>
                 </ul>
             </div>
-            <div class="sidebar-section">
-                <div class="sidebar-section-title">SALES & CUSTOMERS</div>
+            <div class="sidebar-section"><div class="sidebar-section-title">SALES & CUSTOMERS</div>
                 <ul class="sidebar-menu">
                     <li class="sidebar-item"><div class="sidebar-link" data-tab="orders"><i class="fas fa-shopping-cart"></i> Orders</div></li>
                     <li class="sidebar-item"><div class="sidebar-link" data-tab="messages"><i class="fas fa-envelope"></i> Contact Messages</div></li>
                 </ul>
             </div>
-            <div class="sidebar-section">
-                <div class="sidebar-section-title">BRANDING</div>
+            <div class="sidebar-section"><div class="sidebar-section-title">BRANDING</div>
                 <ul class="sidebar-menu">
                     <li class="sidebar-item"><div class="sidebar-link" data-tab="logo"><i class="fas fa-image"></i> Logo</div></li>
                     <li class="sidebar-item"><div class="sidebar-link" data-tab="profile"><i class="fas fa-user-circle"></i> Profile Picture</div></li>
                 </ul>
             </div>
-            <div class="sidebar-section">
-                <div class="sidebar-section-title">SETTINGS</div>
+            <div class="sidebar-section"><div class="sidebar-section-title">SETTINGS</div>
                 <ul class="sidebar-menu">
                     <li class="sidebar-item"><div class="sidebar-link" data-tab="payments"><i class="fas fa-credit-card"></i> Payments</div></li>
                     <li class="sidebar-item"><div class="sidebar-link" data-tab="affiliates"><i class="fas fa-link"></i> Affiliates</div></li>
@@ -422,307 +379,46 @@
         </aside>
 
         <main class="admin-content">
-            <!-- Dashboard Tab -->
             <div id="dashboard" class="tab-pane active">
-                <div class="page-header">
-                    <h1 class="page-title">Dashboard</h1>
-                    <p class="page-subtitle">Welcome back! Here's what's happening with your website.</p>
-                </div>
+                <div class="page-header"><h1 class="page-title">Dashboard</h1><p class="page-subtitle">Welcome back! Here's what's happening with your website.</p></div>
                 <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fas fa-users"></i></div>
-                        <div class="stat-value" id="total-visitors">0</div>
-                        <div class="stat-label">Total Visitors</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fas fa-calendar-day"></i></div>
-                        <div class="stat-value" id="today-visitors">0</div>
-                        <div class="stat-label">Visitors Today</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fas fa-shopping-cart"></i></div>
-                        <div class="stat-value" id="total-orders">0</div>
-                        <div class="stat-label">Total Orders</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fas fa-envelope"></i></div>
-                        <div class="stat-value" id="total-messages">0</div>
-                        <div class="stat-label">Contact Messages</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fas fa-newspaper"></i></div>
-                        <div class="stat-value" id="total-blogs">0</div>
-                        <div class="stat-label">Blog Posts</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fas fa-book"></i></div>
-                        <div class="stat-value" id="total-products">0</div>
-                        <div class="stat-label">Ebooks</div>
-                    </div>
+                    <div class="stat-card"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-value" id="total-visitors">0</div><div class="stat-label">Total Visitors</div></div>
+                    <div class="stat-card"><div class="stat-icon"><i class="fas fa-calendar-day"></i></div><div class="stat-value" id="today-visitors">0</div><div class="stat-label">Visitors Today</div></div>
+                    <div class="stat-card"><div class="stat-icon"><i class="fas fa-shopping-cart"></i></div><div class="stat-value" id="total-orders">0</div><div class="stat-label">Total Orders</div></div>
+                    <div class="stat-card"><div class="stat-icon"><i class="fas fa-envelope"></i></div><div class="stat-value" id="total-messages">0</div><div class="stat-label">Contact Messages</div></div>
+                    <div class="stat-card"><div class="stat-icon"><i class="fas fa-newspaper"></i></div><div class="stat-value" id="total-blogs">0</div><div class="stat-label">Blog Posts</div></div>
+                    <div class="stat-card"><div class="stat-icon"><i class="fas fa-book"></i></div><div class="stat-value" id="total-products">0</div><div class="stat-label">Ebooks</div></div>
                 </div>
-
-                <div class="section-card">
-                    <div class="card-header">
-                        <div class="card-title"><i class="fas fa-envelope"></i> Recent Newsletter Subscribers</div>
-                        <button class="btn btn-success btn-sm" onclick="loadSubscribers()"><i class="fas fa-sync-alt"></i> Refresh</button>
-                    </div>
-                    <div class="card-body">
-                        <div id="subscribers-list">
-                            <div class="admin-item"><div class="item-title">Loading subscribers...</div></div>
-                        </div>
-                    </div>
-                </div>
+                <div class="section-card"><div class="card-header"><div class="card-title"><i class="fas fa-envelope"></i> Recent Newsletter Subscribers</div><button class="btn btn-success btn-sm" onclick="loadSubscribers()"><i class="fas fa-sync-alt"></i> Refresh</button></div><div class="card-body"><div id="subscribers-list"><div class="admin-item"><div class="item-title">Loading subscribers...</div></div></div></div></div>
             </div>
 
-            <!-- Blogs Tab -->
-            <div id="blogs" class="tab-pane">
-                <div class="section-card">
-                    <div class="card-header">
-                        <div class="card-title"><i class="fas fa-newspaper"></i> Blog Posts</div>
-                        <button class="btn btn-primary btn-sm" onclick="openBlogModal()"><i class="fas fa-plus"></i> Add New Post</button>
-                    </div>
-                    <div class="card-body">
-                        <div id="blogs-list"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Products Tab -->
-            <div id="products" class="tab-pane">
-                <div class="section-card">
-                    <div class="card-header">
-                        <div class="card-title"><i class="fas fa-book"></i> Ebooks</div>
-                        <button class="btn btn-primary btn-sm" onclick="openProductModal()"><i class="fas fa-plus"></i> Add New Ebook</button>
-                    </div>
-                    <div class="card-body">
-                        <div id="products-list"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Categories Tab -->
-            <div id="categories" class="tab-pane">
-                <div class="section-card">
-                    <div class="card-header">
-                        <div class="card-title"><i class="fas fa-tags"></i> Categories</div>
-                        <button class="btn btn-success btn-sm" onclick="refreshCategories()"><i class="fas fa-sync-alt"></i> Refresh</button>
-                    </div>
-                    <div class="card-body">
-                        <div class="category-row">
-                            <input type="text" id="new-category-name" class="form-control" placeholder="Enter new category name">
-                            <button class="btn btn-primary" onclick="addCategory()"><i class="fas fa-plus"></i> Add</button>
-                        </div>
-                        <div id="categories-list"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Orders Tab -->
-            <div id="orders" class="tab-pane">
-                <div class="section-card">
-                    <div class="card-header">
-                        <div class="card-title"><i class="fas fa-shopping-cart"></i> Customer Orders</div>
-                        <button class="btn btn-success btn-sm" onclick="loadOrders()"><i class="fas fa-sync-alt"></i> Refresh</button>
-                    </div>
-                    <div class="card-body">
-                        <div id="orders-list"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Messages Tab -->
-            <div id="messages" class="tab-pane">
-                <div class="section-card">
-                    <div class="card-header">
-                        <div class="card-title"><i class="fas fa-envelope"></i> Contact Messages</div>
-                        <button class="btn btn-success btn-sm" onclick="loadMessages()"><i class="fas fa-sync-alt"></i> Refresh</button>
-                    </div>
-                    <div class="card-body">
-                        <div id="messages-list"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Logo Tab -->
-            <div id="logo" class="tab-pane">
-                <div class="section-card">
-                    <div class="card-header">
-                        <div class="card-title"><i class="fas fa-image"></i> Site Logo</div>
-                    </div>
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label class="form-label"><i class="fas fa-upload"></i> Upload Logo</label>
-                            <input type="file" id="logo-upload" class="form-control" accept="image/*">
-                            <button class="btn btn-primary" onclick="uploadLogo()" style="margin-top: 1rem;"><i class="fas fa-cloud-upload-alt"></i> Upload Logo</button>
-                            <div id="logo-preview" class="image-preview" style="margin-top: 1rem;"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Profile Tab -->
-            <div id="profile" class="tab-pane">
-                <div class="section-card">
-                    <div class="card-header">
-                        <div class="card-title"><i class="fas fa-user-circle"></i> Profile Picture</div>
-                    </div>
-                    <div class="card-body">
-                        <p class="page-subtitle" style="margin-bottom: 1rem;">This photo appears on the About section of your homepage.</p>
-                        <div class="form-group">
-                            <label class="form-label"><i class="fas fa-upload"></i> Upload Profile Picture</label>
-                            <input type="file" id="profile-upload" class="form-control" accept="image/*">
-                            <button class="btn btn-primary" onclick="uploadProfile()" style="margin-top: 1rem;"><i class="fas fa-cloud-upload-alt"></i> Upload Picture</button>
-                            <div id="profile-preview" class="image-preview" style="margin-top: 1rem;"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Payments Tab -->
+            <div id="blogs" class="tab-pane"><div class="section-card"><div class="card-header"><div class="card-title"><i class="fas fa-newspaper"></i> Blog Posts</div><button class="btn btn-primary btn-sm" onclick="openBlogModal()"><i class="fas fa-plus"></i> Add New Post</button></div><div class="card-body"><div id="blogs-list"></div></div></div></div>
+            <div id="products" class="tab-pane"><div class="section-card"><div class="card-header"><div class="card-title"><i class="fas fa-book"></i> Ebooks</div><button class="btn btn-primary btn-sm" onclick="openProductModal()"><i class="fas fa-plus"></i> Add New Ebook</button></div><div class="card-body"><div id="products-list"></div></div></div></div>
+            <div id="categories" class="tab-pane"><div class="section-card"><div class="card-header"><div class="card-title"><i class="fas fa-tags"></i> Categories</div><button class="btn btn-success btn-sm" onclick="refreshCategories()"><i class="fas fa-sync-alt"></i> Refresh</button></div><div class="card-body"><div class="category-row"><input type="text" id="new-category-name" class="form-control" placeholder="Enter new category name"><button class="btn btn-primary" onclick="addCategory()"><i class="fas fa-plus"></i> Add</button></div><div id="categories-list"></div></div></div></div>
+            <div id="orders" class="tab-pane"><div class="section-card"><div class="card-header"><div class="card-title"><i class="fas fa-shopping-cart"></i> Customer Orders</div><button class="btn btn-success btn-sm" onclick="loadOrders()"><i class="fas fa-sync-alt"></i> Refresh</button></div><div class="card-body"><div id="orders-list"></div></div></div></div>
+            <div id="messages" class="tab-pane"><div class="section-card"><div class="card-header"><div class="card-title"><i class="fas fa-envelope"></i> Contact Messages</div><button class="btn btn-success btn-sm" onclick="loadMessages()"><i class="fas fa-sync-alt"></i> Refresh</button></div><div class="card-body"><div id="messages-list"></div></div></div></div>
+            <div id="logo" class="tab-pane"><div class="section-card"><div class="card-header"><div class="card-title"><i class="fas fa-image"></i> Site Logo</div></div><div class="card-body"><div class="form-group"><label class="form-label"><i class="fas fa-upload"></i> Upload Logo</label><input type="file" id="logo-upload" class="form-control" accept="image/*"><button class="btn btn-primary" onclick="uploadLogo()" style="margin-top: 1rem;"><i class="fas fa-cloud-upload-alt"></i> Upload Logo</button><div id="logo-preview" class="image-preview" style="margin-top: 1rem;"></div></div></div></div></div>
+            <div id="profile" class="tab-pane"><div class="section-card"><div class="card-header"><div class="card-title"><i class="fas fa-user-circle"></i> Profile Picture</div></div><div class="card-body"><p class="page-subtitle" style="margin-bottom: 1rem;">This photo appears on the About section of your homepage.</p><div class="form-group"><label class="form-label"><i class="fas fa-upload"></i> Upload Profile Picture</label><input type="file" id="profile-upload" class="form-control" accept="image/*"><button class="btn btn-primary" onclick="uploadProfile()" style="margin-top: 1rem;"><i class="fas fa-cloud-upload-alt"></i> Upload Picture</button><div id="profile-preview" class="image-preview" style="margin-top: 1rem;"></div></div></div></div></div>
             <div id="payments" class="tab-pane">
-                <div class="section-card">
-                    <div class="card-header">
-                        <div class="card-title"><i class="fab fa-paypal"></i> PayPal</div>
-                    </div>
-                    <div class="card-body">
-                        <div class="form-group"><label class="form-label">Client ID</label><input type="text" id="paypal-client-id" class="form-control"></div>
-                        <div class="form-group"><label class="form-label">Secret Key</label><input type="password" id="paypal-secret" class="form-control"></div>
-                        <div class="form-group"><label class="form-label">Mode</label><select id="paypal-mode" class="form-select"><option value="sandbox">Sandbox (Test)</option><option value="live">Live (Production)</option></select></div>
-                    </div>
-                </div>
-                <div class="section-card">
-                    <div class="card-header">
-                        <div class="card-title"><i class="fas fa-credit-card"></i> Paystack</div>
-                    </div>
-                    <div class="card-body">
-                        <div class="form-group"><label class="form-label">Public Key</label><input type="text" id="paystack-public-key" class="form-control"></div>
-                        <div class="form-group"><label class="form-label">Secret Key</label><input type="password" id="paystack-secret-key" class="form-control"></div>
-                    </div>
-                </div>
-                <div class="section-card">
-                    <div class="card-header">
-                        <div class="card-title"><i class="fas fa-mobile-alt"></i> M-Pesa</div>
-                    </div>
-                    <div class="card-body">
-                        <div class="form-group"><label class="form-label">Consumer Key</label><input type="text" id="mpesa-consumer-key" class="form-control"></div>
-                        <div class="form-group"><label class="form-label">Consumer Secret</label><input type="password" id="mpesa-consumer-secret" class="form-control"></div>
-                        <div class="form-group"><label class="form-label">Shortcode</label><input type="text" id="mpesa-shortcode" class="form-control" placeholder="e.g., 174379"></div>
-                        <div class="form-group"><label class="form-label">Passkey</label><input type="password" id="mpesa-passkey" class="form-control"></div>
-                        <div class="form-group"><label class="form-label">Environment</label><select id="mpesa-environment" class="form-select"><option value="sandbox">Sandbox</option><option value="production">Production</option></select></div>
-                    </div>
-                </div>
+                <div class="section-card"><div class="card-header"><div class="card-title"><i class="fab fa-paypal"></i> PayPal</div></div><div class="card-body"><div class="form-group"><label class="form-label">Client ID</label><input type="text" id="paypal-client-id" class="form-control"></div><div class="form-group"><label class="form-label">Secret Key</label><input type="password" id="paypal-secret" class="form-control"></div><div class="form-group"><label class="form-label">Mode</label><select id="paypal-mode" class="form-select"><option value="sandbox">Sandbox (Test)</option><option value="live">Live (Production)</option></select></div></div></div>
+                <div class="section-card"><div class="card-header"><div class="card-title"><i class="fas fa-credit-card"></i> Paystack</div></div><div class="card-body"><div class="form-group"><label class="form-label">Public Key</label><input type="text" id="paystack-public-key" class="form-control"></div><div class="form-group"><label class="form-label">Secret Key</label><input type="password" id="paystack-secret-key" class="form-control"></div></div></div>
+                <div class="section-card"><div class="card-header"><div class="card-title"><i class="fas fa-mobile-alt"></i> M-Pesa</div></div><div class="card-body"><div class="form-group"><label class="form-label">Consumer Key</label><input type="text" id="mpesa-consumer-key" class="form-control"></div><div class="form-group"><label class="form-label">Consumer Secret</label><input type="password" id="mpesa-consumer-secret" class="form-control"></div><div class="form-group"><label class="form-label">Shortcode</label><input type="text" id="mpesa-shortcode" class="form-control"></div><div class="form-group"><label class="form-label">Passkey</label><input type="password" id="mpesa-passkey" class="form-control"></div><div class="form-group"><label class="form-label">Environment</label><select id="mpesa-environment" class="form-select"><option value="sandbox">Sandbox</option><option value="production">Production</option></select></div></div></div>
                 <button class="btn btn-primary" onclick="savePaymentSettings()"><i class="fas fa-save"></i> Save All Payment Settings</button>
             </div>
-
-            <!-- Affiliates Tab -->
-            <div id="affiliates" class="tab-pane">
-                <div class="section-card">
-                    <div class="card-header">
-                        <div class="card-title"><i class="fas fa-link"></i> Affiliate IDs</div>
-                    </div>
-                    <div class="card-body">
-                        <div class="form-group"><label class="form-label">Amazon</label><input type="text" id="amazon-id" class="form-control" placeholder="yourname-20"></div>
-                        <div class="form-group"><label class="form-label">Jumia</label><input type="text" id="jumia-id" class="form-control"></div>
-                        <div class="form-group"><label class="form-label">Udemy</label><input type="text" id="udemy-id" class="form-control"></div>
-                        <div class="form-group"><label class="form-label">Coursera</label><input type="text" id="coursera-id" class="form-control"></div>
-                        <button class="btn btn-primary" onclick="saveAffiliateSettings()"><i class="fas fa-save"></i> Save Affiliate Settings</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Settings Tab -->
+            <div id="affiliates" class="tab-pane"><div class="section-card"><div class="card-header"><div class="card-title"><i class="fas fa-link"></i> Affiliate IDs</div></div><div class="card-body"><div class="form-group"><label class="form-label">Amazon</label><input type="text" id="amazon-id" class="form-control"></div><div class="form-group"><label class="form-label">Jumia</label><input type="text" id="jumia-id" class="form-control"></div><div class="form-group"><label class="form-label">Udemy</label><input type="text" id="udemy-id" class="form-control"></div><div class="form-group"><label class="form-label">Coursera</label><input type="text" id="coursera-id" class="form-control"></div><button class="btn btn-primary" onclick="saveAffiliateSettings()"><i class="fas fa-save"></i> Save Affiliate Settings</button></div></div></div>
             <div id="settings" class="tab-pane">
-                <div class="section-card">
-                    <div class="card-header">
-                        <div class="card-title"><i class="fas fa-globe"></i> General Settings</div>
-                    </div>
-                    <div class="card-body">
-                        <div class="form-group"><label class="form-label">Site Title</label><input type="text" id="site-title" class="form-control" placeholder="Grow With Awino"></div>
-                        <div class="form-group"><label class="form-label">Site Description</label><textarea id="site-description" class="form-textarea" rows="3"></textarea></div>
-                        <div class="form-group"><label class="form-label">Admin Email</label><input type="email" id="admin-email" class="form-control"></div>
-                        <div class="form-group"><label class="form-label">Contact Email</label><input type="email" id="contact-email" class="form-control" value="awinophoebe44@gmail.com"></div>
-                        <div class="form-group"><label class="form-label">WhatsApp Number</label><input type="tel" id="whatsapp-number" class="form-control"></div>
-                        <div class="form-group"><label class="form-label">Default Currency</label><select id="default-currency" class="form-select"><option value="USD">USD</option><option value="KES">KES</option></select></div>
-                        <button class="btn btn-primary" onclick="saveGeneralSettings()"><i class="fas fa-save"></i> Save Settings</button>
-                    </div>
-                </div>
-                <div class="section-card">
-                    <div class="card-header">
-                        <div class="card-title"><i class="fas fa-share-alt"></i> Social Media</div>
-                    </div>
-                    <div class="card-body">
-                        <div class="form-group"><label class="form-label"><i class="fab fa-twitter"></i> Twitter/X</label><input type="url" id="twitter-link" class="form-control"></div>
-                        <div class="form-group"><label class="form-label"><i class="fab fa-youtube"></i> YouTube</label><input type="url" id="youtube-link" class="form-control"></div>
-                        <div class="form-group"><label class="form-label"><i class="fab fa-facebook"></i> Facebook</label><input type="url" id="facebook-link" class="form-control"></div>
-                        <div class="form-group"><label class="form-label"><i class="fab fa-tiktok"></i> TikTok</label><input type="url" id="tiktok-link" class="form-control"></div>
-                        <div class="form-group"><label class="form-label"><i class="fab fa-instagram"></i> Instagram</label><input type="url" id="instagram-link" class="form-control"></div>
-                        <button class="btn btn-primary" onclick="saveSocialLinks()"><i class="fas fa-save"></i> Save Social Links</button>
-                    </div>
-                </div>
-                <div class="section-card">
-                    <div class="card-header">
-                        <div class="card-title"><i class="fas fa-chart-line"></i> SEO Settings</div>
-                    </div>
-                    <div class="card-body">
-                        <div class="form-group"><label class="form-label">Meta Keywords</label><input type="text" id="meta-keywords" class="form-control"></div>
-                        <div class="form-group"><label class="form-label">Meta Description</label><textarea id="meta-description" class="form-textarea" rows="2"></textarea></div>
-                        <button class="btn btn-primary" onclick="saveSEOSettings()"><i class="fas fa-save"></i> Save SEO Settings</button>
-                    </div>
-                </div>
+                <div class="section-card"><div class="card-header"><div class="card-title"><i class="fas fa-globe"></i> General Settings</div></div><div class="card-body"><div class="form-group"><label class="form-label">Site Title</label><input type="text" id="site-title" class="form-control"></div><div class="form-group"><label class="form-label">Site Description</label><textarea id="site-description" class="form-textarea" rows="3"></textarea></div><div class="form-group"><label class="form-label">Admin Email</label><input type="email" id="admin-email" class="form-control"></div><div class="form-group"><label class="form-label">Contact Email</label><input type="email" id="contact-email" class="form-control" value="awinophoebe44@gmail.com"></div><div class="form-group"><label class="form-label">WhatsApp Number</label><input type="tel" id="whatsapp-number" class="form-control"></div><div class="form-group"><label class="form-label">Default Currency</label><select id="default-currency" class="form-select"><option value="USD">USD</option><option value="KES">KES</option></select></div><button class="btn btn-primary" onclick="saveGeneralSettings()"><i class="fas fa-save"></i> Save Settings</button></div></div>
+                <div class="section-card"><div class="card-header"><div class="card-title"><i class="fas fa-share-alt"></i> Social Media</div></div><div class="card-body"><div class="form-group"><label class="form-label"><i class="fab fa-twitter"></i> Twitter/X</label><input type="url" id="twitter-link" class="form-control"></div><div class="form-group"><label class="form-label"><i class="fab fa-youtube"></i> YouTube</label><input type="url" id="youtube-link" class="form-control"></div><div class="form-group"><label class="form-label"><i class="fab fa-facebook"></i> Facebook</label><input type="url" id="facebook-link" class="form-control"></div><div class="form-group"><label class="form-label"><i class="fab fa-tiktok"></i> TikTok</label><input type="url" id="tiktok-link" class="form-control"></div><div class="form-group"><label class="form-label"><i class="fab fa-instagram"></i> Instagram</label><input type="url" id="instagram-link" class="form-control"></div><button class="btn btn-primary" onclick="saveSocialLinks()"><i class="fas fa-save"></i> Save Social Links</button></div></div>
+                <div class="section-card"><div class="card-header"><div class="card-title"><i class="fas fa-chart-line"></i> SEO Settings</div></div><div class="card-body"><div class="form-group"><label class="form-label">Meta Keywords</label><input type="text" id="meta-keywords" class="form-control"></div><div class="form-group"><label class="form-label">Meta Description</label><textarea id="meta-description" class="form-textarea" rows="2"></textarea></div><button class="btn btn-primary" onclick="saveSEOSettings()"><i class="fas fa-save"></i> Save SEO Settings</button></div></div>
             </div>
         </main>
     </div>
 
     <!-- Blog Modal -->
-    <div id="blogModal" class="modal-overlay">
-        <div class="modal-container">
-            <div class="modal-header">
-                <h3 class="modal-title" id="blogModalTitle">Add New Blog Post</h3>
-                <span class="modal-close" onclick="closeModal('blogModal')">&times;</span>
-            </div>
-            <form id="blogForm">
-                <input type="hidden" id="blogId">
-                <div class="modal-body">
-                    <div class="form-group"><label class="form-label">Title</label><input type="text" id="blogTitle" class="form-control" required></div>
-                    <div class="form-group"><label class="form-label">Category</label><select id="blogCategory" class="form-select" required><option value="">-- Select Category --</option></select></div>
-                    <div class="form-group"><label class="form-label">Featured Image</label><input type="file" id="blogImage" class="form-control" accept="image/*"><div id="blogImagePreview" class="image-preview"></div></div>
-                    <div class="form-group"><label class="form-label">Excerpt</label><textarea id="blogExcerpt" class="form-textarea" rows="2" placeholder="Short summary..."></textarea></div>
-                    <div class="form-group"><label class="form-label">Content</label></div>
-                    <div id="editor-container"></div>
-                    <input type="hidden" id="blogContent">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('blogModal')">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save Blog Post</button>
-                </div>
-            </form>
-        </div>
-    </div>
+    <div id="blogModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3 class="modal-title" id="blogModalTitle">Add New Blog Post</h3><span class="modal-close" onclick="closeModal('blogModal')">&times;</span></div><form id="blogForm"><input type="hidden" id="blogId"><div class="modal-body"><div class="form-group"><label class="form-label">Title</label><input type="text" id="blogTitle" class="form-control" required></div><div class="form-group"><label class="form-label">Category</label><select id="blogCategory" class="form-select" required><option value="">-- Select Category --</option></select></div><div class="form-group"><label class="form-label">Featured Image</label><input type="file" id="blogImage" class="form-control" accept="image/*"><div id="blogImagePreview" class="image-preview"></div></div><div class="form-group"><label class="form-label">Excerpt</label><textarea id="blogExcerpt" class="form-textarea" rows="2"></textarea></div><div class="form-group"><label class="form-label">Content</label></div><div id="editor-container"></div><input type="hidden" id="blogContent"></div><div class="modal-footer"><button type="button" class="btn btn-secondary" onclick="closeModal('blogModal')">Cancel</button><button type="submit" class="btn btn-primary">Save Blog Post</button></div></form></div></div>
 
     <!-- Product Modal -->
-    <div id="productModal" class="modal-overlay">
-        <div class="modal-container">
-            <div class="modal-header">
-                <h3 class="modal-title" id="productModalTitle">Add New Ebook</h3>
-                <span class="modal-close" onclick="closeModal('productModal')">&times;</span>
-            </div>
-            <form id="productForm">
-                <input type="hidden" id="productId">
-                <div class="modal-body">
-                    <div class="form-group"><label class="form-label">Title</label><input type="text" id="productTitle" class="form-control" required></div>
-                    <div class="form-group"><label class="form-label">Description</label><textarea id="productDescription" class="form-textarea" rows="3" required></textarea></div>
-                    <div class="form-group"><label class="form-label">Price (USD)</label><input type="number" id="productPriceUsd" class="form-control" step="0.01" required></div>
-                    <div class="form-group"><label class="form-label">Price (KES)</label><input type="number" id="productPriceKes" class="form-control" step="1" required></div>
-                    <div class="form-group"><label class="form-label">Cover Image</label><input type="file" id="productImage" class="form-control" accept="image/*"><div id="productImagePreview" class="image-preview"></div></div>
-                    <div class="form-group"><label class="form-label">Download Link</label><input type="text" id="productDownloadLink" class="form-control" placeholder="Link to download the ebook"></div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('productModal')">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save Ebook</button>
-                </div>
-            </form>
-        </div>
-    </div>
+    <div id="productModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3 class="modal-title" id="productModalTitle">Add New Ebook</h3><span class="modal-close" onclick="closeModal('productModal')">&times;</span></div><form id="productForm"><input type="hidden" id="productId"><div class="modal-body"><div class="form-group"><label class="form-label">Title</label><input type="text" id="productTitle" class="form-control" required></div><div class="form-group"><label class="form-label">Description</label><textarea id="productDescription" class="form-textarea" rows="3" required></textarea></div><div class="form-group"><label class="form-label">Price (USD)</label><input type="number" id="productPriceUsd" class="form-control" step="0.01" required></div><div class="form-group"><label class="form-label">Price (KES)</label><input type="number" id="productPriceKes" class="form-control" step="1" required></div><div class="form-group"><label class="form-label">Cover Image</label><input type="file" id="productImage" class="form-control" accept="image/*"><div id="productImagePreview" class="image-preview"></div></div><div class="form-group"><label class="form-label">Download Link</label><input type="text" id="productDownloadLink" class="form-control"></div></div><div class="modal-footer"><button type="button" class="btn btn-secondary" onclick="closeModal('productModal')">Cancel</button><button type="submit" class="btn btn-primary">Save Ebook</button></div></form></div></div>
 
     <script>
         const SUPABASE_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
@@ -734,6 +430,10 @@
         let currentProductId = null;
         let quillEditor = null;
         let allCategories = [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            init();
+        });
 
         async function init() {
             if (typeof supabase === 'undefined') {
@@ -763,7 +463,7 @@
                         ['clean']
                     ]
                 },
-                placeholder: 'Write your blog post content here... Format text, add colors, lists, and images...'
+                placeholder: 'Write your blog post content here...'
             });
         }
 
@@ -790,261 +490,179 @@
         async function loadVisitorStats() {
             try {
                 const today = new Date().toISOString().split('T')[0];
-                const { data: dailyData } = await supabaseClient
-                    .from('daily_visitors')
-                    .select('count')
-                    .eq('visit_date', today)
-                    .single();
+                const { data: dailyData } = await supabaseClient.from('daily_visitors').select('count').eq('visit_date', today).single();
+                const todayCount = document.getElementById('today-visitors');
+                if (todayCount) todayCount.textContent = dailyData?.count || '0';
                 
-                document.getElementById('today-visitors').textContent = dailyData?.count || '0';
-                
-                const { data: totalData } = await supabaseClient
-                    .from('total_visitors')
-                    .select('total_count')
-                    .eq('id', 1)
-                    .single();
-                
-                document.getElementById('total-visitors').textContent = totalData?.total_count || '0';
-            } catch (err) {
-                console.log('Visitor stats not ready yet');
-                document.getElementById('total-visitors').textContent = '0';
-                document.getElementById('today-visitors').textContent = '0';
-            }
+                const { data: totalData } = await supabaseClient.from('total_visitors').select('total_count').eq('id', 1).single();
+                const totalCount = document.getElementById('total-visitors');
+                if (totalCount) totalCount.textContent = totalData?.total_count || '0';
+            } catch(e) { console.log('Visitor stats not ready'); }
         }
         
         async function loadOrders() {
             try {
                 const { data } = await supabaseClient.from('orders').select('*').order('created_at', { ascending: false });
                 const container = document.getElementById('orders-list');
-                if (container && data) {
-                    if (data.length === 0) {
-                        container.innerHTML = '<div class="admin-item"><div class="item-title">No orders yet.</div></div>';
-                    } else {
-                        container.innerHTML = data.map(order => `
-                            <div class="admin-item">
-                                <div>
-                                    <div class="item-title">Order #${order.id}</div>
-                                    <div class="item-meta">$${order.total_amount} ${order.currency} | ${order.payment_method} | <span class="badge ${order.status === 'completed' ? 'badge-completed' : 'badge-pending'}">${order.status}</span></div>
-                                    <div class="item-meta">Customer: ${order.user_email} | ${new Date(order.created_at).toLocaleDateString()}</div>
-                                </div>
-                            </div>
-                        `).join('');
-                    }
+                if (container) {
+                    if (!data || data.length === 0) container.innerHTML = '<div class="admin-item"><div class="item-title">No orders yet.</div></div>';
+                    else container.innerHTML = data.map(order => `<div class="admin-item"><div><div class="item-title">Order #${order.id}</div><div class="item-meta">$${order.total_amount} ${order.currency} | ${order.payment_method} | <span class="badge ${order.status === 'completed' ? 'badge-completed' : 'badge-pending'}">${order.status}</span></div><div class="item-meta">Customer: ${order.user_email}</div></div></div>`).join('');
                 }
-                document.getElementById('total-orders').textContent = data?.length || 0;
-            } catch (err) {
-                document.getElementById('orders-list').innerHTML = '<div class="admin-item"><div class="item-title">No orders yet.</div></div>';
-                document.getElementById('total-orders').textContent = '0';
-            }
+                const orderCount = document.getElementById('total-orders');
+                if (orderCount) orderCount.textContent = data?.length || 0;
+            } catch(e) { console.log('Orders not ready'); }
         }
         
         async function loadMessages() {
             try {
                 const { data } = await supabaseClient.from('contact_messages').select('*').order('created_at', { ascending: false });
                 const container = document.getElementById('messages-list');
-                if (container && data) {
-                    if (data.length === 0) {
-                        container.innerHTML = '<div class="admin-item"><div class="item-title">No contact messages yet.</div></div>';
-                    } else {
-                        container.innerHTML = data.map(msg => `
-                            <div class="admin-item" style="flex-direction: column; align-items: flex-start;">
-                                <div style="display: flex; justify-content: space-between; width: 100%;">
-                                    <div>
-                                        <div class="item-title">${escapeHtml(msg.name)} (${escapeHtml(msg.email)})</div>
-                                        <div class="item-meta">Subject: ${escapeHtml(msg.subject)}</div>
-                                        <div class="message-preview">${escapeHtml(msg.message)}</div>
-                                        <div class="item-meta">Received: ${new Date(msg.created_at).toLocaleString()}</div>
-                                    </div>
-                                    <div class="item-actions">
-                                        <button class="btn btn-danger btn-sm" onclick="deleteMessage(${msg.id})">Delete</button>
-                                    </div>
-                                </div>
-                            </div>
-                        `).join('');
-                    }
+                if (container) {
+                    if (!data || data.length === 0) container.innerHTML = '<div class="admin-item"><div class="item-title">No contact messages yet.</div></div>';
+                    else container.innerHTML = data.map(msg => `<div class="admin-item" style="flex-direction: column; align-items: flex-start;"><div style="display: flex; justify-content: space-between; width: 100%;"><div><div class="item-title">${escapeHtml(msg.name)} (${escapeHtml(msg.email)})</div><div class="item-meta">Subject: ${escapeHtml(msg.subject)}</div><div class="message-preview">${escapeHtml(msg.message)}</div><div class="item-meta">Received: ${new Date(msg.created_at).toLocaleString()}</div></div><div><button class="btn btn-danger btn-sm" onclick="deleteMessage(${msg.id})">Delete</button></div></div></div>`).join('');
                 }
-                document.getElementById('total-messages').textContent = data?.length || 0;
-            } catch (err) {
-                document.getElementById('messages-list').innerHTML = '<div class="admin-item"><div class="item-title">No contact messages yet.</div></div>';
-                document.getElementById('total-messages').textContent = '0';
-            }
+                const msgCount = document.getElementById('total-messages');
+                if (msgCount) msgCount.textContent = data?.length || 0;
+            } catch(e) { console.log('Messages not ready'); }
         }
         
         async function deleteMessage(id) {
             if (!confirm('Delete this message?')) return;
-            const { error } = await supabaseClient.from('contact_messages').delete().eq('id', id);
-            if (error) {
-                showNotification('Error: ' + error.message, 'error');
-            } else {
-                showNotification('Message deleted!', 'success');
-                await loadMessages();
-            }
+            await supabaseClient.from('contact_messages').delete().eq('id', id);
+            showNotification('Message deleted!', 'success');
+            await loadMessages();
         }
         
         async function loadSubscribers() {
             try {
                 const { data } = await supabaseClient.from('newsletter_subscribers').select('*').order('subscribed_at', { ascending: false }).limit(10);
                 const container = document.getElementById('subscribers-list');
-                if (container && data) {
-                    if (data.length === 0) {
-                        container.innerHTML = '<div class="admin-item"><div class="item-title">No subscribers yet.</div></div>';
-                    } else {
-                        container.innerHTML = data.map(sub => `
-                            <div class="admin-item">
-                                <div>
-                                    <div class="item-title">${escapeHtml(sub.email)}</div>
-                                    <div class="item-meta">Subscribed: ${new Date(sub.subscribed_at).toLocaleDateString()}</div>
-                                </div>
-                            </div>
-                        `).join('');
-                    }
+                if (container) {
+                    if (!data || data.length === 0) container.innerHTML = '<div class="admin-item"><div class="item-title">No subscribers yet.</div></div>';
+                    else container.innerHTML = data.map(sub => `<div class="admin-item"><div><div class="item-title">${escapeHtml(sub.email)}</div><div class="item-meta">Subscribed: ${new Date(sub.subscribed_at).toLocaleDateString()}</div></div></div>`).join('');
                 }
-            } catch (err) {
-                document.getElementById('subscribers-list').innerHTML = '<div class="admin-item"><div class="item-title">No subscribers yet.</div></div>';
-            }
+            } catch(e) { console.log('Subscribers not ready'); }
         }
 
         async function loadBlogs() {
             const { data } = await supabaseClient.from('blog_posts').select('*').order('created_at', { ascending: false });
             const container = document.getElementById('blogs-list');
-            if (container && data) {
-                if (data.length === 0) {
-                    container.innerHTML = '<div class="admin-item"><div class="item-title">No blog posts yet. Click "Add New Post" to get started.</div></div>';
-                } else {
-                    container.innerHTML = data.map(blog => `
-                        <div class="admin-item">
-                            <div><div class="item-title">${escapeHtml(blog.title)}</div><div class="item-meta">${escapeHtml(blog.category)} | ${new Date(blog.created_at).toLocaleDateString()}</div></div>
-                            <div class="item-actions"><button class="btn btn-secondary btn-sm" onclick="editBlog(${blog.id})">Edit</button> <button class="btn btn-danger btn-sm" onclick="deleteBlog(${blog.id})">Delete</button></div>
-                        </div>
-                    `).join('');
-                }
+            if (container) {
+                if (!data || data.length === 0) container.innerHTML = '<div class="admin-item"><div class="item-title">No blog posts yet.</div></div>';
+                else container.innerHTML = data.map(blog => `<div class="admin-item"><div><div class="item-title">${escapeHtml(blog.title)}</div><div class="item-meta">${escapeHtml(blog.category)} | ${new Date(blog.created_at).toLocaleDateString()}</div></div><div><button class="btn btn-secondary btn-sm" onclick="editBlog(${blog.id})">Edit</button> <button class="btn btn-danger btn-sm" onclick="deleteBlog(${blog.id})">Delete</button></div></div>`).join('');
             }
         }
 
         async function loadProducts() {
             const { data } = await supabaseClient.from('products').select('*').order('created_at', { ascending: false });
             const container = document.getElementById('products-list');
-            if (container && data) {
-                if (data.length === 0) {
-                    container.innerHTML = '<div class="admin-item"><div class="item-title">No ebooks yet. Click "Add New Ebook" to get started.</div></div>';
-                } else {
-                    container.innerHTML = data.map(product => `
-                        <div class="admin-item">
-                            <div><div class="item-title">${escapeHtml(product.title)}</div><div class="item-meta">$${product.price_usd} / KES ${product.price_kes}</div></div>
-                            <div class="item-actions"><button class="btn btn-secondary btn-sm" onclick="editProduct(${product.id})">Edit</button> <button class="btn btn-danger btn-sm" onclick="deleteProduct(${product.id})">Delete</button></div>
-                        </div>
-                    `).join('');
-                }
+            if (container) {
+                if (!data || data.length === 0) container.innerHTML = '<div class="admin-item"><div class="item-title">No ebooks yet.</div></div>';
+                else container.innerHTML = data.map(product => `<div class="admin-item"><div><div class="item-title">${escapeHtml(product.title)}</div><div class="item-meta">$${product.price_usd} / KES ${product.price_kes}</div></div><div><button class="btn btn-secondary btn-sm" onclick="editProduct(${product.id})">Edit</button> <button class="btn btn-danger btn-sm" onclick="deleteProduct(${product.id})">Delete</button></div></div>`).join('');
             }
         }
 
         async function loadCategories() {
             const { data } = await supabaseClient.from('categories').select('*').order('name');
             allCategories = data || [];
-            
             const container = document.getElementById('categories-list');
-            if (container && allCategories) {
-                if (allCategories.length === 0) {
-                    container.innerHTML = '<div class="admin-item"><div class="item-title">No categories yet. Add one above.</div></div>';
-                } else {
-                    container.innerHTML = allCategories.map(cat => `
-                        <div class="admin-item">
-                            <span class="item-title">${escapeHtml(cat.name)}</span>
-                            <button class="btn btn-danger btn-sm" onclick="deleteCategory(${cat.id})">Delete</button>
-                        </div>
-                    `).join('');
-                }
+            if (container) {
+                if (!allCategories.length) container.innerHTML = '<div class="admin-item"><div class="item-title">No categories yet. Add one above.</div></div>';
+                else container.innerHTML = allCategories.map(cat => `<div class="admin-item"><span class="item-title">${escapeHtml(cat.name)}</span><button class="btn btn-danger btn-sm" onclick="deleteCategory(${cat.id})">Delete</button></div>`).join('');
             }
             updateCategoryDropdown();
         }
         
         function updateCategoryDropdown() {
-            const categorySelect = document.getElementById('blogCategory');
-            if (categorySelect && allCategories) {
-                categorySelect.innerHTML = '<option value="">-- Select Category --</option>' + 
-                    allCategories.map(cat => `<option value="${escapeHtml(cat.name)}">${escapeHtml(cat.name)}</option>`).join('');
+            const select = document.getElementById('blogCategory');
+            if (select && allCategories) {
+                select.innerHTML = '<option value="">-- Select Category --</option>' + allCategories.map(c => `<option value="${escapeHtml(c.name)}">${escapeHtml(c.name)}</option>`).join('');
             }
         }
 
         async function loadStats() {
             const { count: blogs } = await supabaseClient.from('blog_posts').select('*', { count: 'exact', head: true });
             const { count: products } = await supabaseClient.from('products').select('*', { count: 'exact', head: true });
-            const { count: categories } = await supabaseClient.from('categories').select('*', { count: 'exact', head: true });
-            document.getElementById('total-blogs').textContent = blogs || 0;
-            document.getElementById('total-products').textContent = products || 0;
-            document.getElementById('total-categories').textContent = categories || 0;
+            const blogEl = document.getElementById('total-blogs');
+            const productEl = document.getElementById('total-products');
+            if (blogEl) blogEl.textContent = blogs || 0;
+            if (productEl) productEl.textContent = products || 0;
         }
 
         async function loadSettings() {
             const { data } = await supabaseClient.from('site_settings').select('*').single();
             if (data) {
-                document.getElementById('site-title').value = data.site_title || '';
-                document.getElementById('site-description').value = data.site_description || '';
-                document.getElementById('admin-email').value = data.admin_email || '';
-                document.getElementById('contact-email').value = data.contact_email || 'awinophoebe44@gmail.com';
-                document.getElementById('whatsapp-number').value = data.whatsapp_number || '';
-                document.getElementById('default-currency').value = data.default_currency || 'USD';
-                if (data.logo_url) document.getElementById('logo-preview').innerHTML = `<img src="${data.logo_url}">`;
-                if (data.profile_image_url) document.getElementById('profile-preview').innerHTML = `<img src="${data.profile_image_url}" style="border-radius: 50%; width: 100px; height: 100px; object-fit: cover;">`;
+                const titleInput = document.getElementById('site-title');
+                if (titleInput) titleInput.value = data.site_title || '';
+                const descInput = document.getElementById('site-description');
+                if (descInput) descInput.value = data.site_description || '';
+                const adminEmail = document.getElementById('admin-email');
+                if (adminEmail) adminEmail.value = data.admin_email || '';
+                const contactEmail = document.getElementById('contact-email');
+                if (contactEmail) contactEmail.value = data.contact_email || 'awinophoebe44@gmail.com';
+                const whatsapp = document.getElementById('whatsapp-number');
+                if (whatsapp) whatsapp.value = data.whatsapp_number || '';
+                const currency = document.getElementById('default-currency');
+                if (currency) currency.value = data.default_currency || 'USD';
+                const logoPreview = document.getElementById('logo-preview');
+                if (logoPreview && data.logo_url) logoPreview.innerHTML = `<img src="${data.logo_url}">`;
+                const profilePreview = document.getElementById('profile-preview');
+                if (profilePreview && data.profile_image_url) profilePreview.innerHTML = `<img src="${data.profile_image_url}" style="border-radius: 50%; width: 100px; height: 100px; object-fit: cover;">`;
             }
         }
 
         async function loadPaymentSettings() {
             const { data } = await supabaseClient.from('site_settings').select('payment_settings').single();
             if (data?.payment_settings) {
-                document.getElementById('paypal-client-id').value = data.payment_settings.paypal_client_id || '';
-                document.getElementById('paypal-secret').value = data.payment_settings.paypal_secret || '';
-                document.getElementById('paypal-mode').value = data.payment_settings.paypal_mode || 'sandbox';
-                document.getElementById('paystack-public-key').value = data.payment_settings.paystack_public_key || '';
-                document.getElementById('paystack-secret-key').value = data.payment_settings.paystack_secret_key || '';
-                document.getElementById('mpesa-consumer-key').value = data.payment_settings.mpesa_consumer_key || '';
-                document.getElementById('mpesa-consumer-secret').value = data.payment_settings.mpesa_consumer_secret || '';
-                document.getElementById('mpesa-shortcode').value = data.payment_settings.mpesa_shortcode || '';
-                document.getElementById('mpesa-passkey').value = data.payment_settings.mpesa_passkey || '';
-                document.getElementById('mpesa-environment').value = data.payment_settings.mpesa_environment || 'sandbox';
+                const p1 = document.getElementById('paypal-client-id'); if (p1) p1.value = data.payment_settings.paypal_client_id || '';
+                const p2 = document.getElementById('paypal-secret'); if (p2) p2.value = data.payment_settings.paypal_secret || '';
+                const p3 = document.getElementById('paypal-mode'); if (p3) p3.value = data.payment_settings.paypal_mode || 'sandbox';
+                const ps1 = document.getElementById('paystack-public-key'); if (ps1) ps1.value = data.payment_settings.paystack_public_key || '';
+                const ps2 = document.getElementById('paystack-secret-key'); if (ps2) ps2.value = data.payment_settings.paystack_secret_key || '';
+                const m1 = document.getElementById('mpesa-consumer-key'); if (m1) m1.value = data.payment_settings.mpesa_consumer_key || '';
+                const m2 = document.getElementById('mpesa-consumer-secret'); if (m2) m2.value = data.payment_settings.mpesa_consumer_secret || '';
+                const m3 = document.getElementById('mpesa-shortcode'); if (m3) m3.value = data.payment_settings.mpesa_shortcode || '';
+                const m4 = document.getElementById('mpesa-passkey'); if (m4) m4.value = data.payment_settings.mpesa_passkey || '';
+                const m5 = document.getElementById('mpesa-environment'); if (m5) m5.value = data.payment_settings.mpesa_environment || 'sandbox';
             }
         }
 
         async function loadAffiliateSettings() {
             const { data } = await supabaseClient.from('site_settings').select('affiliate_settings').single();
             if (data?.affiliate_settings) {
-                document.getElementById('amazon-id').value = data.affiliate_settings.amazon || '';
-                document.getElementById('jumia-id').value = data.affiliate_settings.jumia || '';
-                document.getElementById('udemy-id').value = data.affiliate_settings.udemy || '';
-                document.getElementById('coursera-id').value = data.affiliate_settings.coursera || '';
+                const a1 = document.getElementById('amazon-id'); if (a1) a1.value = data.affiliate_settings.amazon || '';
+                const j1 = document.getElementById('jumia-id'); if (j1) j1.value = data.affiliate_settings.jumia || '';
+                const u1 = document.getElementById('udemy-id'); if (u1) u1.value = data.affiliate_settings.udemy || '';
+                const c1 = document.getElementById('coursera-id'); if (c1) c1.value = data.affiliate_settings.coursera || '';
             }
         }
 
         async function loadSocialLinks() {
             const { data } = await supabaseClient.from('site_settings').select('social_links').single();
             if (data?.social_links) {
-                document.getElementById('twitter-link').value = data.social_links.twitter || '';
-                document.getElementById('youtube-link').value = data.social_links.youtube || '';
-                document.getElementById('facebook-link').value = data.social_links.facebook || '';
-                document.getElementById('tiktok-link').value = data.social_links.tiktok || '';
-                document.getElementById('instagram-link').value = data.social_links.instagram || '';
+                const t1 = document.getElementById('twitter-link'); if (t1) t1.value = data.social_links.twitter || '';
+                const y1 = document.getElementById('youtube-link'); if (y1) y1.value = data.social_links.youtube || '';
+                const f1 = document.getElementById('facebook-link'); if (f1) f1.value = data.social_links.facebook || '';
+                const tk1 = document.getElementById('tiktok-link'); if (tk1) tk1.value = data.social_links.tiktok || '';
+                const i1 = document.getElementById('instagram-link'); if (i1) i1.value = data.social_links.instagram || '';
             }
         }
 
         async function uploadImage(file, folder) {
             const fileName = `${folder}_${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
-            const { error: uploadError } = await supabaseClient.storage.from('site-assets').upload(fileName, file);
-            if (uploadError) throw uploadError;
-            const { data: { publicUrl } } = supabaseClient.storage.from('site-assets').getPublicUrl(fileName);
-            return publicUrl;
+            const { error } = await supabaseClient.storage.from('site-assets').upload(fileName, file);
+            if (error) throw error;
+            const { data } = supabaseClient.storage.from('site-assets').getPublicUrl(fileName);
+            return data.publicUrl;
         }
 
         async function addCategory() {
             const name = document.getElementById('new-category-name').value.trim();
-            if (!name) {
-                showNotification('Please enter a category name', 'error');
-                return;
-            }
+            if (!name) { showNotification('Please enter a category name', 'error'); return; }
             const slug = name.toLowerCase().replace(/\s+/g, '-');
-            const { error } = await supabaseClient.from('categories').insert([{ name: name, slug: slug }]);
-            if (error) {
-                showNotification('Error: ' + error.message, 'error');
-            } else {
+            const { error } = await supabaseClient.from('categories').insert([{ name, slug }]);
+            if (error) showNotification('Error: ' + error.message, 'error');
+            else {
                 showNotification('Category added successfully!', 'success');
                 document.getElementById('new-category-name').value = '';
                 await loadCategories();
@@ -1056,12 +674,10 @@
         async function deleteCategory(id) {
             if (!confirm('Delete this category?')) return;
             const { error } = await supabaseClient.from('categories').delete().eq('id', id);
-            if (error) {
-                showNotification('Error: ' + error.message, 'error');
-            } else {
+            if (error) showNotification('Error: ' + error.message, 'error');
+            else {
                 showNotification('Category deleted!', 'success');
                 await loadCategories();
-                await loadStats();
                 updateCategoryDropdown();
             }
         }
@@ -1072,17 +688,10 @@
             document.getElementById('blogId').value = blog?.id || '';
             document.getElementById('blogTitle').value = blog?.title || '';
             document.getElementById('blogExcerpt').value = blog?.excerpt || '';
-            if (blog?.content) {
-                quillEditor.root.innerHTML = blog.content;
-            } else {
-                quillEditor.root.innerHTML = '';
-            }
-            if (blog?.image_url) {
-                document.getElementById('blogImagePreview').innerHTML = `<img src="${blog.image_url}">`;
-            }
-            if (blog?.category) {
-                document.getElementById('blogCategory').value = blog.category;
-            }
+            if (blog?.content) quillEditor.root.innerHTML = blog.content;
+            else quillEditor.root.innerHTML = '';
+            if (blog?.image_url) document.getElementById('blogImagePreview').innerHTML = `<img src="${blog.image_url}">`;
+            if (blog?.category) document.getElementById('blogCategory').value = blog.category;
             updateCategoryDropdown();
             document.getElementById('blogModal').style.display = 'flex';
         }
@@ -1094,31 +703,20 @@
 
         async function deleteBlog(id) {
             if (!confirm('Delete this blog post?')) return;
-            const { error } = await supabaseClient.from('blog_posts').delete().eq('id', id);
-            if (error) {
-                showNotification('Error: ' + error.message, 'error');
-            } else {
-                showNotification('Blog deleted!', 'success');
-                await loadBlogs();
-                await loadStats();
-            }
+            await supabaseClient.from('blog_posts').delete().eq('id', id);
+            showNotification('Blog deleted!', 'success');
+            await loadBlogs();
+            await loadStats();
         }
 
         document.getElementById('blogForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
             let imageUrl = null;
             const imageFile = document.getElementById('blogImage').files[0];
             if (imageFile) {
-                try {
-                    showNotification('Uploading image...', 'info');
-                    imageUrl = await uploadImage(imageFile, 'blog');
-                } catch (err) {
-                    showNotification('Image upload failed: ' + err.message, 'error');
-                    return;
-                }
+                try { imageUrl = await uploadImage(imageFile, 'blog'); }
+                catch (err) { showNotification('Image upload failed: ' + err.message, 'error'); return; }
             }
-            
             const content = quillEditor.root.innerHTML;
             const data = {
                 title: document.getElementById('blogTitle').value,
@@ -1128,29 +726,18 @@
                 image_url: imageUrl,
                 published: true
             };
-            
-            if (!data.category) {
-                showNotification('Please select a category', 'error');
-                return;
-            }
-            
+            if (!data.category) { showNotification('Please select a category', 'error'); return; }
             try {
-                if (currentBlogId) {
-                    await supabaseClient.from('blog_posts').update(data).eq('id', currentBlogId);
-                    showNotification('Blog updated!', 'success');
-                } else {
-                    await supabaseClient.from('blog_posts').insert([data]);
-                    showNotification('Blog created!', 'success');
-                }
+                if (currentBlogId) await supabaseClient.from('blog_posts').update(data).eq('id', currentBlogId);
+                else await supabaseClient.from('blog_posts').insert([data]);
+                showNotification(currentBlogId ? 'Blog updated!' : 'Blog created!', 'success');
                 closeModal('blogModal');
                 document.getElementById('blogForm').reset();
                 quillEditor.root.innerHTML = '';
                 document.getElementById('blogImagePreview').innerHTML = '';
                 await loadBlogs();
                 await loadStats();
-            } catch (err) {
-                showNotification('Error: ' + err.message, 'error');
-            }
+            } catch (err) { showNotification('Error: ' + err.message, 'error'); }
         });
 
         function openProductModal(product = null) {
@@ -1162,9 +749,7 @@
             document.getElementById('productPriceUsd').value = product?.price_usd || '';
             document.getElementById('productPriceKes').value = product?.price_kes || '';
             document.getElementById('productDownloadLink').value = product?.download_link || '';
-            if (product?.image_url) {
-                document.getElementById('productImagePreview').innerHTML = `<img src="${product.image_url}">`;
-            }
+            if (product?.image_url) document.getElementById('productImagePreview').innerHTML = `<img src="${product.image_url}">`;
             document.getElementById('productModal').style.display = 'flex';
         }
 
@@ -1175,31 +760,20 @@
 
         async function deleteProduct(id) {
             if (!confirm('Delete this ebook?')) return;
-            const { error } = await supabaseClient.from('products').delete().eq('id', id);
-            if (error) {
-                showNotification('Error: ' + error.message, 'error');
-            } else {
-                showNotification('Ebook deleted!', 'success');
-                await loadProducts();
-                await loadStats();
-            }
+            await supabaseClient.from('products').delete().eq('id', id);
+            showNotification('Ebook deleted!', 'success');
+            await loadProducts();
+            await loadStats();
         }
 
         document.getElementById('productForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
             let imageUrl = null;
             const imageFile = document.getElementById('productImage').files[0];
             if (imageFile) {
-                try {
-                    showNotification('Uploading image...', 'info');
-                    imageUrl = await uploadImage(imageFile, 'product');
-                } catch (err) {
-                    showNotification('Image upload failed: ' + err.message, 'error');
-                    return;
-                }
+                try { imageUrl = await uploadImage(imageFile, 'product'); }
+                catch (err) { showNotification('Image upload failed: ' + err.message, 'error'); return; }
             }
-            
             const data = {
                 title: document.getElementById('productTitle').value,
                 description: document.getElementById('productDescription').value,
@@ -1208,32 +782,25 @@
                 image_url: imageUrl,
                 download_link: document.getElementById('productDownloadLink').value
             };
-            
             try {
-                if (currentProductId) {
-                    await supabaseClient.from('products').update(data).eq('id', currentProductId);
-                    showNotification('Ebook updated!', 'success');
-                } else {
-                    await supabaseClient.from('products').insert([data]);
-                    showNotification('Ebook created!', 'success');
-                }
+                if (currentProductId) await supabaseClient.from('products').update(data).eq('id', currentProductId);
+                else await supabaseClient.from('products').insert([data]);
+                showNotification(currentProductId ? 'Ebook updated!' : 'Ebook created!', 'success');
                 closeModal('productModal');
                 document.getElementById('productForm').reset();
                 document.getElementById('productImagePreview').innerHTML = '';
                 await loadProducts();
                 await loadStats();
-            } catch (err) {
-                showNotification('Error: ' + err.message, 'error');
-            }
+            } catch (err) { showNotification('Error: ' + err.message, 'error'); }
         });
 
         async function uploadLogo() {
             const file = document.getElementById('logo-upload').files[0];
             if (!file) { showNotification('Select an image', 'error'); return; }
             try {
-                const imageUrl = await uploadImage(file, 'logo');
-                await supabaseClient.from('site_settings').update({ logo_url: imageUrl }).eq('id', 1);
-                document.getElementById('logo-preview').innerHTML = `<img src="${imageUrl}">`;
+                const url = await uploadImage(file, 'logo');
+                await supabaseClient.from('site_settings').update({ logo_url: url }).eq('id', 1);
+                document.getElementById('logo-preview').innerHTML = `<img src="${url}">`;
                 showNotification('Logo uploaded!', 'success');
             } catch (err) { showNotification('Upload failed: ' + err.message, 'error'); }
         }
@@ -1242,9 +809,9 @@
             const file = document.getElementById('profile-upload').files[0];
             if (!file) { showNotification('Select an image', 'error'); return; }
             try {
-                const imageUrl = await uploadImage(file, 'profile');
-                await supabaseClient.from('site_settings').update({ profile_image_url: imageUrl }).eq('id', 1);
-                document.getElementById('profile-preview').innerHTML = `<img src="${imageUrl}" style="border-radius: 50%; width: 100px; height: 100px; object-fit: cover;">`;
+                const url = await uploadImage(file, 'profile');
+                await supabaseClient.from('site_settings').update({ profile_image_url: url }).eq('id', 1);
+                document.getElementById('profile-preview').innerHTML = `<img src="${url}" style="border-radius: 50%; width: 100px; height: 100px; object-fit: cover;">`;
                 showNotification('Profile picture uploaded!', 'success');
             } catch (err) { showNotification('Upload failed: ' + err.message, 'error'); }
         }
@@ -1259,8 +826,8 @@
                 default_currency: document.getElementById('default-currency').value
             };
             const { error } = await supabaseClient.from('site_settings').update(updates).eq('id', 1);
-            if (error) { showNotification('Error: ' + error.message, 'error'); } 
-            else { showNotification('Settings saved!', 'success'); }
+            if (error) showNotification('Error: ' + error.message, 'error');
+            else showNotification('Settings saved!', 'success');
         }
 
         async function savePaymentSettings() {
@@ -1277,7 +844,8 @@
                 mpesa_environment: document.getElementById('mpesa-environment').value
             };
             const { error } = await supabaseClient.from('site_settings').update({ payment_settings: settings }).eq('id', 1);
-            if (error) { showNotification('Error', 'error'); } else { showNotification('Payment settings saved!', 'success'); }
+            if (error) showNotification('Error', 'error');
+            else showNotification('Payment settings saved!', 'success');
         }
 
         async function saveAffiliateSettings() {
@@ -1288,7 +856,8 @@
                 coursera: document.getElementById('coursera-id').value
             };
             const { error } = await supabaseClient.from('site_settings').update({ affiliate_settings: settings }).eq('id', 1);
-            if (error) { showNotification('Error', 'error'); } else { showNotification('Affiliate settings saved!', 'success'); }
+            if (error) showNotification('Error', 'error');
+            else showNotification('Affiliate settings saved!', 'success');
         }
 
         async function saveSocialLinks() {
@@ -1300,7 +869,8 @@
                 instagram: document.getElementById('instagram-link').value
             };
             const { error } = await supabaseClient.from('site_settings').update({ social_links: links }).eq('id', 1);
-            if (error) { showNotification('Error', 'error'); } else { showNotification('Social links saved!', 'success'); }
+            if (error) showNotification('Error', 'error');
+            else showNotification('Social links saved!', 'success');
         }
 
         async function saveSEOSettings() {
@@ -1309,7 +879,8 @@
                 meta_description: document.getElementById('meta-description').value
             };
             const { error } = await supabaseClient.from('site_settings').update({ seo: seo }).eq('id', 1);
-            if (error) { showNotification('Error', 'error'); } else { showNotification('SEO settings saved!', 'success'); }
+            if (error) showNotification('Error', 'error');
+            else showNotification('SEO settings saved!', 'success');
         }
 
         async function refreshCategories() { await loadCategories(); showNotification('Categories refreshed!', 'success'); }
@@ -1321,13 +892,15 @@
                     document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
                     link.classList.add('active');
                     document.querySelectorAll('.tab-pane').forEach(tab => tab.classList.remove('active'));
-                    document.getElementById(tabId).classList.add('active');
+                    const activeTab = document.getElementById(tabId);
+                    if (activeTab) activeTab.classList.add('active');
                 });
             });
         }
 
         function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
+            const modal = document.getElementById(modalId);
+            if (modal) modal.style.display = 'none';
         }
 
         function showNotification(message, type = 'success') {
@@ -1347,24 +920,18 @@
 
         document.getElementById('blogImage')?.addEventListener('change', function(e) {
             const preview = document.getElementById('blogImagePreview');
-            preview.innerHTML = '';
-            if (this.files && this.files[0]) {
+            if (preview && this.files && this.files[0]) {
                 const reader = new FileReader();
-                reader.onload = function(ev) {
-                    preview.innerHTML = `<img src="${ev.target.result}">`;
-                };
+                reader.onload = ev => preview.innerHTML = `<img src="${ev.target.result}">`;
                 reader.readAsDataURL(this.files[0]);
             }
         });
 
         document.getElementById('productImage')?.addEventListener('change', function(e) {
             const preview = document.getElementById('productImagePreview');
-            preview.innerHTML = '';
-            if (this.files && this.files[0]) {
+            if (preview && this.files && this.files[0]) {
                 const reader = new FileReader();
-                reader.onload = function(ev) {
-                    preview.innerHTML = `<img src="${ev.target.result}">`;
-                };
+                reader.onload = ev => preview.innerHTML = `<img src="${ev.target.result}">`;
                 reader.readAsDataURL(this.files[0]);
             }
         });
@@ -1395,8 +962,6 @@
         window.loadMessages = loadMessages;
         window.deleteMessage = deleteMessage;
         window.closeModal = closeModal;
-
-        init();
     </script>
 </body>
 </html>

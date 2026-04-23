@@ -283,26 +283,33 @@
         .modal-body { padding: 1.5rem; }
         .modal-footer { padding: 1rem 1.5rem; border-top: 1px solid rgba(0, 229, 255, 0.1); display: flex; justify-content: flex-end; gap: 1rem; }
 
-        /* Rich Text Editor */
-        #editor-container {
-    background: white;
-    border-radius: 12px;
-    overflow: hidden;
-}
-        .ql-editor {
-    background: white !important;
-    color: #1a1a1a !important;
-    min-height: 300px;
-}.ql-editor {
-    background: white !important;
-    color: #1a1a1a !important;
-    min-height: 300px;
-}
-
-.ql-editor p, .ql-editor h1, .ql-editor h2, .ql-editor h3 {
-    color: #1a1a1a !important;
-
-}
+        /* Rich Text Editor - WHITE BACKGROUND FOR BLOG EDITING */
+        #editor-container { 
+            height: 350px; 
+            margin-bottom: 1rem; 
+            border-radius: 12px; 
+            overflow: hidden;
+            background: white;
+        }
+        .ql-toolbar { 
+            background: #f0f0f0; 
+            border-color: #ddd; 
+            border-radius: 12px 12px 0 0; 
+        }
+        .ql-container { 
+            background: white !important; 
+            border-color: #ddd !important; 
+            border-radius: 0 0 12px 12px; 
+        }
+        .ql-editor { 
+            background: white !important; 
+            color: #1a1a1a !important; 
+            min-height: 300px;
+            font-family: 'Inter', sans-serif;
+        }
+        .ql-editor p, .ql-editor h1, .ql-editor h2, .ql-editor h3, .ql-editor div {
+            color: #1a1a1a !important;
+        }
 
         /* Category Row */
         .category-row { display: flex; gap: 0.75rem; margin-bottom: 1rem; }
@@ -505,14 +512,30 @@
         async function loadVisitorStats() {
             try {
                 const today = new Date().toISOString().split('T')[0];
-                const { data: dailyData } = await supabaseClient.from('daily_visitors').select('count').eq('visit_date', today).single();
-                const todayCount = document.getElementById('today-visitors');
-                if (todayCount) todayCount.textContent = dailyData?.count || '0';
+                const { data: dailyData } = await supabaseClient
+                    .from('daily_visitors')
+                    .select('count')
+                    .eq('visit_date', today)
+                    .maybeSingle();
                 
-                const { data: totalData } = await supabaseClient.from('total_visitors').select('total_count').eq('id', 1).single();
-                const totalCount = document.getElementById('total-visitors');
-                if (totalCount) totalCount.textContent = totalData?.total_count || '0';
-            } catch(e) { console.log('Visitor stats not ready'); }
+                const todayEl = document.getElementById('today-visitors');
+                if (todayEl) todayEl.textContent = dailyData?.count || '0';
+                
+                const { data: totalData } = await supabaseClient
+                    .from('total_visitors')
+                    .select('total_count')
+                    .eq('id', 1)
+                    .maybeSingle();
+                
+                const totalEl = document.getElementById('total-visitors');
+                if (totalEl) totalEl.textContent = totalData?.total_count || '0';
+            } catch(e) {
+                console.log('Visitor stats not ready yet:', e);
+                const totalEl = document.getElementById('total-visitors');
+                const todayEl = document.getElementById('today-visitors');
+                if (totalEl) totalEl.textContent = '0';
+                if (todayEl) todayEl.textContent = '0';
+            }
         }
         
         async function loadOrders() {
@@ -520,8 +543,11 @@
                 const { data } = await supabaseClient.from('orders').select('*').order('created_at', { ascending: false });
                 const container = document.getElementById('orders-list');
                 if (container) {
-                    if (!data || data.length === 0) container.innerHTML = '<div class="admin-item"><div class="item-title">No orders yet.</div></div>';
-                    else container.innerHTML = data.map(order => `<div class="admin-item"><div><div class="item-title">Order #${order.id}</div><div class="item-meta">$${order.total_amount} ${order.currency} | ${order.payment_method} | <span class="badge ${order.status === 'completed' ? 'badge-completed' : 'badge-pending'}">${order.status}</span></div><div class="item-meta">Customer: ${order.user_email}</div></div></div>`).join('');
+                    if (!data || data.length === 0) {
+                        container.innerHTML = '<div class="admin-item"><div class="item-title">No orders yet.</div></div>';
+                    } else {
+                        container.innerHTML = data.map(order => `<div class="admin-item"><div><div class="item-title">Order #${order.id}</div><div class="item-meta">$${order.total_amount} ${order.currency} | ${order.payment_method} | <span class="badge ${order.status === 'completed' ? 'badge-completed' : 'badge-pending'}">${order.status}</span></div><div class="item-meta">Customer: ${order.user_email}</div></div></div>`).join('');
+                    }
                 }
                 const orderCount = document.getElementById('total-orders');
                 if (orderCount) orderCount.textContent = data?.length || 0;
@@ -530,15 +556,41 @@
         
         async function loadMessages() {
             try {
-                const { data } = await supabaseClient.from('contact_messages').select('*').order('created_at', { ascending: false });
+                const { data } = await supabaseClient
+                    .from('contact_messages')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                
                 const container = document.getElementById('messages-list');
                 if (container) {
-                    if (!data || data.length === 0) container.innerHTML = '<div class="admin-item"><div class="item-title">No contact messages yet.</div></div>';
-                    else container.innerHTML = data.map(msg => `<div class="admin-item" style="flex-direction: column; align-items: flex-start;"><div style="display: flex; justify-content: space-between; width: 100%;"><div><div class="item-title">${escapeHtml(msg.name)} (${escapeHtml(msg.email)})</div><div class="item-meta">Subject: ${escapeHtml(msg.subject)}</div><div class="message-preview">${escapeHtml(msg.message)}</div><div class="item-meta">Received: ${new Date(msg.created_at).toLocaleString()}</div></div><div><button class="btn btn-danger btn-sm" onclick="deleteMessage(${msg.id})">Delete</button></div></div></div>`).join('');
+                    if (!data || data.length === 0) {
+                        container.innerHTML = '<div class="admin-item"><div class="item-title">No contact messages yet.</div></div>';
+                    } else {
+                        container.innerHTML = data.map(msg => `
+                            <div class="admin-item" style="flex-direction: column; align-items: flex-start;">
+                                <div style="display: flex; justify-content: space-between; width: 100%;">
+                                    <div style="flex: 1;">
+                                        <div class="item-title">${escapeHtml(msg.name)} (${escapeHtml(msg.email)})</div>
+                                        <div class="item-meta">Subject: ${escapeHtml(msg.subject || 'No subject')}</div>
+                                        <div class="message-preview">${escapeHtml(msg.message)}</div>
+                                        <div class="item-meta">Received: ${new Date(msg.created_at).toLocaleString()}</div>
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-danger btn-sm" onclick="deleteMessage(${msg.id})">Delete</button>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('');
+                    }
                 }
+                
                 const msgCount = document.getElementById('total-messages');
                 if (msgCount) msgCount.textContent = data?.length || 0;
-            } catch(e) { console.log('Messages not ready'); }
+            } catch(e) {
+                console.log('Messages table may not exist yet:', e);
+                const container = document.getElementById('messages-list');
+                if (container) container.innerHTML = '<div class="admin-item"><div class="item-title">No contact messages yet.</div></div>';
+            }
         }
         
         async function deleteMessage(id) {
@@ -553,8 +605,11 @@
                 const { data } = await supabaseClient.from('newsletter_subscribers').select('*').order('subscribed_at', { ascending: false }).limit(10);
                 const container = document.getElementById('subscribers-list');
                 if (container) {
-                    if (!data || data.length === 0) container.innerHTML = '<div class="admin-item"><div class="item-title">No subscribers yet.</div></div>';
-                    else container.innerHTML = data.map(sub => `<div class="admin-item"><div><div class="item-title">${escapeHtml(sub.email)}</div><div class="item-meta">Subscribed: ${new Date(sub.subscribed_at).toLocaleDateString()}</div></div></div>`).join('');
+                    if (!data || data.length === 0) {
+                        container.innerHTML = '<div class="admin-item"><div class="item-title">No subscribers yet.</div></div>';
+                    } else {
+                        container.innerHTML = data.map(sub => `<div class="admin-item"><div><div class="item-title">${escapeHtml(sub.email)}</div><div class="item-meta">Subscribed: ${new Date(sub.subscribed_at).toLocaleDateString()}</div></div></div>`).join('');
+                    }
                 }
             } catch(e) { console.log('Subscribers not ready'); }
         }
@@ -563,8 +618,11 @@
             const { data } = await supabaseClient.from('blog_posts').select('*').order('created_at', { ascending: false });
             const container = document.getElementById('blogs-list');
             if (container) {
-                if (!data || data.length === 0) container.innerHTML = '<div class="admin-item"><div class="item-title">No blog posts yet.</div></div>';
-                else container.innerHTML = data.map(blog => `<div class="admin-item"><div><div class="item-title">${escapeHtml(blog.title)}</div><div class="item-meta">${escapeHtml(blog.category)} | ${new Date(blog.created_at).toLocaleDateString()}</div></div><div><button class="btn btn-secondary btn-sm" onclick="editBlog(${blog.id})">Edit</button> <button class="btn btn-danger btn-sm" onclick="deleteBlog(${blog.id})">Delete</button></div></div>`).join('');
+                if (!data || data.length === 0) {
+                    container.innerHTML = '<div class="admin-item"><div class="item-title">No blog posts yet.</div></div>';
+                } else {
+                    container.innerHTML = data.map(blog => `<div class="admin-item"><div><div class="item-title">${escapeHtml(blog.title)}</div><div class="item-meta">${escapeHtml(blog.category)} | ${new Date(blog.created_at).toLocaleDateString()}</div></div><div><button class="btn btn-secondary btn-sm" onclick="editBlog(${blog.id})">Edit</button> <button class="btn btn-danger btn-sm" onclick="deleteBlog(${blog.id})">Delete</button></div></div>`).join('');
+                }
             }
         }
 
@@ -572,8 +630,11 @@
             const { data } = await supabaseClient.from('products').select('*').order('created_at', { ascending: false });
             const container = document.getElementById('products-list');
             if (container) {
-                if (!data || data.length === 0) container.innerHTML = '<div class="admin-item"><div class="item-title">No ebooks yet.</div></div>';
-                else container.innerHTML = data.map(product => `<div class="admin-item"><div><div class="item-title">${escapeHtml(product.title)}</div><div class="item-meta">$${product.price_usd} / KES ${product.price_kes}</div></div><div><button class="btn btn-secondary btn-sm" onclick="editProduct(${product.id})">Edit</button> <button class="btn btn-danger btn-sm" onclick="deleteProduct(${product.id})">Delete</button></div></div>`).join('');
+                if (!data || data.length === 0) {
+                    container.innerHTML = '<div class="admin-item"><div class="item-title">No ebooks yet.</div></div>';
+                } else {
+                    container.innerHTML = data.map(product => `<div class="admin-item"><div><div class="item-title">${escapeHtml(product.title)}</div><div class="item-meta">$${product.price_usd} / KES ${product.price_kes}</div></div><div><button class="btn btn-secondary btn-sm" onclick="editProduct(${product.id})">Edit</button> <button class="btn btn-danger btn-sm" onclick="deleteProduct(${product.id})">Delete</button></div></div>`).join('');
+                }
             }
         }
 
@@ -582,8 +643,11 @@
             allCategories = data || [];
             const container = document.getElementById('categories-list');
             if (container) {
-                if (!allCategories.length) container.innerHTML = '<div class="admin-item"><div class="item-title">No categories yet. Add one above.</div></div>';
-                else container.innerHTML = allCategories.map(cat => `<div class="admin-item"><span class="item-title">${escapeHtml(cat.name)}</span><button class="btn btn-danger btn-sm" onclick="deleteCategory(${cat.id})">Delete</button></div>`).join('');
+                if (!allCategories.length) {
+                    container.innerHTML = '<div class="admin-item"><div class="item-title">No categories yet. Add one above.</div></div>';
+                } else {
+                    container.innerHTML = allCategories.map(cat => `<div class="admin-item"><span class="item-title">${escapeHtml(cat.name)}</span><button class="btn btn-danger btn-sm" onclick="deleteCategory(${cat.id})">Delete</button></div>`).join('');
+                }
             }
             updateCategoryDropdown();
         }

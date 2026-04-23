@@ -176,6 +176,19 @@
                         <div class="stat-label">Total Ebooks</div>
                     </div>
                 </div>
+
+                <!-- Recent Subscribers Section -->
+                <div class="section-card">
+                    <div class="card-header">
+                        <div class="card-title"><i class="fas fa-envelope"></i> Recent Newsletter Subscribers</div>
+                        <button class="btn btn-success btn-sm" onclick="loadSubscribers()"><i class="fas fa-sync-alt"></i> Refresh</button>
+                    </div>
+                    <div class="card-body">
+                        <div id="subscribers-list">
+                            <div class="admin-item"><div class="item-title">Loading subscribers...</div></div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Manage Blogs Tab -->
@@ -423,6 +436,7 @@
             await checkAuth();
             await loadAllData();
             await loadVisitorStats();
+            await loadSubscribers();
             setupTabs();
             
             quillEditor = new Quill('#editor-container', {
@@ -464,7 +478,6 @@
         }
         
         async function loadVisitorStats() {
-            // Get today's visitors
             const today = new Date().toISOString().split('T')[0];
             const { data: dailyData } = await supabaseClient
                 .from('daily_visitors')
@@ -478,7 +491,6 @@
                 document.getElementById('today-visitors').textContent = '0';
             }
             
-            // Get total visitors
             const { data: totalData } = await supabaseClient
                 .from('total_visitors')
                 .select('total_count')
@@ -489,6 +501,30 @@
                 document.getElementById('total-visitors').textContent = totalData.total_count;
             } else {
                 document.getElementById('total-visitors').textContent = '0';
+            }
+        }
+        
+        async function loadSubscribers() {
+            const { data } = await supabaseClient
+                .from('newsletter_subscribers')
+                .select('*')
+                .order('subscribed_at', { ascending: false })
+                .limit(10);
+            
+            const container = document.getElementById('subscribers-list');
+            if (container && data) {
+                if (data.length === 0) {
+                    container.innerHTML = '<div class="admin-item"><div class="item-title">No subscribers yet.</div></div>';
+                } else {
+                    container.innerHTML = data.map(sub => `
+                        <div class="admin-item">
+                            <div>
+                                <div class="item-title">${escapeHtml(sub.email)}</div>
+                                <div class="item-meta">Subscribed: ${new Date(sub.subscribed_at).toLocaleDateString()}</div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
             }
         }
 
@@ -979,6 +1015,7 @@
         window.saveSocialLinks = saveSocialLinks;
         window.saveSEOSettings = saveSEOSettings;
         window.refreshCategories = refreshCategories;
+        window.loadSubscribers = loadSubscribers;
         window.closeModal = closeModal;
 
         init();

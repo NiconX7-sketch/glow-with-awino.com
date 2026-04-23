@@ -287,7 +287,15 @@
         #editor-container { height: 350px; margin-bottom: 1rem; border-radius: 12px; overflow: hidden; }
         .ql-toolbar { background: #0f0f15; border-color: rgba(0, 229, 255, 0.2); border-radius: 12px 12px 0 0; }
         .ql-container { background: #0f0f15; border-color: rgba(0, 229, 255, 0.2); border-radius: 0 0 12px 12px; color: #ffffff; }
-        .ql-editor { color: #ffffff; }
+        .ql-editor { color: #ffffff; }.ql-editor {
+    background: white !important;
+    color: #1a1a1a !important;
+    min-height: 300px;
+}
+
+.ql-editor p, .ql-editor h1, .ql-editor h2, .ql-editor h3 {
+    color: #1a1a1a !important;
+}
 
         /* Category Row */
         .category-row { display: flex; gap: 0.75rem; margin-bottom: 1rem; }

@@ -155,4 +155,21 @@
             const container = document.getElementById('resources-container');
             
             if (availableResources.length === 0) {
-                container.innerHTML = '<p style="text-align:center;padding:2rem;color:#94a3b8;">
+                container.innerHTML = '<p style="text-align:center;padding:2rem;color:#94a3b8;">No affiliate resources available yet. Check back soon!</p>';
+                return;
+            }
+            
+            container.innerHTML = availableResources.map(r => `
+                <div class="resource-card">
+                    <div class="resource-icon" style="color: ${r.color}"><i class="${r.icon}"></i></div>
+                    <h3>${r.name}</h3>
+                    <p>${r.description}</p>
+                    <a href="${r.url}" target="_blank" class="resource-btn">Visit ${r.name} →</a>
+                </div>
+            `).join('');
+        }
+        
+        loadAffiliateResources();
+    </script>
+</body>
+</html>

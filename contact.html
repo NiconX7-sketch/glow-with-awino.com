@@ -45,6 +45,21 @@
 
     <div id="cart-modal" class="modal"><div class="modal-content modal-large"><span class="close" onclick="closeCartModal()">&times;</span><h2>Your Cart</h2><div id="cart-items"></div><div id="cart-total"></div><button onclick="proceedToCheckout()" class="btn-primary" style="width:100%;margin-top:1rem;">Checkout</button></div></div>
 
-    <script src="js/main.js"></script>
+    <script src="js/main.js"></script><!-- Visitor Tracking -->
+<script>
+    (function() {
+        const today = new Date().toISOString().split('T')[0];
+        const lastVisit = localStorage.getItem('lastVisit');
+        
+        if (!lastVisit || lastVisit !== today) {
+            fetch('/api/track-visitor', { 
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            })
+            .then(() => localStorage.setItem('lastVisit', today))
+            .catch(err => console.log('Tracking error:', err));
+        }
+    })();
+</script>
 </body>
 </html>

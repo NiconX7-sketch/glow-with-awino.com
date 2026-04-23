@@ -139,6 +139,21 @@
                 });
             });
         }
-    </script>
+    </script><!-- Visitor Tracking -->
+<script>
+    (function() {
+        const today = new Date().toISOString().split('T')[0];
+        const lastVisit = localStorage.getItem('lastVisit');
+        
+        if (!lastVisit || lastVisit !== today) {
+            fetch('/api/track-visitor', { 
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            })
+            .then(() => localStorage.setItem('lastVisit', today))
+            .catch(err => console.log('Tracking error:', err));
+        }
+    })();
+</script>
 </body>
 </html>

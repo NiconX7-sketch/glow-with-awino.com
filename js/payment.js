@@ -28,7 +28,8 @@ function processPayment(method) {
 
 function setCurrency(currency) {
     localStorage.setItem('currency', currency);
-    document.querySelectorAll('.currency-btn').forEach(btn => {
+    const btns = document.querySelectorAll('.currency-btn');
+    btns.forEach(btn => {
         btn.classList.remove('active');
         if (btn.dataset.currency === currency) {
             btn.classList.add('active');
@@ -45,4 +46,16 @@ function viewCart() {
     }
     sessionStorage.setItem('checkoutCart', JSON.stringify(cart));
     window.location.href = 'checkout.html';
+}
+
+function addToCart(productId, productTitle, productPrice) {
+    let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    const product = { id: productId, title: productTitle, price_usd: productPrice, price_kes: productPrice * 130 };
+    cart.push(product);
+    localStorage.setItem('cart', JSON.stringify(cart));
+    alert(`${productTitle} added to cart!`);
+    
+    // Update cart count badge if exists
+    const cartCount = document.getElementById('cart-count');
+    if (cartCount) cartCount.textContent = cart.length;
 }

@@ -7,11 +7,15 @@
     <link rel="stylesheet" href="css/style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/payments.js"></script>
     <style>
         .float-whatsapp { position: fixed; bottom: 30px; right: 30px; background: #25D366; width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; color: white; cursor: pointer; z-index: 1000; }
-        .cart-count { position: absolute; top: -8px; right: -12px; background: #C66B3D; color: white; border-radius: 50%; padding: 2px 6px; font-size: 11px; font-weight: 600; }
+        .cart-count { position: absolute; top: -8px; right: -12px; background: #C66B3D; color: white; border-radius: 50%; padding: 2px 6px; font-size: 11px; font-weight: 600; min-width: 18px; text-align: center; }
+        .cart-icon-container { position: relative; cursor: pointer; }
         .mobile-menu { display: none; cursor: pointer; font-size: 1.5rem; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: white; border-radius: 20px; padding: 2rem; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto; position: relative; }
+        .close { position: absolute; right: 1.5rem; top: 1rem; font-size: 1.5rem; cursor: pointer; color: #999; }
+        .close:hover { color: #C66B3D; }
         @media (max-width: 768px) { .mobile-menu { display: block; } .nav-links { display: none; flex-direction: column; position: absolute; top: 70px; left: 0; right: 0; background: white; padding: 1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); } .nav-links.active { display: flex; } }
     </style>
 </head>
@@ -31,9 +35,9 @@
                 <li><a href="resources.html">Resources</a></li>
                 <li><a href="contact.html">Contact</a></li>
                 <li><a href="admin.html" class="admin-link">Admin</a></li>
-                <li style="position: relative;">
-                    <a href="#" onclick="viewCart(); return false;" style="display: flex; align-items: center; gap: 5px;">
-                        <i class="fas fa-shopping-cart"></i>
+                <li class="cart-icon-container">
+                    <a href="#" onclick="viewCart(); return false;">
+                        <i class="fas fa-shopping-cart" style="font-size: 1.2rem;"></i>
                         <span id="cart-count" class="cart-count">0</span>
                     </a>
                 </li>
@@ -93,44 +97,40 @@
         <div class="footer-bottom"><p>&copy; 2026 Grow With Awino. All rights reserved.</p></div>
     </footer>
 
-    <div id="cart-modal" class="modal" style="display:none;">
+    <!-- Cart Modal -->
+    <div id="cart-modal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeCartModal()">&times;</span>
             <h2><i class="fas fa-shopping-cart"></i> Your Cart</h2>
-            <div id="cart-items"></div>
-            <div id="cart-total"></div>
-            <button onclick="proceedToCheckout()" class="btn-primary" style="width:100%;margin-top:1rem;">Proceed to Checkout</button>
+            <div id="cart-items" style="max-height: 300px; overflow-y: auto;"></div>
+            <div id="cart-total" style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #eee;"></div>
+            <button onclick="proceedToCheckout()" class="btn-primary" style="width:100%; margin-top:1rem;">Proceed to Checkout</button>
         </div>
     </div>
 
     <script>
-        const INDEX_SUPABASE_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
-        const INDEX_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
-        const indexSupabase = supabase.createClient(INDEX_SUPABASE_URL, INDEX_SUPABASE_KEY);
+        const SUPABASE_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         
         let cart = JSON.parse(localStorage.getItem('cart') || '[]');
         
-        // ========== VISITOR TRACKING ==========
         async function trackVisitor() {
             const today = new Date().toISOString().split('T')[0];
             const lastVisit = localStorage.getItem('lastVisitDate');
             if (lastVisit !== today) {
-                try {
-                    await fetch('/api/track-visitor', { method: 'POST' });
-                    localStorage.setItem('lastVisitDate', today);
-                    console.log('Visitor tracked for:', today);
-                } catch(err) { console.log('Track error:', err); }
+                try { await fetch('/api/track-visitor', { method: 'POST' }); localStorage.setItem('lastVisitDate', today); } catch(err) { console.log('Track error:', err); }
             }
         }
         
         async function loadSiteSettings() {
-            const { data } = await indexSupabase.from('site_settings').select('logo_url, profile_image_url').single();
+            const { data } = await supabase.from('site_settings').select('logo_url, profile_image_url').single();
             if (data?.logo_url) document.getElementById('site-logo').src = data.logo_url;
             if (data?.profile_image_url) document.getElementById('profile-image').src = data.profile_image_url;
         }
         
         async function loadLatestPosts() {
-            const { data } = await indexSupabase.from('blog_posts').select('*').eq('published', true).order('created_at', { ascending: false }).limit(3);
+            const { data } = await supabase.from('blog_posts').select('*').eq('published', true).order('created_at', { ascending: false }).limit(3);
             const container = document.getElementById('latest-posts');
             if (!data || data.length === 0) { container.innerHTML = '<p style="text-align:center;padding:2rem;">No blog posts yet.</p>'; return; }
             container.innerHTML = data.map(post => `
@@ -141,36 +141,81 @@
             `).join('');
         }
         
-        function updateCartCount() { document.getElementById('cart-count').textContent = cart.length; }
+        function updateCartCount() { 
+            const countEl = document.getElementById('cart-count');
+            if (countEl) countEl.textContent = cart.length;
+        }
+        
         function viewCart() {
-            const modal = document.getElementById('cart-modal'), items = document.getElementById('cart-items'), totalDiv = document.getElementById('cart-total');
-            if (cart.length === 0) { items.innerHTML = '<p style="text-align:center;padding:2rem;">Cart empty</p>'; totalDiv.innerHTML = ''; return; }
-            let total = 0;
-            items.innerHTML = cart.map((item,i) => { let p = item.price_usd || 29.99; total += p; return `<div style="display:flex;justify-content:space-between;padding:0.75rem 0;border-bottom:1px solid #eee;"><div><strong>${escapeHtml(item.title)}</strong><br>$${p}</div><button onclick="removeFromCart(${i})" style="background:#dc2626;color:white;border:none;padding:0.3rem 0.8rem;border-radius:5px;">Remove</button></div>`; }).join('');
-            totalDiv.innerHTML = `<div style="text-align:right;padding:1rem 0;"><strong>Total: $${total.toFixed(2)}</strong></div>`;
+            const modal = document.getElementById('cart-modal');
+            const itemsDiv = document.getElementById('cart-items');
+            const totalDiv = document.getElementById('cart-total');
+            
+            if (cart.length === 0) {
+                itemsDiv.innerHTML = '<p style="text-align:center;padding:2rem;">Your cart is empty.</p>';
+                totalDiv.innerHTML = '';
+            } else {
+                let total = 0;
+                itemsDiv.innerHTML = cart.map((item, index) => {
+                    const price = item.price_usd || 29.99;
+                    total += price;
+                    return `
+                        <div style="display:flex; justify-content:space-between; align-items:center; padding:0.75rem 0; border-bottom:1px solid #eee;">
+                            <div>
+                                <strong>${escapeHtml(item.title)}</strong>
+                                <div style="color:#C66B3D; font-weight:600;">$${price.toFixed(2)}</div>
+                            </div>
+                            <button onclick="removeFromCart(${index})" style="background:#dc2626; color:white; border:none; padding:0.3rem 0.8rem; border-radius:5px; cursor:pointer;">Remove</button>
+                        </div>
+                    `;
+                }).join('');
+                totalDiv.innerHTML = `<div style="text-align:right; font-size:1.2rem;"><strong>Total: $${total.toFixed(2)}</strong></div>`;
+            }
             modal.style.display = 'flex';
         }
-        function removeFromCart(i) { cart.splice(i,1); localStorage.setItem('cart',JSON.stringify(cart)); updateCartCount(); viewCart(); }
-        function proceedToCheckout() { if(cart.length===0){ alert('Cart empty'); return; } sessionStorage.setItem('checkoutCart',JSON.stringify(cart)); window.location.href='checkout.html'; }
-        function closeCartModal() { document.getElementById('cart-modal').style.display = 'none'; }
+        
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCount();
+            viewCart();
+        }
+        
+        function proceedToCheckout() {
+            if (cart.length === 0) {
+                alert('Your cart is empty!');
+                return;
+            }
+            sessionStorage.setItem('checkoutCart', JSON.stringify(cart));
+            window.location.href = 'checkout.html';
+        }
+        
+        function closeCartModal() {
+            document.getElementById('cart-modal').style.display = 'none';
+        }
+        
         function escapeHtml(t) { if(!t) return ''; const d=document.createElement('div'); d.textContent=t; return d.innerHTML; }
         
         document.getElementById('newsletter-form')?.addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('newsletter-email').value;
             const msg = document.getElementById('newsletter-message');
-            const { error } = await indexSupabase.from('newsletter_subscribers').insert([{ email }]);
+            const { error } = await supabase.from('newsletter_subscribers').insert([{ email }]);
             if (error?.code === '23505') { msg.textContent = '✅ Already subscribed!'; msg.style.cssText = 'background:#fef3c7;color:#d97706;display:block'; }
             else if (error) { msg.textContent = '❌ Error. Please try again.'; msg.style.cssText = 'background:#fee2e2;color:#dc2626;display:block'; }
             else { msg.textContent = '✅ Subscribed! Check your email.'; msg.style.cssText = 'background:#dcfce7;color:#16a34a;display:block'; e.target.reset(); }
             setTimeout(() => msg.style.display = 'none', 5000);
         });
         
-        // Run visitor tracking and load content
         trackVisitor();
         loadSiteSettings();
         loadLatestPosts();
         updateCartCount();
+        
+        window.onclick = function(event) {
+            const modal = document.getElementById('cart-modal');
+            if (event.target === modal) modal.style.display = 'none';
+        }
     </script>
 </body>
 </html>

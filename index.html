@@ -4,85 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Grow With Awino - Digital Skills & Freelancing Hub</title>
-    <meta name="description" content="Learn digital skills, freelancing, graphic design, and online income strategies.">
-    <meta name="keywords" content="digital skills, freelancing, online income, graphic design">
     <link rel="stylesheet" href="css/style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* Floating WhatsApp Button */
-        .float-whatsapp {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: #25D366;
-            color: white;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            transition: all 0.3s ease;
-            z-index: 1000;
-        }
-        .float-whatsapp:hover {
-            transform: scale(1.1);
-            background: #128C7E;
-        }
-        
-        /* Cart Modal - Centered */
-        .cart-modal-centered {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            border-radius: 20px;
-            padding: 2rem;
-            max-width: 500px;
-            width: 90%;
-            z-index: 1001;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-        }
-        
-        /* Newsletter - Centered */
-        .newsletter {
-            text-align: center;
-        }
-        .newsletter form {
-            max-width: 500px;
-            margin: 1.5rem auto 0;
-            display: flex;
-            gap: 0.5rem;
-        }
-        @media (max-width: 768px) {
-            .newsletter form { flex-direction: column; }
-        }
-        
-        /* Latest Posts Title - Centered */
-        .latest-posts h2 {
-            text-align: center;
-        }
-        
-        /* Smooth Scroll */
-        html {
-            scroll-behavior: smooth;
+        .float-whatsapp { position: fixed; bottom: 30px; right: 30px; background: #25D366; width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; color: white; cursor: pointer; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: all 0.3s; }
+        .float-whatsapp:hover { transform: scale(1.1); background: #128C7E; }
+        .cart-count { position: absolute; top: -8px; right: -12px; background: #C66B3D; color: white; border-radius: 50%; padding: 2px 6px; font-size: 11px; font-weight: 600; }
+        .mobile-menu { display: none; cursor: pointer; font-size: 1.5rem; }
+        @media (max-width: 768px) { 
+            .mobile-menu { display: block; } 
+            .nav-links { display: none; flex-direction: column; position: absolute; top: 70px; left: 0; right: 0; background: white; padding: 1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+            .nav-links.active { display: flex; }
         }
     </style>
 </head>
 <body>
-    <div class="float-whatsapp" onclick="window.open('https://wa.me/254704817504','_blank')">
-        <i class="fab fa-whatsapp"></i>
-    </div>
+    <div class="float-whatsapp" onclick="window.open('https://wa.me/254704817504','_blank')"><i class="fab fa-whatsapp"></i></div>
 
     <header>
         <nav class="navbar">
             <div class="logo-container">
-                <img id="site-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='45' height='45' viewBox='0 0 45 45'%3E%3Crect width='45' height='45' fill='%23C66B3D'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='20' font-weight='bold'%3EGWA%3C/text%3E%3C/svg%3E" class="logo">
+                <img id="site-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='45' height='45' viewBox='0 0 45 45'%3E%3Crect width='45' height='45' fill='%23C66B3D'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='20'%3EGWA%3C/text%3E%3C/svg%3E" class="logo">
                 <span class="site-title">Grow With Awino</span>
             </div>
             <ul class="nav-links" id="navLinks">
@@ -92,10 +35,10 @@
                 <li><a href="resources.html">Resources</a></li>
                 <li><a href="contact.html">Contact</a></li>
                 <li><a href="admin.html" class="admin-link">Admin</a></li>
-                <li class="cart-icon-container" style="position: relative;">
+                <li style="position: relative;">
                     <a href="#" onclick="viewCart(); return false;">
-                        <i class="fas fa-shopping-cart" style="font-size: 1.2rem;"></i>
-                        <span id="cart-count" style="position: absolute; top: -8px; right: -12px; background: #C66B3D; color: white; border-radius: 50%; padding: 2px 6px; font-size: 11px;">0</span>
+                        <i class="fas fa-shopping-cart"></i>
+                        <span id="cart-count" class="cart-count">0</span>
                     </a>
                 </li>
             </ul>
@@ -169,7 +112,7 @@
     </footer>
 
     <div id="cart-modal" class="modal" style="display: none;">
-        <div class="modal-content cart-modal-centered">
+        <div class="modal-content">
             <span class="close" onclick="closeCartModal()">&times;</span>
             <h2><i class="fas fa-shopping-cart"></i> Your Cart</h2>
             <div id="cart-items"></div>
@@ -177,9 +120,7 @@
             <button onclick="proceedToCheckout()" class="btn-primary" style="width:100%;margin-top:1rem;">Proceed to Checkout</button>
         </div>
     </div>
-    <div id="modal" class="modal"><div class="modal-content"><span class="close" onclick="closeModal()">&times;</span><div id="modal-body"></div></div></div>
 
-    <script src="js/visitor-stats.js"></script>
     <script>
         const SUPABASE_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
@@ -187,16 +128,39 @@
         
         let cart = JSON.parse(localStorage.getItem('cart') || '[]');
         
+        async function loadSiteLogo() {
+            const { data } = await supabase.from('site_settings').select('logo_url').single();
+            if (data?.logo_url) {
+                const logoImg = document.getElementById('site-logo');
+                if (logoImg) logoImg.src = data.logo_url;
+            }
+        }
+        
+        async function loadProfileImage() {
+            const { data } = await supabase.from('site_settings').select('profile_image_url').single();
+            if (data?.profile_image_url) {
+                const profileImg = document.getElementById('profile-image');
+                if (profileImg) profileImg.src = data.profile_image_url;
+            }
+        }
+        
         async function loadLatestPosts() {
-            const { data, error } = await supabase.from('blog_posts').select('*').eq('published', true).order('created_at', { ascending: false }).limit(3);
+            const { data, error } = await supabase
+                .from('blog_posts')
+                .select('*')
+                .eq('published', true)
+                .order('created_at', { ascending: false })
+                .limit(3);
+            
             const container = document.getElementById('latest-posts');
             if (error || !data || data.length === 0) {
-                container.innerHTML = '<p style="text-align:center;padding:2rem;">No blog posts yet.</p>';
+                container.innerHTML = '<p style="text-align:center;padding:2rem;">No blog posts yet. Check back soon!</p>';
                 return;
             }
+            
             container.innerHTML = data.map(post => `
                 <div class="post-card">
-                    <img src="${post.image_url || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22350%22 height=%22200%22%3E%3Crect width=%22350%22 height=%22200%22 fill=%22%23C66B3D%22/%3E%3Ctext x=%2250%%22 y=%2250%%22 text-anchor=%22middle%22 fill=%22white%22%3ENo Image%3C/text%3E%3C/svg%3E'}" class="post-image">
+                    <img src="${post.image_url || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22350%22 height=%22200%22%3E%3Crect width=%22350%22 height=%22200%22 fill=%22%23C66B3D%22/%3E%3Ctext x=%2250%%22 y=%2250%%22 fill=%22white%22%3ENo Image%3C/text%3E%3C/svg%3E'}" class="post-image">
                     <div class="post-content">
                         <span class="post-category">${escapeHtml(post.category)}</span>
                         <h3 class="post-title">${escapeHtml(post.title)}</h3>
@@ -204,16 +168,6 @@
                     </div>
                 </div>
             `).join('');
-        }
-        
-        async function loadProfileImage() {
-            const { data } = await supabase.from('site_settings').select('profile_image_url').single();
-            if (data?.profile_image_url) document.getElementById('profile-image').src = data.profile_image_url;
-        }
-        
-        async function loadSiteLogo() {
-            const { data } = await supabase.from('site_settings').select('logo_url').single();
-            if (data?.logo_url) document.getElementById('site-logo').src = data.logo_url;
         }
         
         function updateCartCount() { 
@@ -227,13 +181,13 @@
             const totalDiv = document.getElementById('cart-total');
             let total = 0;
             if (cart.length === 0) {
-                itemsDiv.innerHTML = '<p style="text-align:center;padding:2rem;">Cart empty</p>';
+                itemsDiv.innerHTML = '<p style="text-align:center;padding:2rem;">Your cart is empty.</p>';
                 totalDiv.innerHTML = '';
             } else {
                 itemsDiv.innerHTML = cart.map((item, i) => {
                     const price = item.price_usd || 29.99;
                     total += price;
-                    return `<div style="display:flex;justify-content:space-between;padding:0.75rem 0;border-bottom:1px solid #ddd;">
+                    return `<div style="display:flex;justify-content:space-between;padding:0.75rem 0;border-bottom:1px solid #eee;">
                         <div><strong>${escapeHtml(item.title)}</strong><br>$${price}</div>
                         <button onclick="removeFromCart(${i})" style="background:#dc2626;color:white;border:none;padding:0.3rem 0.8rem;border-radius:5px;cursor:pointer;">Remove</button>
                     </div>`;
@@ -246,7 +200,6 @@
         function removeFromCart(i) { cart.splice(i,1); localStorage.setItem('cart',JSON.stringify(cart)); updateCartCount(); viewCart(); }
         function proceedToCheckout() { if(cart.length===0){ alert('Cart empty'); return; } sessionStorage.setItem('checkoutCart',JSON.stringify(cart)); window.location.href='checkout.html'; }
         function closeCartModal() { document.getElementById('cart-modal').style.display = 'none'; }
-        function closeModal() { document.getElementById('modal').style.display = 'none'; }
         function escapeHtml(t) { if(!t) return ''; const d=document.createElement('div'); d.textContent=t; return d.innerHTML; }
         
         document.getElementById('newsletter-form')?.addEventListener('submit', async (e) => {
@@ -272,9 +225,9 @@
             setTimeout(() => msg.style.display = 'none', 5000);
         });
         
-        loadLatestPosts();
-        loadProfileImage();
         loadSiteLogo();
+        loadProfileImage();
+        loadLatestPosts();
         updateCartCount();
     </script>
 </body>

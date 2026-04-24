@@ -12,67 +12,38 @@ async function processPayment(method) {
     let total = 0;
     cart.forEach(item => {
         if (currency === 'USD') {
-            total += item.price_usd;
+            total += item.price_usd || item.price;
         } else {
-            total += item.price_kes;
+            total += item.price_kes || item.price * 130;
         }
     });
     
     const userEmail = prompt('Enter your email for receipt:', 'customer@example.com');
-    
-    switch(method) {
-        case 'paypal':
-            await processPayPal(total, currency);
-            break;
-        case 'paystack':
-            await processPaystack(total, currency, userEmail);
-            break;
-        case 'mpesa':
-            await processMpesa(total);
-            break;
-    }
-}
-
-async function processPayPal(amount, currency) {
-    alert('Redirecting to PayPal... (Demo mode)');
-    localStorage.removeItem('cart');
-    window.location.href = 'success.html';
-}
-
-async function processPaystack(amount, currency, email) {
-    if (!email) {
+    if (!userEmail && method !== 'mpesa') {
         alert('Email is required');
         return;
     }
-    alert('Processing Paystack payment... (Demo mode)');
+    
+    // Simulate payment processing
+    alert(`Processing ${method.toUpperCase()} payment of ${currency === 'USD' ? '$' + total : 'KES ' + total}...`);
+    
+    // Clear cart and redirect
     localStorage.removeItem('cart');
+    sessionStorage.removeItem('checkoutCart');
     window.location.href = 'success.html';
-}
-
-async function processMpesa(amount) {
-    const phone = prompt('Enter your M-Pesa phone number (e.g., 2547XXXXXXXX):', '2547');
-    if (!phone) return;
-    alert(`STK push sent to ${phone}. Complete payment on your phone.`);
-    setTimeout(() => {
-        localStorage.removeItem('cart');
-        window.location.href = 'success.html';
-    }, 5000);
 }
 
 function setCurrency(currency) {
     localStorage.setItem('currency', currency);
+    // Update active state on buttons
     document.querySelectorAll('.currency-btn').forEach(btn => {
         btn.classList.remove('active');
         if (btn.dataset.currency === currency) {
             btn.classList.add('active');
         }
     });
-    // Refresh prices on page
-    if (typeof renderProducts === 'function') {
-        renderProducts();
-    } else {
-        location.reload();
-    }
+    // Refresh page to update prices
+    location.reload();
 }
 
 function viewCart() {

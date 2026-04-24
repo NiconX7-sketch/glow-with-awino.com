@@ -59,21 +59,21 @@
     </footer>
 
     <script>
-        // Initialize Supabase ONCE
-        const supabaseUrl = 'https://orxrpwncwyrkmubqywhw.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
-        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+        // Supabase initialization - ONLY ONCE
+        const _SUPABASE_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
+        const _SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
+        const _supabase = supabase.createClient(_SUPABASE_URL, _SUPABASE_KEY);
         
         let allPosts = [];
         let cart = JSON.parse(localStorage.getItem('cart') || '[]');
         
         async function loadSiteLogo() {
-            const { data } = await supabase.from('site_settings').select('logo_url').single();
+            const { data } = await _supabase.from('site_settings').select('logo_url').single();
             if (data?.logo_url) document.getElementById('site-logo').src = data.logo_url;
         }
         
         async function loadCategories() {
-            const { data } = await supabase.from('categories').select('*').order('name');
+            const { data } = await _supabase.from('categories').select('*').order('name');
             const container = document.getElementById('categories-list');
             const filter = document.getElementById('category-filter');
             if (container && data?.length) { container.innerHTML = data.map(cat => `<li><a href="#" onclick="filterByCategory('${escapeHtml(cat.name)}')">${escapeHtml(cat.name)}</a></li>`).join(''); }
@@ -82,7 +82,7 @@
         }
         
         async function loadBlogs() {
-            const { data } = await supabase.from('blog_posts').select('*').eq('published', true).order('created_at', { ascending: false });
+            const { data } = await _supabase.from('blog_posts').select('*').eq('published', true).order('created_at', { ascending: false });
             allPosts = data || [];
             renderBlogs();
             loadRecentPosts();
@@ -103,7 +103,7 @@
         }
         
         async function loadRecentPosts() {
-            const { data } = await supabase.from('blog_posts').select('id,title').eq('published', true).order('created_at', { ascending: false }).limit(5);
+            const { data } = await _supabase.from('blog_posts').select('id,title').eq('published', true).order('created_at', { ascending: false }).limit(5);
             const container = document.getElementById('recent-posts');
             if (container && data?.length) { container.innerHTML = data.map(post => `<li><a href="post.html?id=${post.id}">${escapeHtml(post.title)}</a></li>`).join(''); }
             else if (container) { container.innerHTML = '<li>No posts yet</li>'; }

@@ -13,12 +13,10 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: #0a0a0f; color: #ffffff; line-height: 1.5; }
         
-        /* Scrollbar */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #16161f; }
-        ::-webkit-scrollbar-thumb { background: #00e5ff; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: #C66B3D; border-radius: 4px; }
 
-        /* Navbar */
         .admin-navbar {
             background: rgba(10, 10, 15, 0.95);
             backdrop-filter: blur(10px);
@@ -29,25 +27,25 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            border-bottom: 1px solid rgba(0, 229, 255, 0.2);
+            border-bottom: 1px solid rgba(198,107,61,0.2);
         }
         .navbar-brand { display: flex; align-items: center; gap: 0.75rem; }
         .logo-icon {
             width: 38px;
             height: 38px;
-            background: linear-gradient(135deg, #00e5ff, #ff00e5);
+            background: linear-gradient(135deg, #C66B3D, #2D6A4F);
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #0a0a0f;
+            color: white;
             font-weight: 800;
             font-size: 1rem;
         }
         .brand-text {
             font-size: 1.25rem;
             font-weight: 700;
-            background: linear-gradient(135deg, #00e5ff, #ff00e5);
+            background: linear-gradient(135deg, #C66B3D, #2D6A4F);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -64,19 +62,17 @@
             padding: 0.5rem 0.75rem;
             border-radius: 8px;
         }
-        .nav-link:hover { color: #00e5ff; background: rgba(0, 229, 255, 0.1); }
+        .nav-link:hover { color: #C66B3D; background: rgba(198,107,61,0.1); }
         .logout-btn { color: #ff4444; }
-        .logout-btn:hover { background: rgba(255, 68, 68, 0.1); color: #ff4444; }
+        .logout-btn:hover { background: rgba(255,68,68,0.1); color: #ff4444; }
 
-        /* Layout */
         .admin-wrapper { display: flex; min-height: calc(100vh - 69px); }
 
-        /* Sidebar */
         .admin-sidebar {
             width: 280px;
             background: rgba(10, 10, 15, 0.95);
             backdrop-filter: blur(10px);
-            border-right: 1px solid rgba(0, 229, 255, 0.1);
+            border-right: 1px solid rgba(198,107,61,0.1);
             padding: 1.5rem 0;
             position: sticky;
             top: 69px;
@@ -108,10 +104,9 @@
             transition: all 0.2s;
         }
         .sidebar-link i { width: 1.25rem; font-size: 1rem; }
-        .sidebar-link:hover { background: rgba(0, 229, 255, 0.1); color: #00e5ff; }
-        .sidebar-link.active { background: linear-gradient(135deg, #00e5ff, #ff00e5); color: #0a0a0f; }
+        .sidebar-link:hover { background: rgba(198,107,61,0.1); color: #C66B3D; }
+        .sidebar-link.active { background: linear-gradient(135deg, #C66B3D, #2D6A4F); color: white; }
 
-        /* Main Content */
         .admin-content {
             flex: 1;
             padding: 2rem;
@@ -119,12 +114,10 @@
             background: rgba(10, 10, 15, 0.8);
         }
 
-        /* Page Header */
         .page-header { margin-bottom: 2rem; }
         .page-title { font-size: 1.75rem; font-weight: 700; color: #ffffff; }
         .page-subtitle { color: #888888; font-size: 0.875rem; margin-top: 0.25rem; }
 
-        /* Stats Cards */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -136,36 +129,35 @@
             backdrop-filter: blur(10px);
             border-radius: 20px;
             padding: 1.25rem;
-            border: 1px solid rgba(0, 229, 255, 0.1);
+            border: 1px solid rgba(198,107,61,0.1);
             transition: all 0.2s;
         }
-        .stat-card:hover { transform: translateY(-2px); border-color: #00e5ff; }
+        .stat-card:hover { transform: translateY(-2px); border-color: #C66B3D; }
         .stat-icon {
             width: 48px;
             height: 48px;
-            background: rgba(0, 229, 255, 0.1);
+            background: rgba(198,107,61,0.1);
             border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-bottom: 0.75rem;
         }
-        .stat-icon i { font-size: 1.5rem; color: #00e5ff; }
+        .stat-icon i { font-size: 1.5rem; color: #C66B3D; }
         .stat-value { font-size: 1.75rem; font-weight: 700; color: #ffffff; }
         .stat-label { color: #888888; font-size: 0.7rem; font-weight: 500; margin-top: 0.25rem; }
 
-        /* Section Cards */
         .section-card {
             background: rgba(22, 22, 31, 0.9);
             backdrop-filter: blur(10px);
             border-radius: 20px;
-            border: 1px solid rgba(0, 229, 255, 0.1);
+            border: 1px solid rgba(198,107,61,0.1);
             overflow: hidden;
             margin-bottom: 1.5rem;
         }
         .card-header {
             padding: 1rem 1.5rem;
-            border-bottom: 1px solid rgba(0, 229, 255, 0.1);
+            border-bottom: 1px solid rgba(198,107,61,0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -174,10 +166,9 @@
             background: rgba(8, 8, 8, 0.5);
         }
         .card-title { font-size: 1rem; font-weight: 600; color: #ffffff; display: flex; align-items: center; gap: 0.5rem; }
-        .card-title i { color: #00e5ff; }
+        .card-title i { color: #C66B3D; }
         .card-body { padding: 1rem 1.5rem; }
 
-        /* Forms */
         .form-group { margin-bottom: 1rem; }
         .form-label {
             display: block;
@@ -191,7 +182,7 @@
         .form-control, .form-select, .form-textarea {
             width: 100%;
             padding: 0.7rem 1rem;
-            border: 1px solid rgba(0, 229, 255, 0.2);
+            border: 1px solid rgba(198,107,61,0.2);
             border-radius: 12px;
             font-size: 0.875rem;
             font-family: 'Inter', sans-serif;
@@ -201,11 +192,10 @@
         }
         .form-control:focus, .form-select:focus, .form-textarea:focus {
             outline: none;
-            border-color: #00e5ff;
-            box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.1);
+            border-color: #C66B3D;
+            box-shadow: 0 0 0 3px rgba(198,107,61,0.1);
         }
 
-        /* Buttons */
         .btn {
             padding: 0.6rem 1.25rem;
             border-radius: 10px;
@@ -219,34 +209,31 @@
             gap: 0.5rem;
             font-family: 'Inter', sans-serif;
         }
-        .btn-primary { background: linear-gradient(135deg, #00e5ff, #ff00e5); color: #0a0a0f; }
-        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 0 15px rgba(0, 229, 255, 0.3); }
+        .btn-primary { background: linear-gradient(135deg, #C66B3D, #2D6A4F); color: white; }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 0 15px rgba(198,107,61,0.3); }
         .btn-secondary { background: rgba(255, 255, 255, 0.1); color: #ffffff; }
         .btn-secondary:hover { background: rgba(255, 255, 255, 0.2); }
         .btn-danger { background: rgba(255, 68, 68, 0.2); color: #ff4444; border: 1px solid #ff4444; }
-        .btn-danger:hover { background: #ff4444; color: #0a0a0f; }
-        .btn-success { background: rgba(0, 229, 255, 0.2); color: #00e5ff; border: 1px solid #00e5ff; }
-        .btn-success:hover { background: #00e5ff; color: #0a0a0f; }
+        .btn-danger:hover { background: #ff4444; color: white; }
+        .btn-success { background: rgba(198,107,61,0.2); color: #C66B3D; border: 1px solid #C66B3D; }
+        .btn-success:hover { background: #C66B3D; color: white; }
         .btn-sm { padding: 0.4rem 0.9rem; font-size: 0.75rem; }
 
-        /* Admin Items */
         .admin-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 0.75rem 0;
-            border-bottom: 1px solid rgba(0, 229, 255, 0.1);
+            border-bottom: 1px solid rgba(198,107,61,0.1);
         }
         .admin-item:last-child { border-bottom: none; }
         .item-title { font-weight: 600; color: #ffffff; margin-bottom: 0.25rem; font-size: 0.9rem; }
         .item-meta { font-size: 0.7rem; color: #666666; }
         .item-actions { display: flex; gap: 0.5rem; }
 
-        /* Image Preview */
-        .image-preview { margin-top: 0.75rem; max-width: 100px; border-radius: 12px; overflow: hidden; border: 1px solid rgba(0, 229, 255, 0.2); }
+        .image-preview { margin-top: 0.75rem; max-width: 100px; border-radius: 12px; overflow: hidden; border: 1px solid rgba(198,107,61,0.2); }
         .image-preview img { width: 100%; height: auto; display: block; }
 
-        /* Modal */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -267,11 +254,11 @@
             max-width: 700px;
             max-height: 85vh;
             overflow-y: auto;
-            border: 1px solid rgba(0, 229, 255, 0.2);
+            border: 1px solid rgba(198,107,61,0.2);
         }
         .modal-header {
             padding: 1rem 1.5rem;
-            border-bottom: 1px solid rgba(0, 229, 255, 0.1);
+            border-bottom: 1px solid rgba(198,107,61,0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -279,11 +266,10 @@
         }
         .modal-title { font-size: 1.1rem; font-weight: 700; color: #ffffff; }
         .modal-close { cursor: pointer; font-size: 1.25rem; color: #888888; transition: color 0.2s; }
-        .modal-close:hover { color: #00e5ff; }
+        .modal-close:hover { color: #C66B3D; }
         .modal-body { padding: 1.5rem; }
-        .modal-footer { padding: 1rem 1.5rem; border-top: 1px solid rgba(0, 229, 255, 0.1); display: flex; justify-content: flex-end; gap: 1rem; }
+        .modal-footer { padding: 1rem 1.5rem; border-top: 1px solid rgba(198,107,61,0.1); display: flex; justify-content: flex-end; gap: 1rem; }
 
-        /* Rich Text Editor - WHITE BACKGROUND FOR BLOG EDITING */
         #editor-container { 
             height: 350px; 
             margin-bottom: 1rem; 
@@ -305,39 +291,30 @@
             background: white !important; 
             color: #1a1a1a !important; 
             min-height: 300px;
-            font-family: 'Inter', sans-serif;
-        }
-        .ql-editor p, .ql-editor h1, .ql-editor h2, .ql-editor h3, .ql-editor div {
-            color: #1a1a1a !important;
         }
 
-        /* Category Row */
         .category-row { display: flex; gap: 0.75rem; margin-bottom: 1rem; }
         .category-row .form-control { flex: 1; }
 
-        /* Tab Content */
         .tab-pane { display: none; }
         .tab-pane.active { display: block; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Notification */
         .notification {
             position: fixed;
             bottom: 24px;
             right: 24px;
             padding: 0.875rem 1.25rem;
             border-radius: 12px;
-            color: #0a0a0f;
+            color: white;
             font-weight: 600;
             font-size: 0.8rem;
             z-index: 1100;
             animation: slideInRight 0.3s ease;
-            background: linear-gradient(135deg, #00e5ff, #ff00e5);
-            box-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
+            background: linear-gradient(135deg, #C66B3D, #2D6A4F);
         }
         @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
-        /* Badge */
         .badge {
             display: inline-block;
             padding: 0.25rem 0.5rem;
@@ -346,12 +323,17 @@
             font-weight: 600;
         }
         .badge-pending { background: rgba(255, 184, 0, 0.2); color: #ffb800; border: 1px solid #ffb800; }
-        .badge-completed { background: rgba(0, 229, 255, 0.2); color: #00e5ff; border: 1px solid #00e5ff; }
+        .badge-completed { background: rgba(45,106,79,0.2); color: #2D6A4F; border: 1px solid #2D6A4F; }
 
-        /* Message Preview */
-        .message-preview { max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #888888; font-size: 0.8rem; margin-top: 0.25rem; }
+        .message-preview { 
+            margin: 0.5rem 0; 
+            padding: 0.5rem; 
+            background: rgba(255,255,255,0.05); 
+            border-radius: 8px; 
+            color: #aaa; 
+            font-size: 0.8rem; 
+        }
 
-        /* Responsive */
         @media (max-width: 768px) {
             .admin-wrapper { flex-direction: column; }
             .admin-sidebar { width: 100%; position: static; height: auto; padding: 1rem; }
@@ -401,6 +383,7 @@
         </aside>
 
         <main class="admin-content">
+            <!-- Dashboard Tab -->
             <div id="dashboard" class="tab-pane active">
                 <div class="page-header"><h1 class="page-title">Dashboard</h1><p class="page-subtitle">Welcome back! Here's what's happening with your website.</p></div>
                 <div class="stats-grid">
@@ -414,20 +397,39 @@
                 <div class="section-card"><div class="card-header"><div class="card-title"><i class="fas fa-envelope"></i> Recent Newsletter Subscribers</div><button class="btn btn-success btn-sm" onclick="loadSubscribers()"><i class="fas fa-sync-alt"></i> Refresh</button></div><div class="card-body"><div id="subscribers-list"><div class="admin-item"><div class="item-title">Loading subscribers...</div></div></div></div></div>
             </div>
 
+            <!-- Blogs Tab -->
             <div id="blogs" class="tab-pane"><div class="section-card"><div class="card-header"><div class="card-title"><i class="fas fa-newspaper"></i> Blog Posts</div><button class="btn btn-primary btn-sm" onclick="openBlogModal()"><i class="fas fa-plus"></i> Add New Post</button></div><div class="card-body"><div id="blogs-list"></div></div></div></div>
+            
+            <!-- Products Tab -->
             <div id="products" class="tab-pane"><div class="section-card"><div class="card-header"><div class="card-title"><i class="fas fa-book"></i> Ebooks</div><button class="btn btn-primary btn-sm" onclick="openProductModal()"><i class="fas fa-plus"></i> Add New Ebook</button></div><div class="card-body"><div id="products-list"></div></div></div></div>
+            
+            <!-- Categories Tab -->
             <div id="categories" class="tab-pane"><div class="section-card"><div class="card-header"><div class="card-title"><i class="fas fa-tags"></i> Categories</div><button class="btn btn-success btn-sm" onclick="refreshCategories()"><i class="fas fa-sync-alt"></i> Refresh</button></div><div class="card-body"><div class="category-row"><input type="text" id="new-category-name" class="form-control" placeholder="Enter new category name"><button class="btn btn-primary" onclick="addCategory()"><i class="fas fa-plus"></i> Add</button></div><div id="categories-list"></div></div></div></div>
+            
+            <!-- Orders Tab -->
             <div id="orders" class="tab-pane"><div class="section-card"><div class="card-header"><div class="card-title"><i class="fas fa-shopping-cart"></i> Customer Orders</div><button class="btn btn-success btn-sm" onclick="loadOrders()"><i class="fas fa-sync-alt"></i> Refresh</button></div><div class="card-body"><div id="orders-list"></div></div></div></div>
-            <div id="messages" class="tab-pane"><div class="section-card"><div class="card-header"><div class="card-title"><i class="fas fa-envelope"></i> Contact Messages</div><button class="btn btn-success btn-sm" onclick="loadMessages()"><i class="fas fa-sync-alt"></i> Refresh</button></div><div class="card-body"><div id="messages-list"></div></div></div></div>
+            
+            <!-- Contact Messages Tab -->
+            <div id="messages" class="tab-pane"><div class="section-card"><div class="card-header"><div class="card-title"><i class="fas fa-envelope"></i> Contact Messages</div><button class="btn btn-success btn-sm" onclick="loadMessages()"><i class="fas fa-sync-alt"></i> Refresh</button></div><div class="card-body"><div id="messages-list"><div class="admin-item"><div class="item-title">Loading messages...</div></div></div></div></div></div>
+            
+            <!-- Logo Tab -->
             <div id="logo" class="tab-pane"><div class="section-card"><div class="card-header"><div class="card-title"><i class="fas fa-image"></i> Site Logo</div></div><div class="card-body"><div class="form-group"><label class="form-label"><i class="fas fa-upload"></i> Upload Logo</label><input type="file" id="logo-upload" class="form-control" accept="image/*"><button class="btn btn-primary" onclick="uploadLogo()" style="margin-top: 1rem;"><i class="fas fa-cloud-upload-alt"></i> Upload Logo</button><div id="logo-preview" class="image-preview" style="margin-top: 1rem;"></div></div></div></div></div>
+            
+            <!-- Profile Tab -->
             <div id="profile" class="tab-pane"><div class="section-card"><div class="card-header"><div class="card-title"><i class="fas fa-user-circle"></i> Profile Picture</div></div><div class="card-body"><p class="page-subtitle" style="margin-bottom: 1rem;">This photo appears on the About section of your homepage.</p><div class="form-group"><label class="form-label"><i class="fas fa-upload"></i> Upload Profile Picture</label><input type="file" id="profile-upload" class="form-control" accept="image/*"><button class="btn btn-primary" onclick="uploadProfile()" style="margin-top: 1rem;"><i class="fas fa-cloud-upload-alt"></i> Upload Picture</button><div id="profile-preview" class="image-preview" style="margin-top: 1rem;"></div></div></div></div></div>
+            
+            <!-- Payments Tab -->
             <div id="payments" class="tab-pane">
                 <div class="section-card"><div class="card-header"><div class="card-title"><i class="fab fa-paypal"></i> PayPal</div></div><div class="card-body"><div class="form-group"><label class="form-label">Client ID</label><input type="text" id="paypal-client-id" class="form-control"></div><div class="form-group"><label class="form-label">Secret Key</label><input type="password" id="paypal-secret" class="form-control"></div><div class="form-group"><label class="form-label">Mode</label><select id="paypal-mode" class="form-select"><option value="sandbox">Sandbox (Test)</option><option value="live">Live (Production)</option></select></div></div></div>
                 <div class="section-card"><div class="card-header"><div class="card-title"><i class="fas fa-credit-card"></i> Paystack</div></div><div class="card-body"><div class="form-group"><label class="form-label">Public Key</label><input type="text" id="paystack-public-key" class="form-control"></div><div class="form-group"><label class="form-label">Secret Key</label><input type="password" id="paystack-secret-key" class="form-control"></div></div></div>
                 <div class="section-card"><div class="card-header"><div class="card-title"><i class="fas fa-mobile-alt"></i> M-Pesa</div></div><div class="card-body"><div class="form-group"><label class="form-label">Consumer Key</label><input type="text" id="mpesa-consumer-key" class="form-control"></div><div class="form-group"><label class="form-label">Consumer Secret</label><input type="password" id="mpesa-consumer-secret" class="form-control"></div><div class="form-group"><label class="form-label">Shortcode</label><input type="text" id="mpesa-shortcode" class="form-control"></div><div class="form-group"><label class="form-label">Passkey</label><input type="password" id="mpesa-passkey" class="form-control"></div><div class="form-group"><label class="form-label">Environment</label><select id="mpesa-environment" class="form-select"><option value="sandbox">Sandbox</option><option value="production">Production</option></select></div></div></div>
                 <button class="btn btn-primary" onclick="savePaymentSettings()"><i class="fas fa-save"></i> Save All Payment Settings</button>
             </div>
+            
+            <!-- Affiliates Tab -->
             <div id="affiliates" class="tab-pane"><div class="section-card"><div class="card-header"><div class="card-title"><i class="fas fa-link"></i> Affiliate IDs</div></div><div class="card-body"><div class="form-group"><label class="form-label">Amazon</label><input type="text" id="amazon-id" class="form-control"></div><div class="form-group"><label class="form-label">Jumia</label><input type="text" id="jumia-id" class="form-control"></div><div class="form-group"><label class="form-label">Udemy</label><input type="text" id="udemy-id" class="form-control"></div><div class="form-group"><label class="form-label">Coursera</label><input type="text" id="coursera-id" class="form-control"></div><button class="btn btn-primary" onclick="saveAffiliateSettings()"><i class="fas fa-save"></i> Save Affiliate Settings</button></div></div></div>
+            
+            <!-- Settings Tab -->
             <div id="settings" class="tab-pane">
                 <div class="section-card"><div class="card-header"><div class="card-title"><i class="fas fa-globe"></i> General Settings</div></div><div class="card-body"><div class="form-group"><label class="form-label">Site Title</label><input type="text" id="site-title" class="form-control"></div><div class="form-group"><label class="form-label">Site Description</label><textarea id="site-description" class="form-textarea" rows="3"></textarea></div><div class="form-group"><label class="form-label">Admin Email</label><input type="email" id="admin-email" class="form-control"></div><div class="form-group"><label class="form-label">Contact Email</label><input type="email" id="contact-email" class="form-control" value="awinophoebe44@gmail.com"></div><div class="form-group"><label class="form-label">WhatsApp Number</label><input type="tel" id="whatsapp-number" class="form-control"></div><div class="form-group"><label class="form-label">Default Currency</label><select id="default-currency" class="form-select"><option value="USD">USD</option><option value="KES">KES</option></select></div><button class="btn btn-primary" onclick="saveGeneralSettings()"><i class="fas fa-save"></i> Save Settings</button></div></div>
                 <div class="section-card"><div class="card-header"><div class="card-title"><i class="fas fa-share-alt"></i> Social Media</div></div><div class="card-body"><div class="form-group"><label class="form-label"><i class="fab fa-twitter"></i> Twitter/X</label><input type="url" id="twitter-link" class="form-control"></div><div class="form-group"><label class="form-label"><i class="fab fa-youtube"></i> YouTube</label><input type="url" id="youtube-link" class="form-control"></div><div class="form-group"><label class="form-label"><i class="fab fa-facebook"></i> Facebook</label><input type="url" id="facebook-link" class="form-control"></div><div class="form-group"><label class="form-label"><i class="fab fa-tiktok"></i> TikTok</label><input type="url" id="tiktok-link" class="form-control"></div><div class="form-group"><label class="form-label"><i class="fab fa-instagram"></i> Instagram</label><input type="url" id="instagram-link" class="form-control"></div><button class="btn btn-primary" onclick="saveSocialLinks()"><i class="fas fa-save"></i> Save Social Links</button></div></div>
@@ -453,15 +455,10 @@
         let quillEditor = null;
         let allCategories = [];
 
-        document.addEventListener('DOMContentLoaded', function() {
-            init();
-        });
+        document.addEventListener('DOMContentLoaded', function() { init(); });
 
         async function init() {
-            if (typeof supabase === 'undefined') {
-                setTimeout(init, 500);
-                return;
-            }
+            if (typeof supabase === 'undefined') { setTimeout(init, 500); return; }
             supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             await checkAuth();
             await loadAllData();
@@ -491,10 +488,7 @@
 
         async function checkAuth() {
             const { data: { session } } = await supabaseClient.auth.getSession();
-            if (!session) {
-                window.location.href = 'login.html';
-                return;
-            }
+            if (!session) { window.location.href = 'login.html'; return; }
             currentUser = session.user;
         }
 
@@ -512,30 +506,14 @@
         async function loadVisitorStats() {
             try {
                 const today = new Date().toISOString().split('T')[0];
-                const { data: dailyData } = await supabaseClient
-                    .from('daily_visitors')
-                    .select('count')
-                    .eq('visit_date', today)
-                    .maybeSingle();
-                
+                const { data: dailyData } = await supabaseClient.from('daily_visitors').select('count').eq('visit_date', today).maybeSingle();
                 const todayEl = document.getElementById('today-visitors');
                 if (todayEl) todayEl.textContent = dailyData?.count || '0';
                 
-                const { data: totalData } = await supabaseClient
-                    .from('total_visitors')
-                    .select('total_count')
-                    .eq('id', 1)
-                    .maybeSingle();
-                
+                const { data: totalData } = await supabaseClient.from('total_visitors').select('total_count').eq('id', 1).maybeSingle();
                 const totalEl = document.getElementById('total-visitors');
                 if (totalEl) totalEl.textContent = totalData?.total_count || '0';
-            } catch(e) {
-                console.log('Visitor stats not ready yet:', e);
-                const totalEl = document.getElementById('total-visitors');
-                const todayEl = document.getElementById('today-visitors');
-                if (totalEl) totalEl.textContent = '0';
-                if (todayEl) todayEl.textContent = '0';
-            }
+            } catch(e) { console.log('Visitor stats not ready'); }
         }
         
         async function loadOrders() {
@@ -543,9 +521,8 @@
                 const { data } = await supabaseClient.from('orders').select('*').order('created_at', { ascending: false });
                 const container = document.getElementById('orders-list');
                 if (container) {
-                    if (!data || data.length === 0) {
-                        container.innerHTML = '<div class="admin-item"><div class="item-title">No orders yet.</div></div>';
-                    } else {
+                    if (!data || data.length === 0) { container.innerHTML = '<div class="admin-item"><div class="item-title">No orders yet.</div></div>'; }
+                    else {
                         container.innerHTML = data.map(order => `<div class="admin-item"><div><div class="item-title">Order #${order.id}</div><div class="item-meta">$${order.total_amount} ${order.currency} | ${order.payment_method} | <span class="badge ${order.status === 'completed' ? 'badge-completed' : 'badge-pending'}">${order.status}</span></div><div class="item-meta">Customer: ${order.user_email}</div></div></div>`).join('');
                     }
                 }
@@ -556,48 +533,39 @@
         
         async function loadMessages() {
             try {
-                const { data } = await supabaseClient
-                    .from('contact_messages')
-                    .select('*')
-                    .order('created_at', { ascending: false });
-                
+                const { data, error } = await supabaseClient.from('contact_messages').select('*').order('created_at', { ascending: false });
                 const container = document.getElementById('messages-list');
+                
+                if (error) { console.error('Messages error:', error); if(container) container.innerHTML = '<div class="admin-item"><div class="item-title">Error loading messages.</div></div>'; return; }
+                
                 if (container) {
-                    if (!data || data.length === 0) {
-                        container.innerHTML = '<div class="admin-item"><div class="item-title">No contact messages yet.</div></div>';
-                    } else {
+                    if (!data || data.length === 0) { container.innerHTML = '<div class="admin-item"><div class="item-title">No contact messages yet.</div></div>'; }
+                    else {
                         container.innerHTML = data.map(msg => `
-                            <div class="admin-item" style="flex-direction: column; align-items: flex-start;">
+                            <div class="admin-item" style="flex-direction: column; align-items: flex-start; padding: 1rem; border-bottom: 1px solid rgba(198,107,61,0.1);">
                                 <div style="display: flex; justify-content: space-between; width: 100%;">
                                     <div style="flex: 1;">
-                                        <div class="item-title">${escapeHtml(msg.name)} (${escapeHtml(msg.email)})</div>
-                                        <div class="item-meta">Subject: ${escapeHtml(msg.subject || 'No subject')}</div>
-                                        <div class="message-preview">${escapeHtml(msg.message)}</div>
-                                        <div class="item-meta">Received: ${new Date(msg.created_at).toLocaleString()}</div>
+                                        <div class="item-title" style="font-weight: 600; margin-bottom: 0.25rem;">${escapeHtml(msg.name)} (${escapeHtml(msg.email)})</div>
+                                        <div class="item-meta" style="font-size: 0.75rem; color: #888;">Subject: ${escapeHtml(msg.subject || 'No subject')}</div>
+                                        <div class="message-preview" style="margin: 0.5rem 0; padding: 0.5rem; background: rgba(255,255,255,0.05); border-radius: 8px;">${escapeHtml(msg.message)}</div>
+                                        <div class="item-meta" style="font-size: 0.7rem; color: #666;">Received: ${new Date(msg.created_at).toLocaleString()}</div>
                                     </div>
-                                    <div>
-                                        <button class="btn btn-danger btn-sm" onclick="deleteMessage(${msg.id})">Delete</button>
-                                    </div>
+                                    <div><button class="btn btn-danger btn-sm" onclick="deleteMessage(${msg.id})" style="padding: 0.3rem 0.8rem;">Delete</button></div>
                                 </div>
                             </div>
                         `).join('');
                     }
                 }
-                
                 const msgCount = document.getElementById('total-messages');
                 if (msgCount) msgCount.textContent = data?.length || 0;
-            } catch(e) {
-                console.log('Messages table may not exist yet:', e);
-                const container = document.getElementById('messages-list');
-                if (container) container.innerHTML = '<div class="admin-item"><div class="item-title">No contact messages yet.</div></div>';
-            }
+            } catch(err) { console.error('Messages error:', err); const container = document.getElementById('messages-list'); if(container) container.innerHTML = '<div class="admin-item"><div class="item-title">No contact messages yet.</div></div>'; }
         }
         
         async function deleteMessage(id) {
             if (!confirm('Delete this message?')) return;
-            await supabaseClient.from('contact_messages').delete().eq('id', id);
-            showNotification('Message deleted!', 'success');
-            await loadMessages();
+            const { error } = await supabaseClient.from('contact_messages').delete().eq('id', id);
+            if (error) { showNotification('Error deleting message', 'error'); }
+            else { showNotification('Message deleted!', 'success'); await loadMessages(); }
         }
         
         async function loadSubscribers() {
@@ -605,11 +573,8 @@
                 const { data } = await supabaseClient.from('newsletter_subscribers').select('*').order('subscribed_at', { ascending: false }).limit(10);
                 const container = document.getElementById('subscribers-list');
                 if (container) {
-                    if (!data || data.length === 0) {
-                        container.innerHTML = '<div class="admin-item"><div class="item-title">No subscribers yet.</div></div>';
-                    } else {
-                        container.innerHTML = data.map(sub => `<div class="admin-item"><div><div class="item-title">${escapeHtml(sub.email)}</div><div class="item-meta">Subscribed: ${new Date(sub.subscribed_at).toLocaleDateString()}</div></div></div>`).join('');
-                    }
+                    if (!data || data.length === 0) { container.innerHTML = '<div class="admin-item"><div class="item-title">No subscribers yet.</div></div>'; }
+                    else { container.innerHTML = data.map(sub => `<div class="admin-item"><div><div class="item-title">${escapeHtml(sub.email)}</div><div class="item-meta">Subscribed: ${new Date(sub.subscribed_at).toLocaleDateString()}</div></div></div>`).join(''); }
                 }
             } catch(e) { console.log('Subscribers not ready'); }
         }
@@ -618,11 +583,8 @@
             const { data } = await supabaseClient.from('blog_posts').select('*').order('created_at', { ascending: false });
             const container = document.getElementById('blogs-list');
             if (container) {
-                if (!data || data.length === 0) {
-                    container.innerHTML = '<div class="admin-item"><div class="item-title">No blog posts yet.</div></div>';
-                } else {
-                    container.innerHTML = data.map(blog => `<div class="admin-item"><div><div class="item-title">${escapeHtml(blog.title)}</div><div class="item-meta">${escapeHtml(blog.category)} | ${new Date(blog.created_at).toLocaleDateString()}</div></div><div><button class="btn btn-secondary btn-sm" onclick="editBlog(${blog.id})">Edit</button> <button class="btn btn-danger btn-sm" onclick="deleteBlog(${blog.id})">Delete</button></div></div>`).join('');
-                }
+                if (!data || data.length === 0) { container.innerHTML = '<div class="admin-item"><div class="item-title">No blog posts yet.</div></div>'; }
+                else { container.innerHTML = data.map(blog => `<div class="admin-item"><div><div class="item-title">${escapeHtml(blog.title)}</div><div class="item-meta">${escapeHtml(blog.category)} | ${new Date(blog.created_at).toLocaleDateString()}</div></div><div><button class="btn btn-secondary btn-sm" onclick="editBlog(${blog.id})">Edit</button> <button class="btn btn-danger btn-sm" onclick="deleteBlog(${blog.id})">Delete</button></div></div>`).join(''); }
             }
         }
 
@@ -630,11 +592,8 @@
             const { data } = await supabaseClient.from('products').select('*').order('created_at', { ascending: false });
             const container = document.getElementById('products-list');
             if (container) {
-                if (!data || data.length === 0) {
-                    container.innerHTML = '<div class="admin-item"><div class="item-title">No ebooks yet.</div></div>';
-                } else {
-                    container.innerHTML = data.map(product => `<div class="admin-item"><div><div class="item-title">${escapeHtml(product.title)}</div><div class="item-meta">$${product.price_usd} / KES ${product.price_kes}</div></div><div><button class="btn btn-secondary btn-sm" onclick="editProduct(${product.id})">Edit</button> <button class="btn btn-danger btn-sm" onclick="deleteProduct(${product.id})">Delete</button></div></div>`).join('');
-                }
+                if (!data || data.length === 0) { container.innerHTML = '<div class="admin-item"><div class="item-title">No ebooks yet.</div></div>'; }
+                else { container.innerHTML = data.map(product => `<div class="admin-item"><div><div class="item-title">${escapeHtml(product.title)}</div><div class="item-meta">$${product.price_usd} / KES ${product.price_kes}</div></div><div><button class="btn btn-secondary btn-sm" onclick="editProduct(${product.id})">Edit</button> <button class="btn btn-danger btn-sm" onclick="deleteProduct(${product.id})">Delete</button></div></div>`).join(''); }
             }
         }
 
@@ -643,20 +602,15 @@
             allCategories = data || [];
             const container = document.getElementById('categories-list');
             if (container) {
-                if (!allCategories.length) {
-                    container.innerHTML = '<div class="admin-item"><div class="item-title">No categories yet. Add one above.</div></div>';
-                } else {
-                    container.innerHTML = allCategories.map(cat => `<div class="admin-item"><span class="item-title">${escapeHtml(cat.name)}</span><button class="btn btn-danger btn-sm" onclick="deleteCategory(${cat.id})">Delete</button></div>`).join('');
-                }
+                if (!allCategories.length) { container.innerHTML = '<div class="admin-item"><div class="item-title">No categories yet. Add one above.</div></div>'; }
+                else { container.innerHTML = allCategories.map(cat => `<div class="admin-item"><span class="item-title">${escapeHtml(cat.name)}</span><button class="btn btn-danger btn-sm" onclick="deleteCategory(${cat.id})">Delete</button></div>`).join(''); }
             }
             updateCategoryDropdown();
         }
         
         function updateCategoryDropdown() {
             const select = document.getElementById('blogCategory');
-            if (select && allCategories) {
-                select.innerHTML = '<option value="">-- Select Category --</option>' + allCategories.map(c => `<option value="${escapeHtml(c.name)}">${escapeHtml(c.name)}</option>`).join('');
-            }
+            if (select && allCategories) { select.innerHTML = '<option value="">-- Select Category --</option>' + allCategories.map(c => `<option value="${escapeHtml(c.name)}">${escapeHtml(c.name)}</option>`).join(''); }
         }
 
         async function loadStats() {
@@ -671,59 +625,51 @@
         async function loadSettings() {
             const { data } = await supabaseClient.from('site_settings').select('*').single();
             if (data) {
-                const titleInput = document.getElementById('site-title');
-                if (titleInput) titleInput.value = data.site_title || '';
-                const descInput = document.getElementById('site-description');
-                if (descInput) descInput.value = data.site_description || '';
-                const adminEmail = document.getElementById('admin-email');
-                if (adminEmail) adminEmail.value = data.admin_email || '';
-                const contactEmail = document.getElementById('contact-email');
-                if (contactEmail) contactEmail.value = data.contact_email || 'awinophoebe44@gmail.com';
-                const whatsapp = document.getElementById('whatsapp-number');
-                if (whatsapp) whatsapp.value = data.whatsapp_number || '';
-                const currency = document.getElementById('default-currency');
-                if (currency) currency.value = data.default_currency || 'USD';
-                const logoPreview = document.getElementById('logo-preview');
-                if (logoPreview && data.logo_url) logoPreview.innerHTML = `<img src="${data.logo_url}">`;
-                const profilePreview = document.getElementById('profile-preview');
-                if (profilePreview && data.profile_image_url) profilePreview.innerHTML = `<img src="${data.profile_image_url}" style="border-radius: 50%; width: 100px; height: 100px; object-fit: cover;">`;
+                if(document.getElementById('site-title')) document.getElementById('site-title').value = data.site_title || '';
+                if(document.getElementById('site-description')) document.getElementById('site-description').value = data.site_description || '';
+                if(document.getElementById('admin-email')) document.getElementById('admin-email').value = data.admin_email || '';
+                if(document.getElementById('contact-email')) document.getElementById('contact-email').value = data.contact_email || 'awinophoebe44@gmail.com';
+                if(document.getElementById('whatsapp-number')) document.getElementById('whatsapp-number').value = data.whatsapp_number || '';
+                if(document.getElementById('default-currency')) document.getElementById('default-currency').value = data.default_currency || 'USD';
+                if(document.getElementById('logo-preview') && data.logo_url) document.getElementById('logo-preview').innerHTML = `<img src="${data.logo_url}">`;
+                if(document.getElementById('profile-preview') && data.profile_image_url) document.getElementById('profile-preview').innerHTML = `<img src="${data.profile_image_url}" style="border-radius: 50%; width: 100px; height: 100px; object-fit: cover;">`;
             }
         }
 
         async function loadPaymentSettings() {
             const { data } = await supabaseClient.from('site_settings').select('payment_settings').single();
             if (data?.payment_settings) {
-                const p1 = document.getElementById('paypal-client-id'); if (p1) p1.value = data.payment_settings.paypal_client_id || '';
-                const p2 = document.getElementById('paypal-secret'); if (p2) p2.value = data.payment_settings.paypal_secret || '';
-                const p3 = document.getElementById('paypal-mode'); if (p3) p3.value = data.payment_settings.paypal_mode || 'sandbox';
-                const ps1 = document.getElementById('paystack-public-key'); if (ps1) ps1.value = data.payment_settings.paystack_public_key || '';
-                const ps2 = document.getElementById('paystack-secret-key'); if (ps2) ps2.value = data.payment_settings.paystack_secret_key || '';
-                const m1 = document.getElementById('mpesa-consumer-key'); if (m1) m1.value = data.payment_settings.mpesa_consumer_key || '';
-                const m2 = document.getElementById('mpesa-consumer-secret'); if (m2) m2.value = data.payment_settings.mpesa_consumer_secret || '';
-                const m3 = document.getElementById('mpesa-shortcode'); if (m3) m3.value = data.payment_settings.mpesa_shortcode || '';
-                const m4 = document.getElementById('mpesa-passkey'); if (m4) m4.value = data.payment_settings.mpesa_passkey || '';
-                const m5 = document.getElementById('mpesa-environment'); if (m5) m5.value = data.payment_settings.mpesa_environment || 'sandbox';
+                if(document.getElementById('paypal-client-id')) document.getElementById('paypal-client-id').value = data.payment_settings.paypal_client_id || '';
+                if(document.getElementById('paypal-secret')) document.getElementById('paypal-secret').value = data.payment_settings.paypal_secret || '';
+                if(document.getElementById('paypal-mode')) document.getElementById('paypal-mode').value = data.payment_settings.paypal_mode || 'sandbox';
+                if(document.getElementById('paystack-public-key')) document.getElementById('paystack-public-key').value = data.payment_settings.paystack_public_key || '';
+                if(document.getElementById('paystack-secret-key')) document.getElementById('paystack-secret-key').value = data.payment_settings.paystack_secret_key || '';
+                if(document.getElementById('mpesa-consumer-key')) document.getElementById('mpesa-consumer-key').value = data.payment_settings.mpesa_consumer_key || '';
+                if(document.getElementById('mpesa-consumer-secret')) document.getElementById('mpesa-consumer-secret').value = data.payment_settings.mpesa_consumer_secret || '';
+                if(document.getElementById('mpesa-shortcode')) document.getElementById('mpesa-shortcode').value = data.payment_settings.mpesa_shortcode || '';
+                if(document.getElementById('mpesa-passkey')) document.getElementById('mpesa-passkey').value = data.payment_settings.mpesa_passkey || '';
+                if(document.getElementById('mpesa-environment')) document.getElementById('mpesa-environment').value = data.payment_settings.mpesa_environment || 'sandbox';
             }
         }
 
         async function loadAffiliateSettings() {
             const { data } = await supabaseClient.from('site_settings').select('affiliate_settings').single();
             if (data?.affiliate_settings) {
-                const a1 = document.getElementById('amazon-id'); if (a1) a1.value = data.affiliate_settings.amazon || '';
-                const j1 = document.getElementById('jumia-id'); if (j1) j1.value = data.affiliate_settings.jumia || '';
-                const u1 = document.getElementById('udemy-id'); if (u1) u1.value = data.affiliate_settings.udemy || '';
-                const c1 = document.getElementById('coursera-id'); if (c1) c1.value = data.affiliate_settings.coursera || '';
+                if(document.getElementById('amazon-id')) document.getElementById('amazon-id').value = data.affiliate_settings.amazon || '';
+                if(document.getElementById('jumia-id')) document.getElementById('jumia-id').value = data.affiliate_settings.jumia || '';
+                if(document.getElementById('udemy-id')) document.getElementById('udemy-id').value = data.affiliate_settings.udemy || '';
+                if(document.getElementById('coursera-id')) document.getElementById('coursera-id').value = data.affiliate_settings.coursera || '';
             }
         }
 
         async function loadSocialLinks() {
             const { data } = await supabaseClient.from('site_settings').select('social_links').single();
             if (data?.social_links) {
-                const t1 = document.getElementById('twitter-link'); if (t1) t1.value = data.social_links.twitter || '';
-                const y1 = document.getElementById('youtube-link'); if (y1) y1.value = data.social_links.youtube || '';
-                const f1 = document.getElementById('facebook-link'); if (f1) f1.value = data.social_links.facebook || '';
-                const tk1 = document.getElementById('tiktok-link'); if (tk1) tk1.value = data.social_links.tiktok || '';
-                const i1 = document.getElementById('instagram-link'); if (i1) i1.value = data.social_links.instagram || '';
+                if(document.getElementById('twitter-link')) document.getElementById('twitter-link').value = data.social_links.twitter || '';
+                if(document.getElementById('youtube-link')) document.getElementById('youtube-link').value = data.social_links.youtube || '';
+                if(document.getElementById('facebook-link')) document.getElementById('facebook-link').value = data.social_links.facebook || '';
+                if(document.getElementById('tiktok-link')) document.getElementById('tiktok-link').value = data.social_links.tiktok || '';
+                if(document.getElementById('instagram-link')) document.getElementById('instagram-link').value = data.social_links.instagram || '';
             }
         }
 
@@ -754,11 +700,7 @@
             if (!confirm('Delete this category?')) return;
             const { error } = await supabaseClient.from('categories').delete().eq('id', id);
             if (error) showNotification('Error: ' + error.message, 'error');
-            else {
-                showNotification('Category deleted!', 'success');
-                await loadCategories();
-                updateCategoryDropdown();
-            }
+            else { showNotification('Category deleted!', 'success'); await loadCategories(); updateCategoryDropdown(); }
         }
 
         function openBlogModal(blog = null) {
@@ -792,19 +734,9 @@
             e.preventDefault();
             let imageUrl = null;
             const imageFile = document.getElementById('blogImage').files[0];
-            if (imageFile) {
-                try { imageUrl = await uploadImage(imageFile, 'blog'); }
-                catch (err) { showNotification('Image upload failed: ' + err.message, 'error'); return; }
-            }
+            if (imageFile) { try { imageUrl = await uploadImage(imageFile, 'blog'); } catch(err) { showNotification('Image upload failed: ' + err.message, 'error'); return; } }
             const content = quillEditor.root.innerHTML;
-            const data = {
-                title: document.getElementById('blogTitle').value,
-                category: document.getElementById('blogCategory').value,
-                content: content,
-                excerpt: document.getElementById('blogExcerpt').value,
-                image_url: imageUrl,
-                published: true
-            };
+            const data = { title: document.getElementById('blogTitle').value, category: document.getElementById('blogCategory').value, content: content, excerpt: document.getElementById('blogExcerpt').value, image_url: imageUrl, published: true };
             if (!data.category) { showNotification('Please select a category', 'error'); return; }
             try {
                 if (currentBlogId) await supabaseClient.from('blog_posts').update(data).eq('id', currentBlogId);
@@ -816,7 +748,7 @@
                 document.getElementById('blogImagePreview').innerHTML = '';
                 await loadBlogs();
                 await loadStats();
-            } catch (err) { showNotification('Error: ' + err.message, 'error'); }
+            } catch(err) { showNotification('Error: ' + err.message, 'error'); }
         });
 
         function openProductModal(product = null) {
@@ -849,18 +781,8 @@
             e.preventDefault();
             let imageUrl = null;
             const imageFile = document.getElementById('productImage').files[0];
-            if (imageFile) {
-                try { imageUrl = await uploadImage(imageFile, 'product'); }
-                catch (err) { showNotification('Image upload failed: ' + err.message, 'error'); return; }
-            }
-            const data = {
-                title: document.getElementById('productTitle').value,
-                description: document.getElementById('productDescription').value,
-                price_usd: parseFloat(document.getElementById('productPriceUsd').value),
-                price_kes: parseInt(document.getElementById('productPriceKes').value),
-                image_url: imageUrl,
-                download_link: document.getElementById('productDownloadLink').value
-            };
+            if (imageFile) { try { imageUrl = await uploadImage(imageFile, 'product'); } catch(err) { showNotification('Image upload failed: ' + err.message, 'error'); return; } }
+            const data = { title: document.getElementById('productTitle').value, description: document.getElementById('productDescription').value, price_usd: parseFloat(document.getElementById('productPriceUsd').value), price_kes: parseInt(document.getElementById('productPriceKes').value), image_url: imageUrl, download_link: document.getElementById('productDownloadLink').value };
             try {
                 if (currentProductId) await supabaseClient.from('products').update(data).eq('id', currentProductId);
                 else await supabaseClient.from('products').insert([data]);
@@ -870,29 +792,21 @@
                 document.getElementById('productImagePreview').innerHTML = '';
                 await loadProducts();
                 await loadStats();
-            } catch (err) { showNotification('Error: ' + err.message, 'error'); }
+            } catch(err) { showNotification('Error: ' + err.message, 'error'); }
         });
 
         async function uploadLogo() {
             const file = document.getElementById('logo-upload').files[0];
             if (!file) { showNotification('Select an image', 'error'); return; }
-            try {
-                const url = await uploadImage(file, 'logo');
-                await supabaseClient.from('site_settings').update({ logo_url: url }).eq('id', 1);
-                document.getElementById('logo-preview').innerHTML = `<img src="${url}">`;
-                showNotification('Logo uploaded!', 'success');
-            } catch (err) { showNotification('Upload failed: ' + err.message, 'error'); }
+            try { const url = await uploadImage(file, 'logo'); await supabaseClient.from('site_settings').update({ logo_url: url }).eq('id', 1); document.getElementById('logo-preview').innerHTML = `<img src="${url}">`; showNotification('Logo uploaded!', 'success'); } 
+            catch(err) { showNotification('Upload failed: ' + err.message, 'error'); }
         }
 
         async function uploadProfile() {
             const file = document.getElementById('profile-upload').files[0];
             if (!file) { showNotification('Select an image', 'error'); return; }
-            try {
-                const url = await uploadImage(file, 'profile');
-                await supabaseClient.from('site_settings').update({ profile_image_url: url }).eq('id', 1);
-                document.getElementById('profile-preview').innerHTML = `<img src="${url}" style="border-radius: 50%; width: 100px; height: 100px; object-fit: cover;">`;
-                showNotification('Profile picture uploaded!', 'success');
-            } catch (err) { showNotification('Upload failed: ' + err.message, 'error'); }
+            try { const url = await uploadImage(file, 'profile'); await supabaseClient.from('site_settings').update({ profile_image_url: url }).eq('id', 1); document.getElementById('profile-preview').innerHTML = `<img src="${url}" style="border-radius: 50%; width: 100px; height: 100px; object-fit: cover;">`; showNotification('Profile picture uploaded!', 'success'); } 
+            catch(err) { showNotification('Upload failed: ' + err.message, 'error'); }
         }
 
         async function saveGeneralSettings() {
@@ -977,48 +891,19 @@
             });
         }
 
-        function closeModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if (modal) modal.style.display = 'none';
-        }
-
-        function showNotification(message, type = 'success') {
-            const notification = document.createElement('div');
-            notification.className = 'notification';
-            notification.textContent = message;
-            document.body.appendChild(notification);
-            setTimeout(() => notification.remove(), 3000);
-        }
-
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
+        function closeModal(modalId) { const modal = document.getElementById(modalId); if (modal) modal.style.display = 'none'; }
+        function showNotification(message, type = 'success') { const n = document.createElement('div'); n.className = 'notification'; n.textContent = message; document.body.appendChild(n); setTimeout(() => n.remove(), 3000); }
+        function escapeHtml(text) { if (!text) return ''; const d = document.createElement('div'); d.textContent = text; return d.innerHTML; }
 
         document.getElementById('blogImage')?.addEventListener('change', function(e) {
             const preview = document.getElementById('blogImagePreview');
-            if (preview && this.files && this.files[0]) {
-                const reader = new FileReader();
-                reader.onload = ev => preview.innerHTML = `<img src="${ev.target.result}">`;
-                reader.readAsDataURL(this.files[0]);
-            }
+            if (preview && this.files && this.files[0]) { const reader = new FileReader(); reader.onload = ev => preview.innerHTML = `<img src="${ev.target.result}">`; reader.readAsDataURL(this.files[0]); }
         });
-
         document.getElementById('productImage')?.addEventListener('change', function(e) {
             const preview = document.getElementById('productImagePreview');
-            if (preview && this.files && this.files[0]) {
-                const reader = new FileReader();
-                reader.onload = ev => preview.innerHTML = `<img src="${ev.target.result}">`;
-                reader.readAsDataURL(this.files[0]);
-            }
+            if (preview && this.files && this.files[0]) { const reader = new FileReader(); reader.onload = ev => preview.innerHTML = `<img src="${ev.target.result}">`; reader.readAsDataURL(this.files[0]); }
         });
-
-        document.getElementById('logout-btn')?.addEventListener('click', async () => {
-            await supabaseClient.auth.signOut();
-            window.location.href = 'login.html';
-        });
+        document.getElementById('logout-btn')?.addEventListener('click', async () => { await supabaseClient.auth.signOut(); window.location.href = 'login.html'; });
 
         window.openBlogModal = openBlogModal;
         window.editBlog = editBlog;

@@ -1,6 +1,6 @@
 // js/payments.js - Payment processing functions
 
-async function processPayment(method) {
+function processPayment(method) {
     const cart = JSON.parse(localStorage.getItem('cart') || '[]');
     
     if (cart.length === 0) {
@@ -12,20 +12,13 @@ async function processPayment(method) {
     let total = 0;
     cart.forEach(item => {
         if (currency === 'USD') {
-            total += item.price_usd || item.price;
+            total += item.price_usd || item.price || 29.99;
         } else {
-            total += item.price_kes || item.price * 130;
+            total += item.price_kes || (item.price_usd || 29.99) * 130;
         }
     });
     
-    const userEmail = prompt('Enter your email for receipt:', 'customer@example.com');
-    if (!userEmail && method !== 'mpesa') {
-        alert('Email is required');
-        return;
-    }
-    
-    // Simulate payment processing
-    alert(`Processing ${method.toUpperCase()} payment of ${currency === 'USD' ? '$' + total : 'KES ' + total}...`);
+    alert(`Processing ${method.toUpperCase()} payment of ${currency === 'USD' ? '$' + total.toFixed(2) : 'KES ' + total}\n\nThis is a demo. In production, real payment would process here.`);
     
     // Clear cart and redirect
     localStorage.removeItem('cart');
@@ -35,14 +28,12 @@ async function processPayment(method) {
 
 function setCurrency(currency) {
     localStorage.setItem('currency', currency);
-    // Update active state on buttons
     document.querySelectorAll('.currency-btn').forEach(btn => {
         btn.classList.remove('active');
         if (btn.dataset.currency === currency) {
             btn.classList.add('active');
         }
     });
-    // Refresh page to update prices
     location.reload();
 }
 

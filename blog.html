@@ -80,11 +80,16 @@
         let allPosts = [];
         let cart = JSON.parse(localStorage.getItem('cart') || '[]');
         
+        // ========== VISITOR TRACKING ==========
         async function trackVisitor() {
             const today = new Date().toISOString().split('T')[0];
             const lastVisit = localStorage.getItem('lastVisitDate');
             if (lastVisit !== today) {
-                try { await fetch('/api/track-visitor', { method: 'POST' }); localStorage.setItem('lastVisitDate', today); } catch(err) { console.log('Track error:', err); }
+                try {
+                    await fetch('/api/track-visitor', { method: 'POST' });
+                    localStorage.setItem('lastVisitDate', today);
+                    console.log('Visitor tracked for:', today);
+                } catch(err) { console.log('Track error:', err); }
             }
         }
         

@@ -8,261 +8,29 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #f8fafc;
-            color: #1e293b;
-            line-height: 1.6;
-        }
-        .navbar {
-            background: white;
-            padding: 1rem 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        .logo-placeholder {
-            width: 40px;
-            height: 40px;
-            background: #1e3a8a;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-        }
-        .site-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-            align-items: center;
-        }
-        .nav-links a {
-            text-decoration: none;
-            color: #333;
-            font-weight: 500;
-        }
-        .admin-link {
-            background: #1e3a8a;
-            color: white !important;
-            padding: 0.5rem 1rem;
-            border-radius: 25px;
-        }
-        .mobile-menu {
-            display: none;
-            cursor: pointer;
-            font-size: 1.5rem;
-        }
-        .post-container {
-            max-width: 900px;
-            margin: 2rem auto;
-            padding: 2rem;
-            background: white;
-            border-radius: 24px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            min-height: 60vh;
-        }
-        .post-header {
-            margin-bottom: 2rem;
-            text-align: center;
-        }
-        .post-category {
-            display: inline-block;
-            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
-            color: white;
-            padding: 0.3rem 1rem;
-            border-radius: 50px;
-            font-size: 0.8rem;
-            margin-bottom: 1rem;
-        }
-        .post-title {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: #0f172a;
-            margin-bottom: 1rem;
-            line-height: 1.2;
-        }
-        .post-meta {
-            color: #64748b;
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-        }
-        .post-image {
-            width: 100%;
-            max-height: 500px;
-            object-fit: cover;
-            border-radius: 20px;
-            margin: 1.5rem 0;
-        }
-        .post-content {
-            font-size: 1.05rem;
-            line-height: 1.8;
-            color: #334155;
-        }
-        .post-content h1, .post-content h2, .post-content h3, .post-content h4 {
-            margin-top: 1.5rem;
-            margin-bottom: 0.75rem;
-            color: #0f172a;
-        }
-        .post-content h1 { font-size: 2rem; }
-        .post-content h2 { font-size: 1.6rem; }
-        .post-content h3 { font-size: 1.3rem; }
-        .post-content p {
-            margin-bottom: 1rem;
-        }
-        .post-content ul, .post-content ol {
-            margin: 1rem 0 1rem 2rem;
-        }
-        .post-content li {
-            margin-bottom: 0.5rem;
-        }
-        .post-content img {
-            max-width: 100%;
-            border-radius: 12px;
-            margin: 1rem 0;
-        }
-        .post-content blockquote {
-            border-left: 4px solid #3b82f6;
-            padding-left: 1.5rem;
-            margin: 1.5rem 0;
-            font-style: italic;
-            color: #475569;
-        }
-        .post-content code {
-            background: #f1f5f9;
-            padding: 0.2rem 0.4rem;
-            border-radius: 6px;
-            font-family: monospace;
-        }
-        .post-content pre {
-            background: #1e293b;
-            color: #e2e8f0;
-            padding: 1rem;
-            border-radius: 12px;
-            overflow-x: auto;
-            margin: 1rem 0;
-        }
-        .back-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: #f1f5f9;
-            color: #1e3a8a;
-            padding: 0.6rem 1.2rem;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 500;
-            margin-bottom: 1.5rem;
-            transition: all 0.2s;
-            border: none;
-            cursor: pointer;
-        }
-        .back-button:hover {
-            background: #e2e8f0;
-            transform: translateX(-5px);
-        }
-        .loading-container {
-            text-align: center;
-            padding: 4rem;
-        }
-        .loading {
-            display: inline-block;
-            width: 50px;
-            height: 50px;
-            border: 4px solid #e2e8f0;
-            border-top-color: #1e3a8a;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        .error-container {
-            text-align: center;
-            padding: 4rem;
-            color: #dc2626;
-        }
-        .error-container i {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-        }
-        footer {
-            background: #0f172a;
-            color: white;
-            padding: 3rem 5% 1rem;
-            margin-top: 3rem;
-        }
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .footer-bottom {
-            text-align: center;
-            padding-top: 2rem;
-            margin-top: 2rem;
-            border-top: 1px solid rgba(255,255,255,0.1);
-        }
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-                flex-direction: column;
-                position: absolute;
-                top: 70px;
-                left: 0;
-                right: 0;
-                background: white;
-                padding: 1rem;
-                z-index: 1000;
-            }
-            .nav-links.active {
-                display: flex;
-            }
-            .mobile-menu {
-                display: block;
-            }
-            .post-container {
-                margin: 1rem;
-                padding: 1rem;
-            }
-            .post-title {
-                font-size: 1.8rem;
-            }
-        }
+        .post-container { max-width: 900px; margin: 2rem auto; padding: 2rem; background: white; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .post-header { text-align: center; margin-bottom: 2rem; }
+        .post-title { font-size: 2rem; margin-bottom: 0.5rem; }
+        .post-meta { color: #666; font-size: 0.9rem; }
+        .post-image { width: 100%; max-height: 400px; object-fit: cover; border-radius: 12px; margin: 1rem 0; }
+        .post-content { font-size: 1.05rem; line-height: 1.8; color: #333; }
+        .post-content h2 { margin: 1.5rem 0 1rem; }
+        .post-content p { margin-bottom: 1rem; }
+        .back-button { display: inline-flex; align-items: center; gap: 0.5rem; background: #f5f0eb; padding: 0.6rem 1.2rem; border-radius: 30px; text-decoration: none; color: #C66B3D; margin-bottom: 1.5rem; }
+        .float-whatsapp { position: fixed; bottom: 30px; right: 30px; background: #25D366; width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; color: white; cursor: pointer; z-index: 1000; }
+        @media (max-width: 768px) { .post-container { margin: 1rem; padding: 1rem; } .post-title { font-size: 1.5rem; } }
     </style>
 </head>
 <body>
+    <div class="float-whatsapp" onclick="window.open('https://wa.me/254704817504','_blank')"><i class="fab fa-whatsapp"></i></div>
+
     <header>
         <nav class="navbar">
             <div class="logo-container">
-                <div class="logo-placeholder">GWA</div>
+                <img id="site-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='45' height='45' viewBox='0 0 45 45'%3E%3Crect width='45' height='45' fill='%23C66B3D'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='20'%3EGWA%3C/text%3E%3C/svg%3E" class="logo">
                 <span class="site-title">Grow With Awino</span>
             </div>
-            <ul class="nav-links" id="navLinks">
+            <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="blog.html">Blog</a></li>
                 <li><a href="shop.html">Ebooks</a></li>
@@ -270,158 +38,69 @@
                 <li><a href="contact.html">Contact</a></li>
                 <li><a href="admin.html" class="admin-link">Admin</a></li>
             </ul>
-            <div class="mobile-menu" onclick="toggleMobileMenu()"><i class="fas fa-bars"></i></div>
         </nav>
     </header>
 
     <main>
         <div class="post-container" id="post-container">
-            <div class="loading-container">
-                <div class="loading"></div>
-                <p style="margin-top: 1rem;">Loading post...</p>
-            </div>
+            <div style="text-align:center;padding:2rem;">Loading post...</div>
         </div>
     </main>
 
     <footer>
         <div class="footer-content">
-            <div class="footer-section">
-                <h3>Grow With Awino</h3>
-                <p>Empowering beginners to learn digital skills and earn online.</p>
-            </div>
-            <div class="footer-section">
-                <h3>Quick Links</h3>
-                <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="blog.html">Blog</a></li>
-                    <li><a href="shop.html">Ebooks</a></li>
-                    <li><a href="contact.html">Contact</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>Contact</h3>
-                <p><i class="fas fa-envelope"></i> awinophoebe44@gmail.com</p>
-            </div>
+            <div class="footer-section"><h3>Grow With Awino</h3><p>Empowering beginners to learn digital skills and earn online.</p></div>
+            <div class="footer-section"><h3>Quick Links</h3><ul><li><a href="index.html">Home</a></li><li><a href="blog.html">Blog</a></li><li><a href="shop.html">Ebooks</a></li><li><a href="resources.html">Resources</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+            <div class="footer-section"><h3>Contact</h3><p><i class="fas fa-envelope"></i> awinophoebe44@gmail.com</p></div>
         </div>
-        <div class="footer-bottom">
-            <p>&copy; 2026 Grow With Awino. All rights reserved.</p>
-        </div>
+        <div class="footer-bottom"><p>&copy; 2026 Grow With Awino. All rights reserved.</p></div>
     </footer>
 
     <script>
-        // Supabase Configuration
         const SUPABASE_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         
-        let supabaseClient = null;
+        const urlParams = new URLSearchParams(window.location.search);
+        const postId = urlParams.get('id');
         
-        function initSupabase() {
-            if (typeof supabase === 'undefined') {
-                setTimeout(initSupabase, 500);
-                return;
-            }
-            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            loadPost();
-        }
-        
-        function getPostId() {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get('id');
-        }
-        
-        // Function to safely render HTML content without escaping
-        function renderContent(htmlContent) {
-            if (!htmlContent) return '<p>No content available.</p>';
-            // Return the HTML content as-is (not escaped)
-            return htmlContent;
+        async function loadSiteLogo() {
+            const { data } = await supabase.from('site_settings').select('logo_url').single();
+            if (data?.logo_url) document.getElementById('site-logo').src = data.logo_url;
         }
         
         async function loadPost() {
             const container = document.getElementById('post-container');
-            const postId = getPostId();
-            
             if (!postId) {
-                container.innerHTML = `
-                    <div class="error-container">
-                        <i class="fas fa-exclamation-circle"></i>
-                        <h2>No Post Selected</h2>
-                        <p>Please go back to the <a href="blog.html">blog page</a> and select a post to read.</p>
-                        <a href="blog.html" class="back-button" style="margin-top: 1rem; display: inline-block;">← Back to Blog</a>
-                    </div>
-                `;
+                container.innerHTML = '<div style="text-align:center;padding:2rem;">No post specified. <a href="blog.html">Back to Blog</a></div>';
                 return;
             }
             
-            if (!supabaseClient) {
+            const { data: post, error } = await supabase.from('blog_posts').select('*').eq('id', postId).eq('published', true).single();
+            
+            if (error || !post) {
+                container.innerHTML = '<div style="text-align:center;padding:2rem;">Post not found. <a href="blog.html">Back to Blog</a></div>';
                 return;
             }
             
-            try {
-                const { data: post, error } = await supabaseClient
-                    .from('blog_posts')
-                    .select('*')
-                    .eq('id', postId)
-                    .eq('published', true)
-                    .single();
-                
-                if (error || !post) {
-                    container.innerHTML = `
-                        <div class="error-container">
-                            <i class="fas fa-exclamation-circle"></i>
-                            <h2>Post Not Found</h2>
-                            <p>The blog post you're looking for doesn't exist or has been removed.</p>
-                            <a href="blog.html" class="back-button" style="margin-top: 1rem; display: inline-block;">← Back to Blog</a>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                const postDate = post.created_at ? new Date(post.created_at).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                }) : 'Date unknown';
-                
-                // IMPORTANT: Use innerHTML to render the HTML content, not textContent
-                container.innerHTML = `
-                    <a href="blog.html" class="back-button"><i class="fas fa-arrow-left"></i> Back to Blog</a>
-                    <div class="post-header">
-                        <span class="post-category">${escapeHtml(post.category)}</span>
-                        <h1 class="post-title">${escapeHtml(post.title)}</h1>
-                        <div class="post-meta">
-                            <i class="fas fa-calendar-alt"></i> ${postDate}
-                        </div>
-                    </div>
-                    ${post.image_url ? `<img src="${post.image_url}" class="post-image" alt="${escapeHtml(post.title)}" onerror="this.style.display='none'">` : ''}
-                    <div class="post-content">
-                        ${post.content || '<p>No content available for this post.</p>'}
-                    </div>
-                `;
-                
-            } catch (err) {
-                container.innerHTML = `
-                    <div class="error-container">
-                        <i class="fas fa-exclamation-circle"></i>
-                        <h2>Something Went Wrong</h2>
-                        <p>There was an error loading this post. Please try again later.</p>
-                        <a href="blog.html" class="back-button" style="margin-top: 1rem; display: inline-block;">← Back to Blog</a>
-                    </div>
-                `;
-            }
+            const postDate = new Date(post.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            
+            container.innerHTML = `
+                <a href="blog.html" class="back-button"><i class="fas fa-arrow-left"></i> Back to Blog</a>
+                <div class="post-header">
+                    <span class="post-category">${escapeHtml(post.category)}</span>
+                    <h1 class="post-title">${escapeHtml(post.title)}</h1>
+                    <div class="post-meta"><i class="fas fa-calendar-alt"></i> ${postDate}</div>
+                </div>
+                ${post.image_url ? `<img src="${post.image_url}" class="post-image" alt="${escapeHtml(post.title)}">` : ''}
+                <div class="post-content">${post.content || '<p>No content available.</p>'}</div>
+            `;
         }
         
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
+        function escapeHtml(t) { if(!t) return ''; const d=document.createElement('div'); d.textContent=t; return d.innerHTML; }
         
-        function toggleMobileMenu() {
-            document.getElementById('navLinks').classList.toggle('active');
-        }
-        
-        initSupabase();
+        loadSiteLogo();
+        loadPost();
     </script>
 </body>
 </html>

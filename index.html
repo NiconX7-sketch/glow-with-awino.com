@@ -9,9 +9,9 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         .float-whatsapp { position: fixed; bottom: 30px; right: 30px; background: #25D366; width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; color: white; cursor: pointer; z-index: 1000; }
-        .cart-count { position: absolute; top: -8px; right: -12px; background: #C66B3D; color: white; border-radius: 50%; padding: 2px 6px; font-size: 11px; font-weight: 600; }
+        .cart-count { position: absolute; top: -8px; right: -12px; background: #C66B3D; color: white; border-radius: 50%; padding: 2px 6px; font-size: 11px; }
         .mobile-menu { display: none; cursor: pointer; font-size: 1.5rem; }
-        @media (max-width: 768px) { .mobile-menu { display: block; } .nav-links { display: none; flex-direction: column; position: absolute; top: 70px; left: 0; right: 0; background: white; padding: 1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); } .nav-links.active { display: flex; } }
+        @media (max-width: 768px) { .mobile-menu { display: block; } .nav-links { display: none; flex-direction: column; position: absolute; top: 70px; left: 0; right: 0; background: white; padding: 1rem; } .nav-links.active { display: flex; } }
     </style>
 </head>
 <body>
@@ -19,10 +19,7 @@
 
     <header>
         <nav class="navbar">
-            <div class="logo-container">
-                <img id="site-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='45' height='45' viewBox='0 0 45 45'%3E%3Crect width='45' height='45' fill='%23C66B3D'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='20'%3EGWA%3C/text%3E%3C/svg%3E" class="logo">
-                <span class="site-title">Grow With Awino</span>
-            </div>
+            <div class="logo-container"><img id="site-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='45' height='45' viewBox='0 0 45 45'%3E%3Crect width='45' height='45' fill='%23C66B3D'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='20'%3EGWA%3C/text%3E%3C/svg%3E" class="logo"><span class="site-title">Grow With Awino</span></div>
             <ul class="nav-links" id="navLinks">
                 <li><a href="index.html" class="active">Home</a></li>
                 <li><a href="blog.html">Blog</a></li>
@@ -62,7 +59,6 @@
                 <a href="contact.html" class="btn-outline">Learn More</a>
             </div>
             <div class="about-image"><img id="profile-image" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250' viewBox='0 0 250 250'%3E%3Crect width='250' height='250' fill='%23C66B3D'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='40'%3EAwino%3C/text%3E%3C/svg%3E" alt="Awino"></div>
-            </div>
         </div>
     </section>
 
@@ -91,21 +87,21 @@
     <div id="cart-modal" class="modal" style="display:none;"><div class="modal-content"><span class="close" onclick="closeCartModal()">&times;</span><h2><i class="fas fa-shopping-cart"></i> Your Cart</h2><div id="cart-items"></div><div id="cart-total"></div><button onclick="proceedToCheckout()" class="btn-primary" style="width:100%;margin-top:1rem;">Proceed to Checkout</button></div></div>
 
     <script>
-        // Initialize Supabase ONCE
-        const supabaseUrl = 'https://orxrpwncwyrkmubqywhw.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
-        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+        // Supabase initialization - ONLY ONCE
+        const _SUPABASE_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
+        const _SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
+        const _supabase = supabase.createClient(_SUPABASE_URL, _SUPABASE_KEY);
         
         let cart = JSON.parse(localStorage.getItem('cart') || '[]');
         
         async function loadSiteSettings() {
-            const { data } = await supabase.from('site_settings').select('logo_url, profile_image_url').single();
+            const { data } = await _supabase.from('site_settings').select('logo_url, profile_image_url').single();
             if (data?.logo_url) document.getElementById('site-logo').src = data.logo_url;
             if (data?.profile_image_url) document.getElementById('profile-image').src = data.profile_image_url;
         }
         
         async function loadLatestPosts() {
-            const { data } = await supabase.from('blog_posts').select('*').eq('published', true).order('created_at', { ascending: false }).limit(3);
+            const { data } = await _supabase.from('blog_posts').select('*').eq('published', true).order('created_at', { ascending: false }).limit(3);
             const container = document.getElementById('latest-posts');
             if (!data || data.length === 0) { container.innerHTML = '<p style="text-align:center;padding:2rem;">No blog posts yet.</p>'; return; }
             container.innerHTML = data.map(post => `
@@ -134,7 +130,7 @@
             e.preventDefault();
             const email = document.getElementById('newsletter-email').value;
             const msg = document.getElementById('newsletter-message');
-            const { error } = await supabase.from('newsletter_subscribers').insert([{ email }]);
+            const { error } = await _supabase.from('newsletter_subscribers').insert([{ email }]);
             if (error?.code === '23505') { msg.textContent = '✅ Already subscribed!'; msg.style.cssText = 'background:#fef3c7;color:#d97706;display:block'; }
             else if (error) { msg.textContent = '❌ Error. Please try again.'; msg.style.cssText = 'background:#fee2e2;color:#dc2626;display:block'; }
             else { msg.textContent = '✅ Subscribed! Check your email.'; msg.style.cssText = 'background:#dcfce7;color:#16a34a;display:block'; e.target.reset(); }

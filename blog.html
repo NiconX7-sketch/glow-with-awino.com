@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="css/style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/payments.js"></script>
     <style>
         .float-whatsapp { position: fixed; bottom: 30px; right: 30px; background: #25D366; width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; color: white; cursor: pointer; z-index: 1000; }
         .cart-count { position: absolute; top: -8px; right: -12px; background: #C66B3D; color: white; border-radius: 50%; padding: 2px 6px; font-size: 11px; }
@@ -27,7 +28,12 @@
                 <li><a href="resources.html">Resources</a></li>
                 <li><a href="contact.html">Contact</a></li>
                 <li><a href="admin.html" class="admin-link">Admin</a></li>
-                <li style="position: relative;"><a href="#" onclick="viewCart(); return false;"><i class="fas fa-shopping-cart"></i><span id="cart-count" class="cart-count">0</span></a></li>
+                <li style="position: relative;">
+                    <a href="#" onclick="viewCart(); return false;" style="display: flex; align-items: center; gap: 5px;">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span id="cart-count" class="cart-count">0</span>
+                    </a>
+                </li>
             </ul>
             <div class="mobile-menu" onclick="document.getElementById('navLinks').classList.toggle('active')"><i class="fas fa-bars"></i></div>
         </nav>
@@ -47,7 +53,15 @@
         </div>
     </main>
 
-    <div id="cart-modal" class="modal" style="display:none;"><div class="modal-content"><span class="close" onclick="closeCartModal()">&times;</span><h2>Your Cart</h2><div id="cart-items"></div><div id="cart-total"></div><button onclick="proceedToCheckout()" class="btn-primary" style="width:100%;margin-top:1rem;">Checkout</button></div></div>
+    <div id="cart-modal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeCartModal()">&times;</span>
+            <h2>Your Cart</h2>
+            <div id="cart-items"></div>
+            <div id="cart-total"></div>
+            <button onclick="proceedToCheckout()" class="btn-primary" style="width:100%;margin-top:1rem;">Checkout</button>
+        </div>
+    </div>
 
     <footer>
         <div class="footer-content">
@@ -59,30 +73,36 @@
     </footer>
 
     <script>
-        // Supabase initialization - ONLY ONCE
-        const _SUPABASE_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
-        const _SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
-        const _supabase = supabase.createClient(_SUPABASE_URL, _SUPABASE_KEY);
+        const BLOG_SUPABASE_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
+        const BLOG_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
+        const blogSupabase = supabase.createClient(BLOG_SUPABASE_URL, BLOG_SUPABASE_KEY);
         
         let allPosts = [];
         let cart = JSON.parse(localStorage.getItem('cart') || '[]');
         
+        async function trackVisitor() {
+            const today = new Date().toISOString().split('T')[0];
+            const lastVisit = localStorage.getItem('lastVisitDate');
+            if (lastVisit !== today) {
+                try { await fetch('/api/track-visitor', { method: 'POST' }); localStorage.setItem('lastVisitDate', today); } catch(err) { console.log('Track error:', err); }
+            }
+        }
+        
         async function loadSiteLogo() {
-            const { data } = await _supabase.from('site_settings').select('logo_url').single();
+            const { data } = await blogSupabase.from('site_settings').select('logo_url').single();
             if (data?.logo_url) document.getElementById('site-logo').src = data.logo_url;
         }
         
         async function loadCategories() {
-            const { data } = await _supabase.from('categories').select('*').order('name');
+            const { data } = await blogSupabase.from('categories').select('*').order('name');
             const container = document.getElementById('categories-list');
             const filter = document.getElementById('category-filter');
             if (container && data?.length) { container.innerHTML = data.map(cat => `<li><a href="#" onclick="filterByCategory('${escapeHtml(cat.name)}')">${escapeHtml(cat.name)}</a></li>`).join(''); }
-            else if (container) { container.innerHTML = '<li>No categories yet</li>'; }
             if (filter && data?.length) { filter.innerHTML = '<option value="all">All Categories</option>' + data.map(cat => `<option value="${escapeHtml(cat.name)}">${escapeHtml(cat.name)}</option>`).join(''); }
         }
         
         async function loadBlogs() {
-            const { data } = await _supabase.from('blog_posts').select('*').eq('published', true).order('created_at', { ascending: false });
+            const { data } = await blogSupabase.from('blog_posts').select('*').eq('published', true).order('created_at', { ascending: false });
             allPosts = data || [];
             renderBlogs();
             loadRecentPosts();
@@ -103,10 +123,9 @@
         }
         
         async function loadRecentPosts() {
-            const { data } = await _supabase.from('blog_posts').select('id,title').eq('published', true).order('created_at', { ascending: false }).limit(5);
+            const { data } = await blogSupabase.from('blog_posts').select('id,title').eq('published', true).order('created_at', { ascending: false }).limit(5);
             const container = document.getElementById('recent-posts');
             if (container && data?.length) { container.innerHTML = data.map(post => `<li><a href="post.html?id=${post.id}">${escapeHtml(post.title)}</a></li>`).join(''); }
-            else if (container) { container.innerHTML = '<li>No posts yet</li>'; }
         }
         
         function filterByCategory(category) { const filter = document.getElementById('category-filter'); if (filter) { filter.value = category; renderBlogs(); } }
@@ -128,6 +147,7 @@
         document.getElementById('category-filter')?.addEventListener('change', renderBlogs);
         document.getElementById('search-posts')?.addEventListener('input', renderBlogs);
         
+        trackVisitor();
         loadSiteLogo();
         loadCategories();
         loadBlogs();

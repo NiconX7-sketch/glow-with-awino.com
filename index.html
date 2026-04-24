@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="css/style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/payments.js"></script>
     <style>
         .float-whatsapp { position: fixed; bottom: 30px; right: 30px; background: #25D366; width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; color: white; cursor: pointer; z-index: 1000; }
         .cart-count { position: absolute; top: -8px; right: -12px; background: #C66B3D; color: white; border-radius: 50%; padding: 2px 6px; font-size: 11px; font-weight: 600; min-width: 18px; text-align: center; }
@@ -34,7 +35,7 @@
                 <li><a href="shop.html">Ebooks</a></li>
                 <li><a href="resources.html">Resources</a></li>
                 <li><a href="contact.html">Contact</a></li>
-                <li><a href="admin.html" class="admin-link">Admin</a></li>
+                <li><a href="admin.html">Admin</a></li>
                 <li class="cart-icon-container">
                     <a href="#" onclick="viewCart(); return false;">
                         <i class="fas fa-shopping-cart" style="font-size: 1.2rem;"></i>
@@ -101,17 +102,18 @@
     <div id="cart-modal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeCartModal()">&times;</span>
-            <h2><i class="fas fa-shopping-cart"></i> Your Cart</h2>
+            <h2 style="text-align: center;"><i class="fas fa-shopping-cart"></i> Your Cart</h2>
             <div id="cart-items" style="max-height: 300px; overflow-y: auto;"></div>
-            <div id="cart-total" style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #eee;"></div>
+            <div id="cart-total" style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #eee; text-align: center;"></div>
             <button onclick="proceedToCheckout()" class="btn-primary" style="width:100%; margin-top:1rem;">Proceed to Checkout</button>
         </div>
     </div>
 
     <script>
-        const SUPABASE_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        // Supabase initialized ONLY ONCE with unique variable name
+        const SB_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
+        const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
+        const sb = supabase.createClient(SB_URL, SB_KEY);
         
         let cart = JSON.parse(localStorage.getItem('cart') || '[]');
         
@@ -124,13 +126,13 @@
         }
         
         async function loadSiteSettings() {
-            const { data } = await supabase.from('site_settings').select('logo_url, profile_image_url').single();
+            const { data } = await sb.from('site_settings').select('logo_url, profile_image_url').single();
             if (data?.logo_url) document.getElementById('site-logo').src = data.logo_url;
             if (data?.profile_image_url) document.getElementById('profile-image').src = data.profile_image_url;
         }
         
         async function loadLatestPosts() {
-            const { data } = await supabase.from('blog_posts').select('*').eq('published', true).order('created_at', { ascending: false }).limit(3);
+            const { data } = await sb.from('blog_posts').select('*').eq('published', true).order('created_at', { ascending: false }).limit(3);
             const container = document.getElementById('latest-posts');
             if (!data || data.length === 0) { container.innerHTML = '<p style="text-align:center;padding:2rem;">No blog posts yet.</p>'; return; }
             container.innerHTML = data.map(post => `
@@ -141,69 +143,34 @@
             `).join('');
         }
         
-        function updateCartCount() { 
-            const countEl = document.getElementById('cart-count');
-            if (countEl) countEl.textContent = cart.length;
-        }
+        function updateCartCount() { const el = document.getElementById('cart-count'); if (el) el.textContent = cart.length; }
         
         function viewCart() {
             const modal = document.getElementById('cart-modal');
             const itemsDiv = document.getElementById('cart-items');
             const totalDiv = document.getElementById('cart-total');
-            
-            if (cart.length === 0) {
-                itemsDiv.innerHTML = '<p style="text-align:center;padding:2rem;">Your cart is empty.</p>';
-                totalDiv.innerHTML = '';
-            } else {
+            if (cart.length === 0) { itemsDiv.innerHTML = '<p style="text-align:center;padding:2rem;">Your cart is empty.</p>'; totalDiv.innerHTML = ''; }
+            else {
                 let total = 0;
-                itemsDiv.innerHTML = cart.map((item, index) => {
-                    const price = item.price_usd || 29.99;
-                    total += price;
-                    return `
-                        <div style="display:flex; justify-content:space-between; align-items:center; padding:0.75rem 0; border-bottom:1px solid #eee;">
-                            <div>
-                                <strong>${escapeHtml(item.title)}</strong>
-                                <div style="color:#C66B3D; font-weight:600;">$${price.toFixed(2)}</div>
-                            </div>
-                            <button onclick="removeFromCart(${index})" style="background:#dc2626; color:white; border:none; padding:0.3rem 0.8rem; border-radius:5px; cursor:pointer;">Remove</button>
-                        </div>
-                    `;
-                }).join('');
-                totalDiv.innerHTML = `<div style="text-align:right; font-size:1.2rem;"><strong>Total: $${total.toFixed(2)}</strong></div>`;
+                itemsDiv.innerHTML = cart.map((item,i) => { let p = item.price_usd || 29.99; total += p; return `<div style="display:flex; justify-content:space-between; align-items:center; padding:0.75rem 0; border-bottom:1px solid #eee;"><div><strong>${escapeHtml(item.title)}</strong><div style="color:#C66B3D;">$${p}</div></div><button onclick="removeFromCart(${i})" style="background:#dc2626;color:white;border:none;padding:0.3rem 0.8rem;border-radius:5px;cursor:pointer;">Remove</button></div>`; }).join('');
+                totalDiv.innerHTML = `<div style="text-align:center; font-size:1.2rem;"><strong>Total: $${total.toFixed(2)}</strong></div>`;
             }
             modal.style.display = 'flex';
         }
         
-        function removeFromCart(index) {
-            cart.splice(index, 1);
-            localStorage.setItem('cart', JSON.stringify(cart));
-            updateCartCount();
-            viewCart();
-        }
-        
-        function proceedToCheckout() {
-            if (cart.length === 0) {
-                alert('Your cart is empty!');
-                return;
-            }
-            sessionStorage.setItem('checkoutCart', JSON.stringify(cart));
-            window.location.href = 'checkout.html';
-        }
-        
-        function closeCartModal() {
-            document.getElementById('cart-modal').style.display = 'none';
-        }
-        
+        function removeFromCart(i) { cart.splice(i,1); localStorage.setItem('cart',JSON.stringify(cart)); updateCartCount(); viewCart(); }
+        function proceedToCheckout() { if(cart.length===0){ alert('Cart empty'); return; } sessionStorage.setItem('checkoutCart',JSON.stringify(cart)); window.location.href='checkout.html'; }
+        function closeCartModal() { document.getElementById('cart-modal').style.display = 'none'; }
         function escapeHtml(t) { if(!t) return ''; const d=document.createElement('div'); d.textContent=t; return d.innerHTML; }
         
         document.getElementById('newsletter-form')?.addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('newsletter-email').value;
             const msg = document.getElementById('newsletter-message');
-            const { error } = await supabase.from('newsletter_subscribers').insert([{ email }]);
+            const { error } = await sb.from('newsletter_subscribers').insert([{ email }]);
             if (error?.code === '23505') { msg.textContent = '✅ Already subscribed!'; msg.style.cssText = 'background:#fef3c7;color:#d97706;display:block'; }
             else if (error) { msg.textContent = '❌ Error. Please try again.'; msg.style.cssText = 'background:#fee2e2;color:#dc2626;display:block'; }
-            else { msg.textContent = '✅ Subscribed! Check your email.'; msg.style.cssText = 'background:#dcfce7;color:#16a34a;display:block'; e.target.reset(); }
+            else { msg.textContent = '✅ Subscribed!'; msg.style.cssText = 'background:#dcfce7;color:#16a34a;display:block'; e.target.reset(); }
             setTimeout(() => msg.style.display = 'none', 5000);
         });
         
@@ -212,10 +179,7 @@
         loadLatestPosts();
         updateCartCount();
         
-        window.onclick = function(event) {
-            const modal = document.getElementById('cart-modal');
-            if (event.target === modal) modal.style.display = 'none';
-        }
+        window.onclick = function(e) { if (e.target === document.getElementById('cart-modal')) closeCartModal(); }
     </script>
 </body>
 </html>

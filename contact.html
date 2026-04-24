@@ -8,126 +8,22 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        .contact-container {
-            max-width: 1200px;
-            margin: 3rem auto;
-            padding: 0 20px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3rem;
-        }
-        .contact-info {
-            background: white;
-            border-radius: 20px;
-            padding: 2rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            border: 1px solid #e5e0db;
-        }
-        .contact-info h1 {
-            font-size: 1.8rem;
-            margin-bottom: 1rem;
-            color: #C66B3D;
-        }
-        .contact-item {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin: 1.5rem 0;
-            padding: 1rem;
-            background: #fdf8f5;
-            border-radius: 12px;
-        }
-        .contact-item i {
-            font-size: 1.5rem;
-            color: #C66B3D;
-            width: 40px;
-        }
-        .contact-form {
-            background: white;
-            border-radius: 20px;
-            padding: 2rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            border: 1px solid #e5e0db;
-        }
-        .contact-form h2 {
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
-            color: #2C2B28;
-        }
-        .form-group {
-            margin-bottom: 1rem;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: #2C2B28;
-        }
-        .form-group input, .form-group textarea {
-            width: 100%;
-            padding: 0.8rem 1rem;
-            border: 1px solid #e5e0db;
-            border-radius: 12px;
-            font-size: 0.9rem;
-            font-family: 'Inter', sans-serif;
-        }
-        .form-group input:focus, .form-group textarea:focus {
-            outline: none;
-            border-color: #C66B3D;
-        }
-        .btn-submit {
-            background: #C66B3D;
-            color: white;
-            border: none;
-            padding: 0.9rem 2rem;
-            border-radius: 40px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            transition: all 0.3s;
-        }
-        .btn-submit:hover {
-            background: #A8552E;
-            transform: translateY(-2px);
-        }
-        .message {
-            margin-top: 1rem;
-            padding: 1rem;
-            border-radius: 12px;
-            display: none;
-        }
-        .message.success {
-            background: #dcfce7;
-            color: #166534;
-            display: block;
-        }
-        .message.error {
-            background: #fee2e2;
-            color: #991b1b;
-            display: block;
-        }
-        @media (max-width: 768px) {
-            .contact-container { grid-template-columns: 1fr; }
-            .mobile-menu { display: block; }
-            .nav-links { display: none; }
-        }
-        .float-whatsapp {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: #25D366;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            color: white;
-            cursor: pointer;
-            z-index: 1000;
-        }
+        .contact-container { max-width: 1200px; margin: 3rem auto; padding: 0 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
+        .contact-info, .contact-form { background: white; border-radius: 20px; padding: 2rem; border: 1px solid #e5e0db; }
+        .contact-info h1 { font-size: 1.8rem; margin-bottom: 1rem; color: #C66B3D; }
+        .contact-item { display: flex; align-items: center; gap: 1rem; margin: 1.5rem 0; padding: 1rem; background: #fdf8f5; border-radius: 12px; }
+        .contact-item i { font-size: 1.5rem; color: #C66B3D; width: 40px; }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
+        .form-group input, .form-group textarea { width: 100%; padding: 0.8rem; border: 1px solid #e5e0db; border-radius: 12px; }
+        .btn-submit { background: #C66B3D; color: white; border: none; padding: 0.9rem 2rem; border-radius: 40px; font-weight: 600; cursor: pointer; width: 100%; }
+        .btn-submit:hover { background: #A8552E; }
+        .message { margin-top: 1rem; padding: 1rem; border-radius: 12px; display: none; }
+        .message.success { background: #dcfce7; color: #166534; display: block; }
+        .message.error { background: #fee2e2; color: #991b1b; display: block; }
+        .float-whatsapp { position: fixed; bottom: 30px; right: 30px; background: #25D366; width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; color: white; cursor: pointer; z-index: 1000; }
+        .mobile-menu { display: none; cursor: pointer; font-size: 1.5rem; }
+        @media (max-width: 768px) { .contact-container { grid-template-columns: 1fr; } .mobile-menu { display: block; } .nav-links { display: none; flex-direction: column; position: absolute; top: 70px; left: 0; right: 0; background: white; padding: 1rem; } .nav-links.active { display: flex; } }
     </style>
 </head>
 <body>
@@ -155,13 +51,7 @@
                 <p>Have questions, suggestions, or partnership opportunities? We'd love to hear from you!</p>
                 <div class="contact-item"><i class="fas fa-envelope"></i><div><strong>Email</strong><br>awinophoebe44@gmail.com</div></div>
                 <div class="contact-item"><i class="fab fa-whatsapp"></i><div><strong>WhatsApp</strong><br>+254 704 817504</div></div>
-                <div class="contact-item"><i class="fas fa-map-marker-alt"></i><div><strong>Location</strong><br>Nairobi, Kenya</div></div>
-                <div class="social-links" style="margin-top: 2rem;">
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-youtube"></i></a>
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-tiktok"></i></a>
-                </div>
+                <div class="social-links" style="margin-top:2rem;"><a href="#"><i class="fab fa-twitter"></i></a><a href="#"><i class="fab fa-youtube"></i></a><a href="#"><i class="fab fa-facebook"></i></a><a href="#"><i class="fab fa-tiktok"></i></a></div>
             </div>
             <div class="contact-form">
                 <h2>Send us a Message</h2>
@@ -187,58 +77,40 @@
     </footer>
 
     <script>
-        const SUPABASE_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-        document.getElementById('contactForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const name = document.getElementById('contactName').value;
-            const email = document.getElementById('contactEmail').value;
-            const subject = document.getElementById('contactSubject').value;
-            const message = document.getElementById('contactMessage').value;
-            const messageDiv = document.getElementById('formMessage');
-            
-            // Show loading
-            messageDiv.textContent = 'Sending message...';
-            messageDiv.style.background = '#e2e8f0';
-            messageDiv.style.color = '#475569';
-            messageDiv.style.display = 'block';
-            
-            try {
-                const { data, error } = await supabase
-                    .from('contact_messages')
-                    .insert([{ name, email, subject, message }]);
-                
-                if (error) {
-                    console.error('Supabase error:', error);
-                    messageDiv.textContent = '❌ Failed to send message. Please try again.';
-                    messageDiv.style.background = '#fee2e2';
-                    messageDiv.style.color = '#991b1b';
-                } else {
-                    messageDiv.textContent = '✅ Message sent successfully! We\'ll get back to you soon.';
-                    messageDiv.style.background = '#dcfce7';
-                    messageDiv.style.color = '#166534';
-                    document.getElementById('contactForm').reset();
-                }
-            } catch (err) {
-                console.error('Error:', err);
-                messageDiv.textContent = '❌ An error occurred. Please try again.';
-                messageDiv.style.background = '#fee2e2';
-                messageDiv.style.color = '#991b1b';
-            }
-            
-            // Hide message after 5 seconds
-            setTimeout(() => {
-                messageDiv.style.display = 'none';
-            }, 5000);
-        });
+        // Initialize Supabase ONCE
+        const supabaseUrl = 'https://orxrpwncwyrkmubqywhw.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
         
         async function loadSiteLogo() {
             const { data } = await supabase.from('site_settings').select('logo_url').single();
             if (data?.logo_url) document.getElementById('site-logo').src = data.logo_url;
         }
+        
+        document.getElementById('contactForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('contactName').value;
+            const email = document.getElementById('contactEmail').value;
+            const subject = document.getElementById('contactSubject').value;
+            const message = document.getElementById('contactMessage').value;
+            const msgDiv = document.getElementById('formMessage');
+            
+            msgDiv.textContent = 'Sending...';
+            msgDiv.style.cssText = 'background:#e2e8f0;color:#475569;display:block';
+            
+            const { error } = await supabase.from('contact_messages').insert([{ name, email, subject, message }]);
+            
+            if (error) {
+                msgDiv.textContent = '❌ Failed to send. Please try again.';
+                msgDiv.style.cssText = 'background:#fee2e2;color:#991b1b;display:block';
+            } else {
+                msgDiv.textContent = '✅ Message sent! We\'ll get back to you soon.';
+                msgDiv.style.cssText = 'background:#dcfce7;color:#166534;display:block';
+                document.getElementById('contactForm').reset();
+            }
+            setTimeout(() => msgDiv.style.display = 'none', 5000);
+        });
+        
         loadSiteLogo();
     </script>
 </body>

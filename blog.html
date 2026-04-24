@@ -11,12 +11,7 @@
         .float-whatsapp { position: fixed; bottom: 30px; right: 30px; background: #25D366; width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; color: white; cursor: pointer; z-index: 1000; }
         .cart-count { position: absolute; top: -8px; right: -12px; background: #C66B3D; color: white; border-radius: 50%; padding: 2px 6px; font-size: 11px; }
         .mobile-menu { display: none; cursor: pointer; font-size: 1.5rem; }
-        @media (max-width: 768px) { 
-            .mobile-menu { display: block; } 
-            .nav-links { display: none; flex-direction: column; position: absolute; top: 70px; left: 0; right: 0; background: white; padding: 1rem; }
-            .nav-links.active { display: flex; }
-            .blog-container { grid-template-columns: 1fr; }
-        }
+        @media (max-width: 768px) { .mobile-menu { display: block; } .nav-links { display: none; flex-direction: column; position: absolute; top: 70px; left: 0; right: 0; background: white; padding: 1rem; } .nav-links.active { display: flex; } .blog-container { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -24,10 +19,7 @@
 
     <header>
         <nav class="navbar">
-            <div class="logo-container">
-                <img id="site-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='45' height='45' viewBox='0 0 45 45'%3E%3Crect width='45' height='45' fill='%23C66B3D'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='20'%3EGWA%3C/text%3E%3C/svg%3E" class="logo">
-                <span class="site-title">Grow With Awino</span>
-            </div>
+            <div class="logo-container"><img id="site-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='45' height='45' viewBox='0 0 45 45'%3E%3Crect width='45' height='45' fill='%23C66B3D'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='20'%3EGWA%3C/text%3E%3C/svg%3E" class="logo"><span class="site-title">Grow With Awino</span></div>
             <ul class="nav-links" id="navLinks">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="blog.html" class="active">Blog</a></li>
@@ -35,16 +27,9 @@
                 <li><a href="resources.html">Resources</a></li>
                 <li><a href="contact.html">Contact</a></li>
                 <li><a href="admin.html" class="admin-link">Admin</a></li>
-                <li style="position: relative;">
-                    <a href="#" onclick="viewCart(); return false;">
-                        <i class="fas fa-shopping-cart"></i>
-                        <span id="cart-count" class="cart-count">0</span>
-                    </a>
-                </li>
+                <li style="position: relative;"><a href="#" onclick="viewCart(); return false;"><i class="fas fa-shopping-cart"></i><span id="cart-count" class="cart-count">0</span></a></li>
             </ul>
-            <div class="mobile-menu" onclick="document.getElementById('navLinks').classList.toggle('active')">
-                <i class="fas fa-bars"></i>
-            </div>
+            <div class="mobile-menu" onclick="document.getElementById('navLinks').classList.toggle('active')"><i class="fas fa-bars"></i></div>
         </nav>
     </header>
 
@@ -56,29 +41,13 @@
                 <div class="sidebar-widget"><h3>Follow Me</h3><div class="social-links"><a href="#"><i class="fab fa-twitter"></i></a><a href="#"><i class="fab fa-youtube"></i></a><a href="#"><i class="fab fa-facebook"></i></a><a href="#"><i class="fab fa-tiktok"></i></a></div></div>
             </aside>
             <div class="blog-content">
-                <div class="blog-header">
-                    <h1>Blog Posts</h1>
-                    <div class="blog-controls">
-                        <select id="category-filter"><option value="all">All Categories</option></select>
-                        <input type="text" id="search-posts" placeholder="Search posts...">
-                    </div>
-                </div>
-                <div id="blog-posts-grid" class="blog-posts-grid">
-                    <div style="text-align:center;padding:2rem;">Loading posts...</div>
-                </div>
+                <div class="blog-header"><h1>Blog Posts</h1><div class="blog-controls"><select id="category-filter"><option value="all">All Categories</option></select><input type="text" id="search-posts" placeholder="Search posts..."></div></div>
+                <div id="blog-posts-grid" class="blog-posts-grid"><div style="text-align:center;padding:2rem;">Loading posts...</div></div>
             </div>
         </div>
     </main>
 
-    <div id="cart-modal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <span class="close" onclick="closeCartModal()">&times;</span>
-            <h2>Your Cart</h2>
-            <div id="cart-items"></div>
-            <div id="cart-total"></div>
-            <button onclick="proceedToCheckout()" class="btn-primary" style="width:100%;margin-top:1rem;">Checkout</button>
-        </div>
-    </div>
+    <div id="cart-modal" class="modal" style="display:none;"><div class="modal-content"><span class="close" onclick="closeCartModal()">&times;</span><h2>Your Cart</h2><div id="cart-items"></div><div id="cart-total"></div><button onclick="proceedToCheckout()" class="btn-primary" style="width:100%;margin-top:1rem;">Checkout</button></div></div>
 
     <footer>
         <div class="footer-content">
@@ -90,9 +59,10 @@
     </footer>
 
     <script>
-        const SUPABASE_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // Initialize Supabase ONCE
+        const supabaseUrl = 'https://orxrpwncwyrkmubqywhw.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
         
         let allPosts = [];
         let cart = JSON.parse(localStorage.getItem('cart') || '[]');
@@ -106,14 +76,9 @@
             const { data } = await supabase.from('categories').select('*').order('name');
             const container = document.getElementById('categories-list');
             const filter = document.getElementById('category-filter');
-            if (container && data && data.length > 0) {
-                container.innerHTML = data.map(cat => `<li><a href="#" onclick="filterByCategory('${escapeHtml(cat.name)}')">${escapeHtml(cat.name)}</a></li>`).join('');
-            } else if (container) {
-                container.innerHTML = '<li>No categories yet</li>';
-            }
-            if (filter && data && data.length > 0) {
-                filter.innerHTML = '<option value="all">All Categories</option>' + data.map(cat => `<option value="${escapeHtml(cat.name)}">${escapeHtml(cat.name)}</option>`).join('');
-            }
+            if (container && data?.length) { container.innerHTML = data.map(cat => `<li><a href="#" onclick="filterByCategory('${escapeHtml(cat.name)}')">${escapeHtml(cat.name)}</a></li>`).join(''); }
+            else if (container) { container.innerHTML = '<li>No categories yet</li>'; }
+            if (filter && data?.length) { filter.innerHTML = '<option value="all">All Categories</option>' + data.map(cat => `<option value="${escapeHtml(cat.name)}">${escapeHtml(cat.name)}</option>`).join(''); }
         }
         
         async function loadBlogs() {
@@ -127,26 +92,12 @@
             const container = document.getElementById('blog-posts-grid');
             const category = document.getElementById('category-filter')?.value || 'all';
             const search = document.getElementById('search-posts')?.value.toLowerCase() || '';
-            
-            let filtered = allPosts.filter(p => {
-                const matchCategory = category === 'all' || p.category === category;
-                const matchSearch = p.title.toLowerCase().includes(search) || (p.content || '').toLowerCase().includes(search);
-                return matchCategory && matchSearch;
-            });
-            
-            if (filtered.length === 0) {
-                container.innerHTML = '<p style="text-align:center;padding:2rem;">No blog posts found.</p>';
-                return;
-            }
-            
+            let filtered = allPosts.filter(p => (category === 'all' || p.category === category) && (p.title.toLowerCase().includes(search) || (p.content || '').toLowerCase().includes(search)));
+            if (filtered.length === 0) { container.innerHTML = '<p style="text-align:center;padding:2rem;">No blog posts found.</p>'; return; }
             container.innerHTML = filtered.map(post => `
                 <div class="post-card">
                     <img src="${post.image_url || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22350%22 height=%22200%22%3E%3Crect width=%22350%22 height=%22200%22 fill=%22%23C66B3D%22/%3E%3Ctext x=%2250%%22 y=%2250%%22 fill=%22white%22%3ENo Image%3C/text%3E%3C/svg%3E'}" class="post-image">
-                    <div class="post-content">
-                        <span class="post-category">${escapeHtml(post.category)}</span>
-                        <h3 class="post-title">${escapeHtml(post.title)}</h3>
-                        <a href="post.html?id=${post.id}" class="read-more">Read More →</a>
-                    </div>
+                    <div class="post-content"><span class="post-category">${escapeHtml(post.category)}</span><h3 class="post-title">${escapeHtml(post.title)}</h3><a href="post.html?id=${post.id}" class="read-more">Read More →</a></div>
                 </div>
             `).join('');
         }
@@ -154,45 +105,21 @@
         async function loadRecentPosts() {
             const { data } = await supabase.from('blog_posts').select('id,title').eq('published', true).order('created_at', { ascending: false }).limit(5);
             const container = document.getElementById('recent-posts');
-            if (container && data && data.length > 0) {
-                container.innerHTML = data.map(post => `<li><a href="post.html?id=${post.id}">${escapeHtml(post.title)}</a></li>`).join('');
-            } else if (container) {
-                container.innerHTML = '<li>No posts yet</li>';
-            }
+            if (container && data?.length) { container.innerHTML = data.map(post => `<li><a href="post.html?id=${post.id}">${escapeHtml(post.title)}</a></li>`).join(''); }
+            else if (container) { container.innerHTML = '<li>No posts yet</li>'; }
         }
         
-        function filterByCategory(category) {
-            const filter = document.getElementById('category-filter');
-            if (filter) { filter.value = category; renderBlogs(); }
-        }
+        function filterByCategory(category) { const filter = document.getElementById('category-filter'); if (filter) { filter.value = category; renderBlogs(); } }
         
-        function updateCartCount() { 
-            const count = document.getElementById('cart-count');
-            if (count) count.textContent = cart.length;
-        }
-        
+        function updateCartCount() { document.getElementById('cart-count').textContent = cart.length; }
         function viewCart() {
-            const modal = document.getElementById('cart-modal');
-            const itemsDiv = document.getElementById('cart-items');
-            const totalDiv = document.getElementById('cart-total');
+            const modal = document.getElementById('cart-modal'), items = document.getElementById('cart-items'), totalDiv = document.getElementById('cart-total');
+            if (cart.length === 0) { items.innerHTML = '<p style="text-align:center;padding:2rem;">Cart empty</p>'; totalDiv.innerHTML = ''; return; }
             let total = 0;
-            if (cart.length === 0) {
-                itemsDiv.innerHTML = '<p style="text-align:center;padding:2rem;">Cart empty</p>';
-                totalDiv.innerHTML = '';
-            } else {
-                itemsDiv.innerHTML = cart.map((item, i) => {
-                    const price = item.price_usd || 29.99;
-                    total += price;
-                    return `<div style="display:flex;justify-content:space-between;padding:0.75rem 0;border-bottom:1px solid #eee;">
-                        <div><strong>${escapeHtml(item.title)}</strong><br>$${price}</div>
-                        <button onclick="removeFromCart(${i})" style="background:#dc2626;color:white;border:none;padding:0.3rem 0.8rem;border-radius:5px;">Remove</button>
-                    </div>`;
-                }).join('');
-                totalDiv.innerHTML = `<div style="text-align:right;padding:1rem 0;"><strong>Total: $${total.toFixed(2)}</strong></div>`;
-            }
+            items.innerHTML = cart.map((item,i) => { let p = item.price_usd || 29.99; total += p; return `<div style="display:flex;justify-content:space-between;padding:0.75rem 0;border-bottom:1px solid #eee;"><div><strong>${escapeHtml(item.title)}</strong><br>$${p}</div><button onclick="removeFromCart(${i})" style="background:#dc2626;color:white;border:none;padding:0.3rem 0.8rem;border-radius:5px;">Remove</button></div>`; }).join('');
+            totalDiv.innerHTML = `<div style="text-align:right;padding:1rem 0;"><strong>Total: $${total.toFixed(2)}</strong></div>`;
             modal.style.display = 'flex';
         }
-        
         function removeFromCart(i) { cart.splice(i,1); localStorage.setItem('cart',JSON.stringify(cart)); updateCartCount(); viewCart(); }
         function proceedToCheckout() { if(cart.length===0){ alert('Cart empty'); return; } sessionStorage.setItem('checkoutCart',JSON.stringify(cart)); window.location.href='checkout.html'; }
         function closeCartModal() { document.getElementById('cart-modal').style.display = 'none'; }

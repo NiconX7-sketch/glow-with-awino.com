@@ -51,6 +51,7 @@
                 <p>Have questions, suggestions, or partnership opportunities? We'd love to hear from you!</p>
                 <div class="contact-item"><i class="fas fa-envelope"></i><div><strong>Email</strong><br>awinophoebe44@gmail.com</div></div>
                 <div class="contact-item"><i class="fab fa-whatsapp"></i><div><strong>WhatsApp</strong><br>+254 704 817504</div></div>
+                <div class="contact-item"><i class="fas fa-map-marker-alt"></i><div><strong>Location</strong><br>Nairobi, Kenya</div></div>
                 <div class="social-links" style="margin-top:2rem;"><a href="#"><i class="fab fa-twitter"></i></a><a href="#"><i class="fab fa-youtube"></i></a><a href="#"><i class="fab fa-facebook"></i></a><a href="#"><i class="fab fa-tiktok"></i></a></div>
             </div>
             <div class="contact-form">
@@ -77,13 +78,13 @@
     </footer>
 
     <script>
-        // Initialize Supabase ONCE
-        const supabaseUrl = 'https://orxrpwncwyrkmubqywhw.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
-        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+        // Supabase initialization - ONLY ONCE - using unique variable name
+        const CONTACT_SUPABASE_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
+        const CONTACT_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
+        const contactSupabase = supabase.createClient(CONTACT_SUPABASE_URL, CONTACT_SUPABASE_KEY);
         
         async function loadSiteLogo() {
-            const { data } = await supabase.from('site_settings').select('logo_url').single();
+            const { data } = await contactSupabase.from('site_settings').select('logo_url').single();
             if (data?.logo_url) document.getElementById('site-logo').src = data.logo_url;
         }
         
@@ -98,7 +99,7 @@
             msgDiv.textContent = 'Sending...';
             msgDiv.style.cssText = 'background:#e2e8f0;color:#475569;display:block';
             
-            const { error } = await supabase.from('contact_messages').insert([{ name, email, subject, message }]);
+            const { error } = await contactSupabase.from('contact_messages').insert([{ name, email, subject, message }]);
             
             if (error) {
                 msgDiv.textContent = '❌ Failed to send. Please try again.';

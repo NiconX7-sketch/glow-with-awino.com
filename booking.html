@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book 1-on-1 Training - Grow With Awino</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        .booking-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+        }
+        .booking-info {
+            background: white;
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid #e5e0db;
+        }
+        .booking-info h1 {
+            color: #C66B3D;
+            margin-bottom: 1rem;
+        }
+        .booking-info h2 {
+            color: #2D6A4F;
+            margin: 1.5rem 0 1rem;
+            font-size: 1.3rem;
+        }
+        .benefits-list {
+            list-style: none;
+            padding: 0;
+        }
+        .benefits-list li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #e5e0db;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .benefits-list li i {
+            color: #C66B3D;
+            width: 24px;
+        }
+        .price-badge {
+            background: linear-gradient(135deg, #C66B3D, #2D6A4F);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 40px;
+            display: inline-block;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+        .booking-form {
+            background: white;
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid #e5e0db;
+        }
+        .booking-form h2 {
+            color: #C66B3D;
+            margin-bottom: 1.5rem;
+        }
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #2C2B28;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1.5px solid #e5e0db;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #C66B3D;
+        }
+        .btn-book {
+            background: #25D366;
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+        }
+        .btn-book:hover {
+            background: #128C7E;
+            transform: translateY(-2px);
+        }
+        .whatsapp-note {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: #666;
+        }
+        .success-message, .error-message {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 10px;
+            display: none;
+        }
+        .success-message {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #22c55e;
+        }
+        .error-message {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+        }
+        @media (max-width: 768px) {
+            .booking-container { grid-template-columns: 1fr; }
+            .mobile-menu { display: block; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo-container">
+                <img id="site-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='45' height='45' viewBox='0 0 45 45'%3E%3Crect width='45' height='45' fill='%23C66B3D'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='20'%3EGWA%3C/text%3E%3C/svg%3E" class="logo">
+                <span class="site-title">Grow With Awino</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="shop.html">Ebooks</a></li>
+                <li><a href="resources.html">Resources</a></li>
+                <li><a href="booking.html" class="active">Book Training</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="admin.html" class="admin-link">Admin</a></li>
+            </ul>
+            <div class="mobile-menu" onclick="toggleMobileMenu()"><i class="fas fa-bars"></i></div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="booking-container">
+            <div class="booking-info">
+                <h1>📚 1-on-1 Training</h1>
+                <p>Learn how to earn online, master freelancing, and build sustainable digital income streams with personalized coaching from Awino.</p>
+                
+                <div class="price-badge">💰 KES 1,500 / session (1.5 hours)</div>
+                
+                <h2>What You'll Learn</h2>
+                <ul class="benefits-list">
+                    <li><i class="fas fa-check-circle"></i> Personalized roadmap to online income</li>
+                    <li><i class="fas fa-check-circle"></i> Freelancing platforms setup & optimization</li>
+                    <li><i class="fas fa-check-circle"></i> Digital skills assessment & development plan</li>
+                    <li><i class="fas fa-check-circle"></i> Practical assignments with feedback</li>
+                    <li><i class="fas fa-check-circle"></i> Q&A session - ask anything!</li>
+                </ul>
+                
+                <h2>Who Is This For?</h2>
+                <ul class="benefits-list">
+                    <li><i class="fas fa-user-check"></i> Complete beginners wanting to start earning online</li>
+                    <li><i class="fas fa-user-check"></i> Freelancers looking to scale their income</li>
+                    <li><i class="fas fa-user-check"></i> Anyone struggling to find online opportunities</li>
+                    <li><i class="fas fa-user-check"></i> Students and stay-at-home parents</li>
+                </ul>
+                
+                <div class="price-badge">⭐ What's Included</div>
+                <ul class="benefits-list">
+                    <li><i class="fas fa-video"></i> 1.5-hour live Zoom/Google Meet session</li>
+                    <li><i class="fas fa-file-alt"></i> Resource kit with templates & guides</li>
+                    <li><i class="fas fa-message"></i> Follow-up WhatsApp support (7 days)</li>
+                    <li><i class="fas fa-certificate"></i> Completion certificate</li>
+                </ul>
+            </div>
+
+            <div class="booking-form">
+                <h2>Book Your Training Session</h2>
+                <form id="bookingForm">
+                    <div class="form-group">
+                        <label>Your Full Name *</label>
+                        <input type="text" id="fullName" required placeholder="e.g., John Doe">
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address *</label>
+                        <input type="email" id="email" required placeholder="you@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label>WhatsApp Phone Number *</label>
+                        <input type="tel" id="phone" required placeholder="e.g., 2547XXXXXXXX">
+                    </div>
+                    <div class="form-group">
+                        <label>Preferred Training Date *</label>
+                        <input type="date" id="preferredDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Preferred Time (EAT - Kenya Time) *</label>
+                        <select id="preferredTime" required>
+                            <option value="">Select time slot</option>
+                            <option value="9:00 AM">9:00 AM - 10:30 AM</option>
+                            <option value="11:00 AM">11:00 AM - 12:30 PM</option>
+                            <option value="2:00 PM">2:00 PM - 3:30 PM</option>
+                            <option value="4:00 PM">4:00 PM - 5:30 PM</option>
+                            <option value="6:00 PM">6:00 PM - 7:30 PM</option>
+                            <option value="8:00 PM">8:00 PM - 9:30 PM</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>What would you like to learn? *</label>
+                        <textarea id="learningGoals" rows="3" required placeholder="Describe what you want to achieve..."></textarea>
+                    </div>
+                    <button type="submit" class="btn-book">
+                        <i class="fab fa-whatsapp"></i> Book via WhatsApp
+                    </button>
+                    <div id="formMessage" class="success-message"></div>
+                    <div id="formError" class="error-message"></div>
+                    <div class="whatsapp-note">📱 You'll be redirected to WhatsApp to complete your booking. Payment details will be shared there.</div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section"><h3>Grow With Awino</h3><p>Empowering beginners to learn digital skills and earn online.</p></div>
+            <div class="footer-section"><h3>Quick Links</h3><ul><li><a href="index.html">Home</a></li><li><a href="blog.html">Blog</a></li><li><a href="shop.html">Ebooks</a></li><li><a href="booking.html">Book Training</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+            <div class="footer-section"><h3>Legal</h3><ul><li><a href="legal.html">Disclaimer</a></li><li><a href="legal.html">Privacy Policy</a></li><li><a href="legal.html">Terms</a></li></ul></div>
+            <div class="footer-section"><h3>Contact</h3><p><i class="fas fa-envelope"></i> awinophoebe44@gmail.com</p><p><i class="fab fa-whatsapp"></i> +254 704 817504</p></div>
+        </div>
+        <div class="footer-bottom"><p>&copy; 2026 Grow With Awino. All rights reserved.</p></div>
+    </footer>
+
+    <script>
+        const SUPABASE_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
+        
+        // Create training_bookings table if not exists (run in Supabase SQL later)
+        
+        document.getElementById('bookingForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('fullName').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const date = document.getElementById('preferredDate').value;
+            const time = document.getElementById('preferredTime').value;
+            const goals = document.getElementById('learningGoals').value;
+            
+            const successDiv = document.getElementById('formMessage');
+            const errorDiv = document.getElementById('formError');
+            
+            successDiv.style.display = 'none';
+            errorDiv.style.display = 'none';
+            
+            if (!name || !email || !phone || !date || !time || !goals) {
+                errorDiv.textContent = 'Please fill in all fields.';
+                errorDiv.style.display = 'block';
+                return;
+            }
+            
+            // Format WhatsApp message
+            const message = `*New Training Booking!*%0A%0A*Name:* ${encodeURIComponent(name)}%0A*Email:* ${encodeURIComponent(email)}%0A*Phone:* ${encodeURIComponent(phone)}%0A*Preferred Date:* ${encodeURIComponent(date)}%0A*Preferred Time:* ${encodeURIComponent(time)}%0A*Learning Goals:* ${encodeURIComponent(goals)}`;
+            
+            const whatsappNumber = '254704817504';
+            const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${message}`;
+            
+            // Try to save to Supabase if table exists
+            try {
+                const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                await supabase.from('training_bookings').insert([{
+                    name, email, phone, preferred_date: date, preferred_time: time, learning_goals: goals
+                }]);
+                console.log('Booking saved to database');
+            } catch (err) {
+                console.log('Database save not available, continuing with WhatsApp only');
+            }
+            
+            successDiv.textContent = 'Redirecting to WhatsApp... Please complete your booking there.';
+            successDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                window.open(whatsappUrl, '_blank');
+            }, 1500);
+        });
+        
+        function toggleMobileMenu() {
+            document.querySelector('.nav-links').classList.toggle('active');
+        }
+        
+        // Set minimum date to today
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('preferredDate').min = today;
+    </script>
+</body>
+</html>

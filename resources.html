@@ -11,7 +11,6 @@
     <style>
         .resources-header { text-align: center; padding: 3rem 2rem; background: linear-gradient(135deg, #fdf8f5, white); }
         .resources-header h1 { font-size: 2.5rem; color: #C66B3D; margin-bottom: 0.5rem; }
-        .resources-header p { color: #666; }
         .resources-grid { max-width: 1200px; margin: 3rem auto; padding: 0 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
         .resource-card { background: white; border-radius: 20px; padding: 2rem; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: all 0.3s; border: 1px solid #e5e0db; }
         .resource-card:hover { transform: translateY(-5px); border-color: #C66B3D; }
@@ -35,44 +34,48 @@
                 <li><a href="blog.html">Blog</a></li>
                 <li><a href="shop.html">Ebooks</a></li>
                 <li><a href="resources.html" class="active">Resources</a></li>
+                <li><a href="booking.html">Book Training</a></li>
                 <li><a href="contact.html">Contact</a></li>
                 <li><a href="admin.html" class="admin-link">Admin</a></li>
-                <li style="position: relative;">
-                    <a href="#" onclick="viewCart(); return false;" style="display: flex; align-items: center; gap: 5px;">
-                        <i class="fas fa-shopping-cart"></i>
-                        <span id="cart-count" class="cart-count">0</span>
-                    </a>
-                </li>
+                <li class="cart-icon-container"><a href="#" onclick="viewCart(); return false;"><i class="fas fa-shopping-cart"></i><span id="cart-count" class="cart-count">0</span></a></li>
             </ul>
-            <div class="mobile-menu" onclick="document.getElementById('navLinks').classList.toggle('active')"><i class="fas fa-bars"></i></div>
+            <div class="mobile-menu" onclick="toggleMobileMenu()"><i class="fas fa-bars"></i></div>
         </nav>
     </header>
 
     <main>
-        <div class="resources-header">
-            <h1>Recommended Resources</h1>
-            <p>Tools and platforms I personally use and recommend for your success</p>
-        </div>
-        <div class="resources-grid" id="resources-container">
-            <div style="text-align:center;padding:2rem;">Loading resources...</div>
-        </div>
+        <div class="resources-header"><h1>Recommended Resources</h1><p>Tools and platforms I personally use and recommend for your success</p></div>
+        <div class="resources-grid" id="resources-container"><div style="text-align:center;padding:2rem;">Loading resources...</div></div>
     </main>
 
     <footer>
         <div class="footer-content">
             <div class="footer-section"><h3>Grow With Awino</h3><p>Empowering beginners to learn digital skills and earn online.</p></div>
-            <div class="footer-section"><h3>Quick Links</h3><ul><li><a href="index.html">Home</a></li><li><a href="blog.html">Blog</a></li><li><a href="shop.html">Ebooks</a></li><li><a href="resources.html">Resources</a></li><li><a href="contact.html">Contact</a></li></ul></div>
-            <div class="footer-section"><h3>Contact</h3><p><i class="fas fa-envelope"></i> awinophoebe44@gmail.com</p></div>
+            <div class="footer-section"><h3>Quick Links</h3><ul><li><a href="index.html">Home</a></li><li><a href="blog.html">Blog</a></li><li><a href="shop.html">Ebooks</a></li><li><a href="booking.html">Book Training</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+            <div class="footer-section"><h3>Legal</h3><ul><li><a href="legal.html#disclaimer">Disclaimer</a></li><li><a href="legal.html#privacy">Privacy Policy</a></li><li><a href="legal.html#terms">Terms & Conditions</a></li><li><a href="legal.html#refund">Refund Policy</a></li></ul></div>
+            <div class="footer-section"><h3>Contact</h3><p><i class="fas fa-envelope"></i> awinophoebe44@gmail.com</p><p><i class="fab fa-whatsapp"></i> +254 704 817504</p></div>
         </div>
         <div class="footer-bottom"><p>&copy; 2026 Grow With Awino. All rights reserved.</p></div>
     </footer>
 
+    <div id="cart-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeCartModal()">&times;</span>
+            <h2 style="text-align:center;"><i class="fas fa-shopping-cart"></i> Your Cart</h2>
+            <div id="cart-items" style="max-height:300px;overflow-y:auto;"></div>
+            <div id="cart-total" style="margin-top:1rem;padding-top:1rem;border-top:1px solid #eee;text-align:center;"></div>
+            <button onclick="proceedToCheckout()" class="btn-primary" style="width:100%;margin-top:1rem;">Proceed to Checkout</button>
+        </div>
+    </div>
+
     <script>
-        const RES_SUPABASE_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
-        const RES_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
-        const resSupabase = supabase.createClient(RES_SUPABASE_URL, RES_SUPABASE_KEY);
+        const SUPABASE_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         
         let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        
+        function toggleMobileMenu() { document.getElementById('navLinks').classList.toggle('active'); }
         
         async function trackVisitor() {
             const today = new Date().toISOString().split('T')[0];
@@ -83,63 +86,46 @@
         }
         
         async function loadSiteLogo() {
-            const { data } = await resSupabase.from('site_settings').select('logo_url').single();
+            const { data } = await supabase.from('site_settings').select('logo_url').single();
             if (data?.logo_url) document.getElementById('site-logo').src = data.logo_url;
         }
         
         async function loadAffiliateResources() {
-            const { data: settings } = await resSupabase.from('site_settings').select('affiliate_settings').single();
+            const { data: settings } = await supabase.from('site_settings').select('affiliate_settings').single();
             const ids = settings?.affiliate_settings || {};
-            
             const resources = [
-                { name: "Amazon", icon: "fab fa-amazon", color: "#ff9900", url: ids.amazon ? `https://www.amazon.com/?tag=${ids.amazon}` : null, description: "Shop millions of products with free shipping" },
-                { name: "Jumia", icon: "fas fa-shopping-bag", color: "#f5a623", url: ids.jumia ? `https://www.jumia.co.ke/?utm_source=${ids.jumia}` : null, description: "Africa's leading online shopping destination" },
+                { name: "Amazon", icon: "fab fa-amazon", color: "#ff9900", url: ids.amazon ? `https://www.amazon.com/?tag=${ids.amazon}` : null, description: "Shop millions of products" },
+                { name: "Jumia", icon: "fas fa-shopping-bag", color: "#f5a623", url: ids.jumia ? `https://www.jumia.co.ke/?utm_source=${ids.jumia}` : null, description: "Africa's leading online store" },
                 { name: "Udemy", icon: "fas fa-graduation-cap", color: "#a435f0", url: ids.udemy ? `https://www.udemy.com/?affcode=${ids.udemy}` : null, description: "Thousands of online courses" },
                 { name: "Coursera", icon: "fas fa-university", color: "#1e3a8a", url: ids.coursera ? `https://www.coursera.org/?affiliate=${ids.coursera}` : null, description: "Learn from top universities" }
             ];
-            
             const available = resources.filter(r => r.url);
             const container = document.getElementById('resources-container');
-            if (available.length === 0) {
-                container.innerHTML = '<p style="text-align:center;padding:2rem;">No affiliate resources available yet. Check back soon!</p>';
-            } else {
-                container.innerHTML = available.map(r => `
-                    <div class="resource-card">
-                        <div class="resource-icon" style="color: ${r.color}"><i class="${r.icon}"></i></div>
-                        <h3>${r.name}</h3>
-                        <p>${r.description}</p>
-                        <a href="${r.url}" target="_blank" class="resource-btn">Visit ${r.name} →</a>
-                    </div>
-                `).join('');
-            }
+            if (available.length === 0) { container.innerHTML = '<p style="text-align:center;padding:2rem;">No affiliate resources available yet. Check back soon!</p>'; }
+            else { container.innerHTML = available.map(r => `<div class="resource-card"><div class="resource-icon" style="color:${r.color}"><i class="${r.icon}"></i></div><h3>${r.name}</h3><p>${r.description}</p><a href="${r.url}" target="_blank" class="resource-btn">Visit ${r.name} →</a></div>`).join(''); }
         }
         
-        function updateCartCount() { document.getElementById('cart-count').textContent = cart.length; }
+        function updateCartCount() { const el = document.getElementById('cart-count'); if (el) el.textContent = cart.length; }
         function viewCart() {
-            const modal = document.getElementById('cart-modal');
-            if (!modal) return;
-            const items = document.getElementById('cart-items');
-            const totalDiv = document.getElementById('cart-total');
-            if (cart.length === 0) { items.innerHTML = '<p style="text-align:center;padding:2rem;">Cart empty</p>'; totalDiv.innerHTML = ''; modal.style.display = 'flex'; return; }
-            let total = 0;
-            items.innerHTML = cart.map((item,i) => { let p = item.price_usd || 29.99; total += p; return `<div style="display:flex;justify-content:space-between;padding:0.75rem 0;border-bottom:1px solid #eee;"><div><strong>${escapeHtml(item.title)}</strong><br>$${p}</div><button onclick="removeFromCart(${i})" style="background:#dc2626;color:white;border:none;padding:0.3rem 0.8rem;border-radius:5px;">Remove</button></div>`; }).join('');
-            totalDiv.innerHTML = `<div style="text-align:right;padding:1rem 0;"><strong>Total: $${total.toFixed(2)}</strong></div>`;
+            const modal = document.getElementById('cart-modal'), items = document.getElementById('cart-items'), totalDiv = document.getElementById('cart-total');
+            if (cart.length === 0) { items.innerHTML = '<p style="text-align:center;padding:2rem;">Your cart is empty.</p>'; totalDiv.innerHTML = ''; }
+            else {
+                let total = 0;
+                items.innerHTML = cart.map((item,i) => { let p = item.price_usd || 29.99; total += p; return `<div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem 0;border-bottom:1px solid #eee;"><div><strong>${escapeHtml(item.title)}</strong><div style="color:#C66B3D;">$${p}</div></div><button onclick="removeFromCart(${i})" style="background:#dc2626;color:white;border:none;padding:0.3rem 0.8rem;border-radius:5px;cursor:pointer;">Remove</button></div>`; }).join('');
+                totalDiv.innerHTML = `<div style="text-align:center; font-size:1.2rem;"><strong>Total: $${total.toFixed(2)}</strong></div>`;
+            }
             modal.style.display = 'flex';
         }
         function removeFromCart(i) { cart.splice(i,1); localStorage.setItem('cart',JSON.stringify(cart)); updateCartCount(); viewCart(); }
         function proceedToCheckout() { if(cart.length===0){ alert('Cart empty'); return; } sessionStorage.setItem('checkoutCart',JSON.stringify(cart)); window.location.href='checkout.html'; }
-        function closeCartModal() { const modal = document.getElementById('cart-modal'); if (modal) modal.style.display = 'none'; }
+        function closeCartModal() { document.getElementById('cart-modal').style.display = 'none'; }
         function escapeHtml(t) { if(!t) return ''; const d=document.createElement('div'); d.textContent=t; return d.innerHTML; }
-        
-        if (!document.getElementById('cart-modal')) {
-            const modalHTML = `<div id="cart-modal" class="modal" style="display:none;"><div class="modal-content"><span class="close" onclick="closeCartModal()">&times;</span><h2>Your Cart</h2><div id="cart-items"></div><div id="cart-total"></div><button onclick="proceedToCheckout()" class="btn-primary" style="width:100%;margin-top:1rem;">Checkout</button></div></div>`;
-            document.body.insertAdjacentHTML('beforeend', modalHTML);
-        }
         
         trackVisitor();
         loadSiteLogo();
         loadAffiliateResources();
         updateCartCount();
+        window.onclick = function(e) { if (e.target === document.getElementById('cart-modal')) closeCartModal(); }
     </script>
 </body>
 </html>

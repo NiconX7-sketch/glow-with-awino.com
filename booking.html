@@ -6,30 +6,276 @@
     <title>Book 1-on-1 Training - Grow With Awino</title>
     <link rel="stylesheet" href="css/style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        .booking-container { max-width: 1200px; margin: 2rem auto; padding: 2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
-        .booking-info, .booking-form { background: white; border-radius: 24px; padding: 2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #e5e0db; }
-        .booking-info h1 { color: #C66B3D; margin-bottom: 1rem; }
-        .booking-info h2 { color: #2D6A4F; margin: 1.5rem 0 1rem; font-size: 1.3rem; }
-        .benefits-list { list-style: none; padding: 0; }
-        .benefits-list li { padding: 0.75rem 0; border-bottom: 1px solid #e5e0db; display: flex; align-items: center; gap: 1rem; }
-        .benefits-list li i { color: #C66B3D; width: 24px; }
-        .price-badge { background: linear-gradient(135deg, #C66B3D, #2D6A4F); color: white; padding: 0.5rem 1rem; border-radius: 40px; display: inline-block; font-weight: bold; margin: 1rem 0; }
-        .booking-form h2 { color: #C66B3D; margin-bottom: 1.5rem; }
-        .form-group { margin-bottom: 1.2rem; }
-        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: #2C2B28; }
-        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 0.8rem 1rem; border: 1.5px solid #e5e0db; border-radius: 12px; font-size: 1rem; font-family: 'Inter', sans-serif; }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #C66B3D; }
-        .btn-book { background: #25D366; color: white; border: none; padding: 1rem; border-radius: 40px; font-size: 1.1rem; font-weight: 600; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s; }
-        .btn-book:hover { background: #128C7E; transform: translateY(-2px); }
-        .success-message, .error-message { margin-top: 1rem; padding: 1rem; border-radius: 10px; display: none; }
-        .success-message { background: #dcfce7; color: #166534; border: 1px solid #22c55e; }
-        .error-message { background: #fee2e2; color: #991b1b; border: 1px solid #ef4444; }
-        .float-whatsapp { position: fixed; bottom: 30px; right: 30px; background: #25D366; width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; color: white; cursor: pointer; z-index: 1000; }
-        .cart-count { position: absolute; top: -8px; right: -12px; background: #C66B3D; color: white; border-radius: 50%; padding: 2px 6px; font-size: 11px; }
-        .mobile-menu { display: none; cursor: pointer; font-size: 1.5rem; }
-        @media (max-width: 768px) { .booking-container { grid-template-columns: 1fr; } .mobile-menu { display: block; } .nav-links { display: none; flex-direction: column; position: absolute; top: 70px; left: 0; right: 0; background: white; padding: 1rem; } .nav-links.active { display: flex; } }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f5f0eb;
+            color: #2C2B28;
+            line-height: 1.6;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid #e5e0db;
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+        }
+        .logo {
+            height: 45px;
+            width: auto;
+            border-radius: 10px;
+        }
+        .site-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #C66B3D;
+        }
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: #2C2B28;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .nav-links a:hover, .nav-links a.active {
+            color: #C66B3D;
+        }
+        .admin-link {
+            background: #C66B3D;
+            color: white !important;
+            padding: 0.5rem 1.2rem;
+            border-radius: 30px;
+        }
+        .admin-link:hover {
+            background: #A8552E;
+        }
+        .mobile-menu {
+            display: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+
+        .booking-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+        }
+        .booking-info, .booking-form {
+            background: white;
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid #e5e0db;
+        }
+        .booking-info h1 {
+            color: #C66B3D;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+        .booking-info h2 {
+            color: #2D6A4F;
+            margin: 1.5rem 0 1rem;
+            font-size: 1.3rem;
+        }
+        .benefits-list {
+            list-style: none;
+            padding: 0;
+        }
+        .benefits-list li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #e5e0db;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .benefits-list li i {
+            color: #C66B3D;
+            width: 24px;
+        }
+        .price-badge {
+            background: linear-gradient(135deg, #C66B3D, #2D6A4F);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 40px;
+            display: inline-block;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+        .booking-form h2 {
+            color: #C66B3D;
+            margin-bottom: 1.5rem;
+        }
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #2C2B28;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1.5px solid #e5e0db;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #C66B3D;
+        }
+        .btn-book {
+            background: #25D366;
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+        }
+        .btn-book:hover {
+            background: #128C7E;
+            transform: translateY(-2px);
+        }
+        .success-message, .error-message {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 10px;
+            display: none;
+        }
+        .success-message {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #22c55e;
+        }
+        .error-message {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+        }
+        .whatsapp-note {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: #666;
+        }
+        .float-whatsapp {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #25D366;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: white;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        footer {
+            background: #1a1a1a;
+            color: white;
+            padding: 3rem 5% 1rem;
+            margin-top: 3rem;
+        }
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            color: #C66B3D;
+        }
+        .footer-section ul {
+            list-style: none;
+        }
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+        .footer-section a {
+            color: #aaa;
+            text-decoration: none;
+        }
+        .footer-section a:hover {
+            color: #C66B3D;
+        }
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid #333;
+            color: #888;
+            font-size: 0.8rem;
+        }
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .social-links a {
+            width: 38px;
+            height: 38px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            color: white;
+        }
+        .social-links a:hover {
+            background: #C66B3D;
+            transform: translateY(-3px);
+        }
+        @media (max-width: 768px) {
+            .booking-container { grid-template-columns: 1fr; margin: 1rem; padding: 1rem; }
+            .mobile-menu { display: block; }
+            .nav-links { display: none; flex-direction: column; position: absolute; top: 70px; left: 0; right: 0; background: white; padding: 1rem; border-bottom: 1px solid #e5e0db; z-index: 1000; }
+            .nav-links.active { display: flex; }
+        }
     </style>
 </head>
 <body>
@@ -37,7 +283,10 @@
 
     <header>
         <nav class="navbar">
-            <div class="logo-container"><img id="site-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='45' height='45' viewBox='0 0 45 45'%3E%3Crect width='45' height='45' fill='%23C66B3D'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='20'%3EGWA%3C/text%3E%3C/svg%3E" class="logo"><span class="site-title">Grow With Awino</span></div>
+            <div class="logo-container">
+                <img id="site-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='45' height='45' viewBox='0 0 45 45'%3E%3Crect width='45' height='45' fill='%23C66B3D'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='20'%3EGWA%3C/text%3E%3C/svg%3E" class="logo">
+                <span class="site-title">Grow With Awino</span>
+            </div>
             <ul class="nav-links" id="navLinks">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="blog.html">Blog</a></li>
@@ -46,7 +295,6 @@
                 <li><a href="booking.html" class="active">Book Training</a></li>
                 <li><a href="contact.html">Contact</a></li>
                 <li><a href="admin.html" class="admin-link">Admin</a></li>
-                <li class="cart-icon-container"><a href="#" onclick="viewCart(); return false;"><i class="fas fa-shopping-cart"></i><span id="cart-count" class="cart-count">0</span></a></li>
             </ul>
             <div class="mobile-menu" onclick="toggleMobileMenu()"><i class="fas fa-bars"></i></div>
         </nav>
@@ -57,88 +305,175 @@
             <div class="booking-info">
                 <h1>📚 1-on-1 Training</h1>
                 <p>Learn how to earn online, master freelancing, and build sustainable digital income streams with personalized coaching from Awino.</p>
+                
                 <div class="price-badge">💰 KES 1,500 / session (1.5 hours)</div>
+                
                 <h2>What You'll Learn</h2>
-                <ul class="benefits-list"><li><i class="fas fa-check-circle"></i> Personalized roadmap to online income</li><li><i class="fas fa-check-circle"></i> Freelancing platforms setup & optimization</li><li><i class="fas fa-check-circle"></i> Digital skills assessment & development plan</li><li><i class="fas fa-check-circle"></i> Practical assignments with feedback</li><li><i class="fas fa-check-circle"></i> Q&A session - ask anything!</li></ul>
+                <ul class="benefits-list">
+                    <li><i class="fas fa-check-circle"></i> Personalized roadmap to online income</li>
+                    <li><i class="fas fa-check-circle"></i> Freelancing platforms setup & optimization</li>
+                    <li><i class="fas fa-check-circle"></i> Digital skills assessment & development plan</li>
+                    <li><i class="fas fa-check-circle"></i> Practical assignments with feedback</li>
+                    <li><i class="fas fa-check-circle"></i> Q&A session - ask anything!</li>
+                </ul>
+                
                 <h2>Who Is This For?</h2>
-                <ul class="benefits-list"><li><i class="fas fa-user-check"></i> Complete beginners wanting to start earning online</li><li><i class="fas fa-user-check"></i> Freelancers looking to scale their income</li><li><i class="fas fa-user-check"></i> Anyone struggling to find online opportunities</li><li><i class="fas fa-user-check"></i> Students and stay-at-home parents</li></ul>
+                <ul class="benefits-list">
+                    <li><i class="fas fa-user-check"></i> Complete beginners wanting to start earning online</li>
+                    <li><i class="fas fa-user-check"></i> Freelancers looking to scale their income</li>
+                    <li><i class="fas fa-user-check"></i> Anyone struggling to find online opportunities</li>
+                    <li><i class="fas fa-user-check"></i> Students and stay-at-home parents</li>
+                </ul>
+                
                 <div class="price-badge">⭐ What's Included</div>
-                <ul class="benefits-list"><li><i class="fas fa-video"></i> 1.5-hour live Zoom/Google Meet session</li><li><i class="fas fa-file-alt"></i> Resource kit with templates & guides</li><li><i class="fas fa-message"></i> Follow-up WhatsApp support (7 days)</li><li><i class="fas fa-certificate"></i> Completion certificate</li></ul>
+                <ul class="benefits-list">
+                    <li><i class="fas fa-video"></i> 1.5-hour live Zoom/Google Meet session</li>
+                    <li><i class="fas fa-file-alt"></i> Resource kit with templates & guides</li>
+                    <li><i class="fas fa-message"></i> Follow-up WhatsApp support (7 days)</li>
+                    <li><i class="fas fa-certificate"></i> Completion certificate</li>
+                </ul>
             </div>
+
             <div class="booking-form">
                 <h2>Book Your Training Session</h2>
                 <form id="bookingForm">
-                    <div class="form-group"><label>Your Full Name *</label><input type="text" id="fullName" required placeholder="e.g., John Doe"></div>
-                    <div class="form-group"><label>Email Address *</label><input type="email" id="email" required placeholder="you@example.com"></div>
-                    <div class="form-group"><label>WhatsApp Phone Number *</label><input type="tel" id="phone" required placeholder="e.g., 2547XXXXXXXX"></div>
-                    <div class="form-group"><label>Preferred Training Date *</label><input type="date" id="preferredDate" required></div>
-                    <div class="form-group"><label>Preferred Time (EAT - Kenya Time) *</label><select id="preferredTime" required><option value="">Select time slot</option><option value="9:00 AM">9:00 AM - 10:30 AM</option><option value="11:00 AM">11:00 AM - 12:30 PM</option><option value="2:00 PM">2:00 PM - 3:30 PM</option><option value="4:00 PM">4:00 PM - 5:30 PM</option><option value="6:00 PM">6:00 PM - 7:30 PM</option><option value="8:00 PM">8:00 PM - 9:30 PM</option></select></div>
-                    <div class="form-group"><label>What would you like to learn? *</label><textarea id="learningGoals" rows="3" required placeholder="Describe what you want to achieve..."></textarea></div>
-                    <button type="submit" class="btn-book"><i class="fab fa-whatsapp"></i> Book via WhatsApp</button>
+                    <div class="form-group">
+                        <label>Your Full Name *</label>
+                        <input type="text" id="fullName" required placeholder="e.g., John Doe">
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address *</label>
+                        <input type="email" id="email" required placeholder="you@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label>WhatsApp Phone Number *</label>
+                        <input type="tel" id="phone" required placeholder="e.g., 2547XXXXXXXX">
+                    </div>
+                    <div class="form-group">
+                        <label>Preferred Training Date *</label>
+                        <input type="date" id="preferredDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Preferred Time (EAT - Kenya Time) *</label>
+                        <select id="preferredTime" required>
+                            <option value="">Select time slot</option>
+                            <option value="9:00 AM">9:00 AM - 10:30 AM</option>
+                            <option value="11:00 AM">11:00 AM - 12:30 PM</option>
+                            <option value="2:00 PM">2:00 PM - 3:30 PM</option>
+                            <option value="4:00 PM">4:00 PM - 5:30 PM</option>
+                            <option value="6:00 PM">6:00 PM - 7:30 PM</option>
+                            <option value="8:00 PM">8:00 PM - 9:30 PM</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>What would you like to learn? *</label>
+                        <textarea id="learningGoals" rows="3" required placeholder="Describe what you want to achieve..."></textarea>
+                    </div>
+                    <button type="submit" class="btn-book">
+                        <i class="fab fa-whatsapp"></i> Book via WhatsApp
+                    </button>
                     <div id="formMessage" class="success-message"></div>
                     <div id="formError" class="error-message"></div>
+                    <div class="whatsapp-note">📱 You'll be redirected to WhatsApp to complete your booking. Payment details will be shared there.</div>
                 </form>
-                <p style="text-align:center; margin-top:1rem; font-size:0.8rem; color:#666;">📱 You'll be redirected to WhatsApp to complete your booking. Payment details will be shared there.</p>
             </div>
         </div>
     </main>
 
     <footer>
         <div class="footer-content">
-            <div class="footer-section"><h3>Grow With Awino</h3><p>Empowering beginners to learn digital skills and earn online.</p></div>
-            <div class="footer-section"><h3>Quick Links</h3><ul><li><a href="index.html">Home</a></li><li><a href="blog.html">Blog</a></li><li><a href="shop.html">Ebooks</a></li><li><a href="booking.html">Book Training</a></li><li><a href="contact.html">Contact</a></li></ul></div>
-            <div class="footer-section"><h3>Legal</h3><ul><li><a href="legal.html#disclaimer">Disclaimer</a></li><li><a href="legal.html#privacy">Privacy Policy</a></li><li><a href="legal.html#terms">Terms & Conditions</a></li><li><a href="legal.html#refund">Refund Policy</a></li></ul></div>
-            <div class="footer-section"><h3>Contact</h3><p><i class="fas fa-envelope"></i> awinophoebe44@gmail.com</p><p><i class="fab fa-whatsapp"></i> +254 704 817504</p></div>
+            <div class="footer-section">
+                <h3>Grow With Awino</h3>
+                <p>Empowering beginners to learn digital skills and earn online.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="shop.html">Ebooks</a></li>
+                    <li><a href="booking.html">Book Training</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Legal</h3>
+                <ul>
+                    <li><a href="legal.html#disclaimer">Disclaimer</a></li>
+                    <li><a href="legal.html#privacy">Privacy Policy</a></li>
+                    <li><a href="legal.html#terms">Terms & Conditions</a></li>
+                    <li><a href="legal.html#refund">Refund Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p><i class="fas fa-envelope"></i> awinophoebe44@gmail.com</p>
+                <p><i class="fab fa-whatsapp"></i> +254 704 817504</p>
+            </div>
         </div>
-        <div class="footer-bottom"><p>&copy; 2026 Grow With Awino. All rights reserved.</p></div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Grow With Awino. All rights reserved.</p>
+        </div>
     </footer>
 
-    <div id="cart-modal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeCartModal()">&times;</span>
-            <h2 style="text-align:center;"><i class="fas fa-shopping-cart"></i> Your Cart</h2>
-            <div id="cart-items" style="max-height:300px;overflow-y:auto;"></div>
-            <div id="cart-total" style="margin-top:1rem;padding-top:1rem;border-top:1px solid #eee;text-align:center;"></div>
-            <button onclick="proceedToCheckout()" class="btn-primary" style="width:100%;margin-top:1rem;">Proceed to Checkout</button>
-        </div>
-    </div>
-
     <script>
-        let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-        
-        function toggleMobileMenu() { document.getElementById('navLinks').classList.toggle('active'); }
-        
-        document.getElementById('bookingForm').addEventListener('submit', (e) => {
+        function toggleMobileMenu() {
+            const navLinks = document.getElementById('navLinks');
+            if (navLinks) navLinks.classList.toggle('active');
+        }
+
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            const name = document.getElementById('fullName').value, email = document.getElementById('email').value, phone = document.getElementById('phone').value, date = document.getElementById('preferredDate').value, time = document.getElementById('preferredTime').value, goals = document.getElementById('learningGoals').value;
-            const successDiv = document.getElementById('formMessage'), errorDiv = document.getElementById('formError');
-            successDiv.style.display = 'none'; errorDiv.style.display = 'none';
-            if (!name || !email || !phone || !date || !time || !goals) { errorDiv.textContent = 'Please fill in all fields.'; errorDiv.style.display = 'block'; return; }
-            const message = `*New Training Booking!*%0A%0A*Name:* ${encodeURIComponent(name)}%0A*Email:* ${encodeURIComponent(email)}%0A*Phone:* ${encodeURIComponent(phone)}%0A*Preferred Date:* ${encodeURIComponent(date)}%0A*Preferred Time:* ${encodeURIComponent(time)}%0A*Learning Goals:* ${encodeURIComponent(goals)}`;
+            
+            const name = document.getElementById('fullName').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const date = document.getElementById('preferredDate').value;
+            const time = document.getElementById('preferredTime').value;
+            const goals = document.getElementById('learningGoals').value;
+            
+            const successDiv = document.getElementById('formMessage');
+            const errorDiv = document.getElementById('formError');
+            
+            successDiv.style.display = 'none';
+            errorDiv.style.display = 'none';
+            
+            if (!name || !email || !phone || !date || !time || !goals) {
+                errorDiv.textContent = 'Please fill in all fields.';
+                errorDiv.style.display = 'block';
+                return;
+            }
+            
+            // Format phone number for WhatsApp (remove spaces, ensure it starts with 254)
+            let formattedPhone = phone.replace(/\s/g, '');
+            if (formattedPhone.startsWith('0')) {
+                formattedPhone = '254' + formattedPhone.substring(1);
+            } else if (formattedPhone.startsWith('+')) {
+                formattedPhone = formattedPhone.substring(1);
+            }
+            
+            // Create WhatsApp message
+            const message = `*NEW TRAINING BOOKING!*%0A%0A*Name:* ${encodeURIComponent(name)}%0A*Email:* ${encodeURIComponent(email)}%0A*Phone:* ${encodeURIComponent(formattedPhone)}%0A*Preferred Date:* ${encodeURIComponent(date)}%0A*Preferred Time:* ${encodeURIComponent(time)}%0A*Learning Goals:* ${encodeURIComponent(goals)}%0A%0A_This booking was made from the website._`;
+            
             const whatsappUrl = `https://wa.me/254704817504?text=${message}`;
-            successDiv.textContent = 'Redirecting to WhatsApp... Please complete your booking there.'; successDiv.style.display = 'block';
-            setTimeout(() => { window.open(whatsappUrl, '_blank'); }, 1500);
+            
+            successDiv.textContent = 'Redirecting to WhatsApp... Please complete your booking there.';
+            successDiv.style.display = 'block';
+            
+            setTimeout(function() {
+                window.open(whatsappUrl, '_blank');
+            }, 1500);
         });
         
-        function updateCartCount() { const el = document.getElementById('cart-count'); if (el) el.textContent = cart.length; }
-        function viewCart() {
-            const modal = document.getElementById('cart-modal'), items = document.getElementById('cart-items'), totalDiv = document.getElementById('cart-total');
-            if (cart.length === 0) { items.innerHTML = '<p style="text-align:center;padding:2rem;">Your cart is empty.</p>'; totalDiv.innerHTML = ''; }
-            else {
-                let total = 0;
-                items.innerHTML = cart.map((item,i) => { let p = item.price_usd || 29.99; total += p; return `<div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem 0;border-bottom:1px solid #eee;"><div><strong>${escapeHtml(item.title)}</strong><div style="color:#C66B3D;">$${p}</div></div><button onclick="removeFromCart(${i})" style="background:#dc2626;color:white;border:none;padding:0.3rem 0.8rem;border-radius:5px;cursor:pointer;">Remove</button></div>`; }).join('');
-                totalDiv.innerHTML = `<div style="text-align:center; font-size:1.2rem;"><strong>Total: $${total.toFixed(2)}</strong></div>`;
-            }
-            modal.style.display = 'flex';
-        }
-        function removeFromCart(i) { cart.splice(i,1); localStorage.setItem('cart',JSON.stringify(cart)); updateCartCount(); viewCart(); }
-        function proceedToCheckout() { if(cart.length===0){ alert('Cart empty'); return; } sessionStorage.setItem('checkoutCart',JSON.stringify(cart)); window.location.href='checkout.html'; }
-        function closeCartModal() { document.getElementById('cart-modal').style.display = 'none'; }
-        function escapeHtml(t) { if(!t) return ''; const d=document.createElement('div'); d.textContent=t; return d.innerHTML; }
-        
-        updateCartCount();
-        window.onclick = function(e) { if (e.target === document.getElementById('cart-modal')) closeCartModal(); }
-        document.getElementById('preferredDate').min = new Date().toISOString().split('T')[0];
+        // Set minimum date to today
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('preferredDate').min = today;
     </script>
 </body>
 </html>

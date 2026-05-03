@@ -74,6 +74,7 @@
       "destination": "/$1"
     }
   ],
+  "outputDirectory": ".",
   "headers": [
     {
       "source": "/(.*)",

@@ -103,6 +103,12 @@
             margin: 1.5rem 0 1rem;
             font-size: 1.3rem;
         }
+        .training-image {
+            width: 100%;
+            border-radius: 16px;
+            margin: 1rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
         .benefits-list {
             list-style: none;
             padding: 0;
@@ -306,6 +312,9 @@
                 <h1>📚 1-on-1 Training</h1>
                 <p>Learn how to earn online, master freelancing, and build sustainable digital income streams with personalized coaching from Awino.</p>
                 
+                <!-- Real Image Instead of Emoji -->
+                <img src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600" alt="One on One Training" class="training-image">
+                
                 <div class="price-badge">💰 KES 1,500 / session (1.5 hours)</div>
                 
                 <h2>What You'll Learn</h2>
@@ -450,7 +459,7 @@
                 return;
             }
             
-            // Format phone number for WhatsApp (remove spaces, ensure it starts with 254)
+            // Format phone number for WhatsApp
             let formattedPhone = phone.replace(/\s/g, '');
             if (formattedPhone.startsWith('0')) {
                 formattedPhone = '254' + formattedPhone.substring(1);

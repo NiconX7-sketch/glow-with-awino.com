@@ -70,19 +70,41 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        .float-whatsapp {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #25D366;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: white;
+            cursor: pointer;
+            z-index: 1000;
+        }
+        .mobile-menu { display: none; cursor: pointer; font-size: 1.5rem; }
         @media (max-width: 768px) {
             .checkout-container { grid-template-columns: 1fr; }
+            .mobile-menu { display: block; }
+            .nav-links { display: none; flex-direction: column; position: absolute; top: 70px; left: 0; right: 0; background: white; padding: 1rem; }
+            .nav-links.active { display: flex; }
         }
     </style>
 </head>
 <body>
+    <div class="float-whatsapp" onclick="window.open('https://wa.me/254704817504','_blank')"><i class="fab fa-whatsapp"></i></div>
+
     <header>
         <nav class="navbar">
             <div class="logo-container">
                 <img id="site-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='45' height='45' viewBox='0 0 45 45'%3E%3Crect width='45' height='45' fill='%23C66B3D'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='20'%3EGWA%3C/text%3E%3C/svg%3E" class="logo">
                 <span class="site-title">Grow With Awino</span>
             </div>
-            <ul class="nav-links">
+            <ul class="nav-links" id="navLinks">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="blog.html">Blog</a></li>
                 <li><a href="shop.html">Ebooks</a></li>
@@ -127,9 +149,10 @@
     </footer>
 
     <script>
-        const SUPABASE_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        // Supabase initialization - ONLY ONCE with unique variable name
+        const CHECKOUT_SB_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
+        const CHECKOUT_SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
+        const checkoutSupabase = supabase.createClient(CHECKOUT_SB_URL, CHECKOUT_SB_KEY);
         
         let cart = JSON.parse(sessionStorage.getItem('checkoutCart') || '[]');
         let currentOrderId = null;
@@ -155,7 +178,7 @@
         
         // Create order in database
         async function createOrder(paymentMethod) {
-            const { data, error } = await supabase
+            const { data, error } = await checkoutSupabase
                 .from('orders')
                 .insert([{
                     user_email: 'customer@example.com',
@@ -318,7 +341,7 @@
         }
         
         function toggleMobileMenu() {
-            document.querySelector('.nav-links').classList.toggle('active');
+            document.getElementById('navLinks').classList.toggle('active');
         }
         
         // Attach event listeners

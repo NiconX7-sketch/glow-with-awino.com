@@ -75,9 +75,10 @@
     </footer>
 
     <script>
-        const SUPABASE_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        // Supabase initialization - ONLY ONCE
+        const SB_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
+        const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
+        const supabaseClient = supabase.createClient(SB_URL, SB_KEY);
         
         let allPosts = [];
         let cart = JSON.parse(localStorage.getItem('cart') || '[]');
@@ -93,19 +94,19 @@
         }
         
         async function loadSiteLogo() {
-            const { data } = await supabase.from('site_settings').select('logo_url').single();
+            const { data } = await supabaseClient.from('site_settings').select('logo_url').single();
             if (data?.logo_url) document.getElementById('site-logo').src = data.logo_url;
         }
         
         async function loadCategories() {
-            const { data } = await supabase.from('categories').select('*').order('name');
+            const { data } = await supabaseClient.from('categories').select('*').order('name');
             const container = document.getElementById('categories-list'), filter = document.getElementById('category-filter');
             if (container && data?.length) { container.innerHTML = data.map(cat => `<li><a href="#" onclick="filterByCategory('${escapeHtml(cat.name)}')">${escapeHtml(cat.name)}</a></li>`).join(''); }
             if (filter && data?.length) { filter.innerHTML = '<option value="all">All Categories</option>' + data.map(cat => `<option value="${escapeHtml(cat.name)}">${escapeHtml(cat.name)}</option>`).join(''); }
         }
         
         async function loadBlogs() {
-            const { data } = await supabase.from('blog_posts').select('*').eq('published', true).order('created_at', { ascending: false });
+            const { data } = await supabaseClient.from('blog_posts').select('*').eq('published', true).order('created_at', { ascending: false });
             allPosts = data || [];
             renderBlogs();
             loadRecentPosts();
@@ -124,7 +125,7 @@
         }
         
         async function loadRecentPosts() {
-            const { data } = await supabase.from('blog_posts').select('id,title').eq('published', true).order('created_at', { ascending: false }).limit(5);
+            const { data } = await supabaseClient.from('blog_posts').select('id,title').eq('published', true).order('created_at', { ascending: false }).limit(5);
             const container = document.getElementById('recent-posts');
             if (container && data?.length) { container.innerHTML = data.map(post => `<li><a href="post.html?id=${post.id}">${escapeHtml(post.title)}</a></li>`).join(''); }
         }

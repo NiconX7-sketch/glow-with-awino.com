@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -41,10 +42,20 @@
     </header>
 
     <main class="shop-main">
-        <div class="shop-header" style="text-align:center;padding:2rem;"><h1>Digital Ebooks & Resources</h1><p>Transform your skills with our expertly crafted guides</p><div class="currency-toggle"><button class="currency-btn active" data-currency="USD" onclick="setCurrency('USD')">USD</button><button class="currency-btn" data-currency="KES" onclick="setCurrency('KES')">KES</button></div></div>
-        <div class="products-grid" id="products-grid" style="max-width:1200px;margin:0 auto;padding:2rem;"><div style="text-align:center;padding:2rem;">Loading ebooks...</div></div>
+        <div class="shop-header" style="text-align:center;padding:2rem;">
+            <h1>Digital Ebooks & Resources</h1>
+            <p>Transform your skills with our expertly crafted guides</p>
+            <div class="currency-toggle">
+                <button class="currency-btn active" data-currency="USD" onclick="setCurrency('USD')">USD</button>
+                <button class="currency-btn" data-currency="KES" onclick="setCurrency('KES')">KES</button>
+            </div>
+        </div>
+        <div class="products-grid" id="products-grid" style="max-width:1200px;margin:0 auto;padding:2rem;">
+            <div style="text-align:center;padding:2rem;">Loading ebooks...</div>
+        </div>
     </main>
 
+    <!-- Cart Modal -->
     <div id="cart-modal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeCartModal()">&times;</span>
@@ -105,29 +116,86 @@
             }).join('');
         }
         
-        function addToCart(id) { const p = products.find(p => p.id === id); if(p) { cart.push(p); localStorage.setItem('cart',JSON.stringify(cart)); updateCartCount(); alert(`${p.title} added to cart!`); } }
-        function updateCartCount() { const el = document.getElementById('cart-count'); if (el) el.textContent = cart.length; }
+        function addToCart(productId) { 
+            const product = products.find(p => p.id === productId); 
+            if(product) { 
+                cart.push(product); 
+                localStorage.setItem('cart', JSON.stringify(cart)); 
+                updateCartCount(); 
+                alert(`${product.title} added to cart!`); 
+            } 
+        }
+        
+        function updateCartCount() { 
+            const el = document.getElementById('cart-count'); 
+            if (el) el.textContent = cart.length; 
+        }
+        
         function viewCart() {
             const modal = document.getElementById('cart-modal'), items = document.getElementById('cart-items'), totalDiv = document.getElementById('cart-total');
-            if (cart.length === 0) { items.innerHTML = '<p style="text-align:center;padding:2rem;">Your cart is empty.</p>'; totalDiv.innerHTML = ''; }
-            else {
+            if (cart.length === 0) { 
+                items.innerHTML = '<p style="text-align:center;padding:2rem;">Your cart is empty.</p>'; 
+                totalDiv.innerHTML = ''; 
+            } else {
                 let total = 0;
-                items.innerHTML = cart.map((item,i) => { let p = currency === 'USD' ? item.price_usd : item.price_kes; total += p; return `<div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem 0;border-bottom:1px solid #eee;"><div><strong>${escapeHtml(item.title)}</strong><div style="color:#C66B3D;">${currency === 'USD' ? '$' + p : 'KES ' + p}</div></div><button onclick="removeFromCart(${i})" style="background:#dc2626;color:white;border:none;padding:0.3rem 0.8rem;border-radius:5px;cursor:pointer;">Remove</button></div>`; }).join('');
+                items.innerHTML = cart.map((item,i) => { 
+                    let p = currency === 'USD' ? item.price_usd : item.price_kes; 
+                    total += p; 
+                    return `<div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem 0;border-bottom:1px solid #eee;">
+                        <div><strong>${escapeHtml(item.title)}</strong><div style="color:#C66B3D;">${currency === 'USD' ? '$' + p : 'KES ' + p}</div></div>
+                        <button onclick="removeFromCart(${i})" style="background:#dc2626;color:white;border:none;padding:0.3rem 0.8rem;border-radius:5px;cursor:pointer;">Remove</button>
+                    </div>`; 
+                }).join('');
                 totalDiv.innerHTML = `<div style="text-align:center; font-size:1.2rem;"><strong>Total: ${currency === 'USD' ? '$' + total.toFixed(2) : 'KES ' + total}</strong></div>`;
             }
             modal.style.display = 'flex';
         }
-        function removeFromCart(i) { cart.splice(i,1); localStorage.setItem('cart',JSON.stringify(cart)); updateCartCount(); viewCart(); }
-        function proceedToCheckout() { if(cart.length===0){ alert('Cart empty'); return; } sessionStorage.setItem('checkoutCart',JSON.stringify(cart)); window.location.href='checkout.html'; }
-        function closeCartModal() { document.getElementById('cart-modal').style.display = 'none'; }
-        function setCurrency(cur) { currency = cur; localStorage.setItem('currency',cur); renderProducts(); document.querySelectorAll('.currency-btn').forEach(btn => { btn.classList.remove('active'); if(btn.dataset.currency === cur) btn.classList.add('active'); }); }
-        function escapeHtml(t) { if(!t) return ''; const d=document.createElement('div'); d.textContent=t; return d.innerHTML; }
+        
+        function removeFromCart(i) { 
+            cart.splice(i,1); 
+            localStorage.setItem('cart', JSON.stringify(cart)); 
+            updateCartCount(); 
+            viewCart(); 
+        }
+        
+        function proceedToCheckout() { 
+            if(cart.length === 0){ 
+                alert('Cart empty'); 
+                return; 
+            } 
+            sessionStorage.setItem('checkoutCart', JSON.stringify(cart)); 
+            window.location.href = 'checkout.html'; 
+        }
+        
+        function closeCartModal() { 
+            document.getElementById('cart-modal').style.display = 'none'; 
+        }
+        
+        function setCurrency(cur) { 
+            currency = cur; 
+            localStorage.setItem('currency', cur); 
+            renderProducts(); 
+            document.querySelectorAll('.currency-btn').forEach(btn => { 
+                btn.classList.remove('active'); 
+                if(btn.dataset.currency === cur) btn.classList.add('active'); 
+            }); 
+        }
+        
+        function escapeHtml(t) { 
+            if(!t) return ''; 
+            const d = document.createElement('div'); 
+            d.textContent = t; 
+            return d.innerHTML; 
+        }
         
         trackVisitor();
         loadSiteLogo();
         loadProducts();
         updateCartCount();
-        window.onclick = function(e) { if (e.target === document.getElementById('cart-modal')) closeCartModal(); }
+        
+        window.onclick = function(e) { 
+            if (e.target === document.getElementById('cart-modal')) closeCartModal(); 
+        }
     </script>
 </body>
 </html>

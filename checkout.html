@@ -21,94 +21,141 @@
             border-radius: 20px;
             padding: 2rem;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border: 1px solid #e5e0db;
+        }
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #eee;
         }
         .payment-btn {
             width: 100%;
             padding: 1rem;
-            margin: 0.5rem 0;
+            margin: 0.75rem 0;
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             cursor: pointer;
             font-size: 1rem;
             font-weight: 600;
-            transition: transform 0.2s;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
         }
-        .payment-btn:hover { transform: translateY(-2px); }
         .paypal-btn { background: #0070ba; color: white; }
-        .flutterwave-btn { background: #1b9e6b; color: white; }
+        .paypal-btn:hover { background: #005ea6; transform: translateY(-2px); }
+        .paystack-btn { background: #0a6e49; color: white; }
+        .paystack-btn:hover { background: #085a3b; transform: translateY(-2px); }
         .mpesa-btn { background: #49b43e; color: white; }
-        .loading { display: inline-block; width: 20px; height: 20px; border: 2px solid #f3f3f3; border-top: 2px solid #1e3a8a; border-radius: 50%; animation: spin 1s linear infinite; margin-right: 10px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        @media (max-width: 768px) { .checkout-container { grid-template-columns: 1fr; } }
+        .mpesa-btn:hover { background: #3d9e33; transform: translateY(-2px); }
+        .back-link {
+            display: inline-block;
+            margin-top: 1rem;
+            color: #C66B3D;
+            text-decoration: none;
+        }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #1e3a8a;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @media (max-width: 768px) {
+            .checkout-container { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
     <header>
         <nav class="navbar">
             <div class="logo-container">
+                <img id="site-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='45' height='45' viewBox='0 0 45 45'%3E%3Crect width='45' height='45' fill='%23C66B3D'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='20'%3EGWA%3C/text%3E%3C/svg%3E" class="logo">
                 <span class="site-title">Grow With Awino</span>
             </div>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="blog.html">Blog</a></li>
                 <li><a href="shop.html">Ebooks</a></li>
+                <li><a href="resources.html">Resources</a></li>
+                <li><a href="booking.html">Book Training</a></li>
                 <li><a href="contact.html">Contact</a></li>
+                <li><a href="admin.html" class="admin-link">Admin</a></li>
             </ul>
+            <div class="mobile-menu" onclick="toggleMobileMenu()"><i class="fas fa-bars"></i></div>
         </nav>
     </header>
 
     <main class="checkout-container">
         <div class="order-summary">
-            <h2>Order Summary</h2>
+            <h2><i class="fas fa-shopping-cart"></i> Order Summary</h2>
             <div id="order-items"></div>
-            <div id="order-total" style="margin-top: 1rem; padding-top: 1rem; border-top: 2px solid #ddd;"></div>
+            <div id="order-total" style="margin-top: 1rem; padding-top: 1rem; border-top: 2px solid #e5e0db; font-size: 1.2rem;"></div>
+            <a href="cart.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Cart</a>
         </div>
         <div class="payment-methods">
-            <h2>Select Payment Method</h2>
+            <h2><i class="fas fa-credit-card"></i> Select Payment Method</h2>
             <button id="paypal-btn" class="payment-btn paypal-btn">
                 <i class="fab fa-paypal"></i> PayPal
             </button>
-            <button id="flutterwave-btn" class="payment-btn flutterwave-btn">
-                <i class="fas fa-credit-card"></i> Flutterwave
+            <button id="paystack-btn" class="payment-btn paystack-btn">
+                <i class="fas fa-credit-card"></i> Paystack (Card, Bank, M-Pesa)
             </button>
             <button id="mpesa-btn" class="payment-btn mpesa-btn">
-                <i class="fas fa-mobile-alt"></i> M-Pesa
+                <i class="fas fa-mobile-alt"></i> M-Pesa STK Push
             </button>
-            <div id="payment-status" style="margin-top: 1rem; text-align: center;"></div>
+            <div id="payment-status" style="margin-top: 1rem; text-align: center; color: #666;"></div>
         </div>
     </main>
 
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section"><h3>Grow With Awino</h3><p>Empowering beginners to learn digital skills and earn online.</p></div>
+            <div class="footer-section"><h3>Quick Links</h3><ul><li><a href="index.html">Home</a></li><li><a href="blog.html">Blog</a></li><li><a href="shop.html">Ebooks</a></li><li><a href="booking.html">Book Training</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+            <div class="footer-section"><h3>Contact</h3><p><i class="fas fa-envelope"></i> awinophoebe44@gmail.com</p></div>
+        </div>
+        <div class="footer-bottom"><p>&copy; 2026 Grow With Awino. All rights reserved.</p></div>
+    </footer>
+
     <script>
-        // Supabase Configuration
         const SUPABASE_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         
-        // Load cart from sessionStorage
         let cart = JSON.parse(sessionStorage.getItem('checkoutCart') || '[]');
         let currentOrderId = null;
-        const currency = localStorage.getItem('currency') || 'USD';
         
         if (cart.length === 0) {
             window.location.href = 'shop.html';
         }
         
+        const currency = localStorage.getItem('currency') || 'USD';
         let total = 0;
-        const orderItems = document.getElementById('order-items');
+        const orderItemsDiv = document.getElementById('order-items');
         
-        orderItems.innerHTML = cart.map(item => {
+        orderItemsDiv.innerHTML = cart.map(item => {
             const price = currency === 'USD' ? item.price_usd : item.price_kes;
             total += price;
-            return `<div style="display:flex; justify-content:space-between; padding:0.5rem 0;">
+            return `<div class="order-item">
                 <span>${escapeHtml(item.title)}</span>
-                <span>${currency === 'USD' ? '$' + price : 'KES ' + price}</span>
+                <span>${currency === 'USD' ? '$' + price.toFixed(2) : 'KES ' + price}</span>
             </div>`;
         }).join('');
+        
         document.getElementById('order-total').innerHTML = `<strong>Total: ${currency === 'USD' ? '$' + total.toFixed(2) : 'KES ' + total}</strong>`;
         
         // Create order in database
         async function createOrder(paymentMethod) {
-            const { data, error } = await supabaseClient
+            const { data, error } = await supabase
                 .from('orders')
                 .insert([{
                     user_email: 'customer@example.com',
@@ -124,7 +171,7 @@
                 console.error('Order creation error:', error);
                 return null;
             }
-            return data[0].id;
+            return data[0]?.id;
         }
         
         // Process PayPal payment
@@ -132,10 +179,9 @@
             const statusDiv = document.getElementById('payment-status');
             statusDiv.innerHTML = '<div class="loading"></div> Redirecting to PayPal...';
             
-            const orderId = await createOrder('paypal');
+            currentOrderId = await createOrder('paypal');
             
             try {
-                // UPDATED: Using Vercel API path (/api/ instead of /.netlify/functions/)
                 const response = await fetch('/api/create-payment', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -143,7 +189,7 @@
                         method: 'paypal',
                         amount: total,
                         currency: currency,
-                        orderId: orderId
+                        orderId: currentOrderId
                     })
                 });
                 
@@ -159,37 +205,36 @@
             }
         }
         
-        // Process Flutterwave payment
-        async function processFlutterwave() {
+        // Process Paystack payment
+        async function processPaystack() {
             const statusDiv = document.getElementById('payment-status');
-            statusDiv.innerHTML = '<div class="loading"></div> Preparing Flutterwave...';
+            statusDiv.innerHTML = '<div class="loading"></div> Preparing Paystack...';
             
-            const orderId = await createOrder('flutterwave');
             const email = prompt('Enter your email address for receipt:', 'customer@example.com');
-            
             if (!email) {
                 statusDiv.innerHTML = '<span style="color:#dc2626;">Email is required.</span>';
                 return;
             }
             
+            currentOrderId = await createOrder('paystack');
+            
             try {
-                // UPDATED: Using Vercel API path
                 const response = await fetch('/api/create-payment', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        method: 'flutterwave',
+                        method: 'paystack',
                         amount: total,
                         currency: currency,
                         email: email,
-                        orderId: orderId
+                        orderId: currentOrderId
                     })
                 });
                 
                 const data = await response.json();
                 
-                if (data.paymentLink) {
-                    window.location.href = data.paymentLink;
+                if (data.authorizationUrl) {
+                    window.location.href = data.authorizationUrl;
                 } else {
                     statusDiv.innerHTML = '<span style="color:#dc2626;">Payment failed. Please try again.</span>';
                 }
@@ -210,18 +255,24 @@
             
             statusDiv.innerHTML = '<div class="loading"></div> Initiating M-Pesa payment...';
             
-            const orderId = await createOrder('mpesa');
+            currentOrderId = await createOrder('mpesa');
+            
+            let formattedPhone = phone.replace(/\D/g, '');
+            if (formattedPhone.startsWith('0')) {
+                formattedPhone = '254' + formattedPhone.substring(1);
+            } else if (formattedPhone.startsWith('+')) {
+                formattedPhone = formattedPhone.substring(1);
+            }
             
             try {
-                // UPDATED: Using Vercel API path
                 const response = await fetch('/api/create-payment', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         method: 'mpesa',
                         amount: Math.round(total),
-                        phoneNumber: phone,
-                        orderId: orderId
+                        phoneNumber: formattedPhone,
+                        orderId: currentOrderId
                     })
                 });
                 
@@ -230,23 +281,25 @@
                 if (data.success) {
                     statusDiv.innerHTML = '<span style="color:#22c55e;">STK push sent! Check your phone and enter PIN.</span>';
                     
-                    // Poll for payment status
                     let attempts = 0;
                     const interval = setInterval(async () => {
                         attempts++;
-                        // UPDATED: Using Vercel API path
-                        const statusResponse = await fetch(`/api/verify-payment?checkoutRequestID=${data.checkoutRequestID}`);
-                        const statusData = await statusResponse.json();
-                        
-                        if (statusData.status === 'completed') {
-                            clearInterval(interval);
-                            statusDiv.innerHTML = '<span style="color:#22c55e;">Payment successful! Redirecting...</span>';
-                            localStorage.removeItem('cart');
-                            sessionStorage.removeItem('checkoutCart');
-                            setTimeout(() => { window.location.href = 'success.html'; }, 2000);
-                        } else if (statusData.status === 'failed' || attempts > 30) {
-                            clearInterval(interval);
-                            statusDiv.innerHTML = '<span style="color:#dc2626;">Payment failed or timeout. Please try again.</span>';
+                        try {
+                            const statusResponse = await fetch(`/api/verify-payment?checkoutRequestID=${data.checkoutRequestID}`);
+                            const statusData = await statusResponse.json();
+                            
+                            if (statusData.status === 'completed') {
+                                clearInterval(interval);
+                                statusDiv.innerHTML = '<span style="color:#22c55e;">Payment successful! Redirecting...</span>';
+                                localStorage.removeItem('cart');
+                                sessionStorage.removeItem('checkoutCart');
+                                setTimeout(() => { window.location.href = 'success.html'; }, 2000);
+                            } else if (statusData.status === 'failed' || attempts > 30) {
+                                clearInterval(interval);
+                                statusDiv.innerHTML = '<span style="color:#dc2626;">Payment failed or timeout. Please try again.</span>';
+                            }
+                        } catch (err) {
+                            console.log('Status check error:', err);
                         }
                     }, 2000);
                 } else {
@@ -264,25 +317,14 @@
             return div.innerHTML;
         }
         
+        function toggleMobileMenu() {
+            document.querySelector('.nav-links').classList.toggle('active');
+        }
+        
         // Attach event listeners
         document.getElementById('paypal-btn').addEventListener('click', processPayPal);
-        document.getElementById('flutterwave-btn').addEventListener('click', processFlutterwave);
+        document.getElementById('paystack-btn').addEventListener('click', processPaystack);
         document.getElementById('mpesa-btn').addEventListener('click', processMpesa);
-    </script><!-- Visitor Tracking -->
-<script>
-    (function() {
-        const today = new Date().toISOString().split('T')[0];
-        const lastVisit = localStorage.getItem('lastVisit');
-        
-        if (!lastVisit || lastVisit !== today) {
-            fetch('/api/track-visitor', { 
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' }
-            })
-            .then(() => localStorage.setItem('lastVisit', today))
-            .catch(err => console.log('Tracking error:', err));
-        }
-    })();
-</script>
+    </script>
 </body>
 </html>

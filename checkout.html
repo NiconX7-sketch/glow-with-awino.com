@@ -162,13 +162,13 @@
 
     <script>
         // ============================================
-        // SUPABASE INITIALIZATION - CORRECTED
+        // SUPABASE INITIALIZATION - USING UNIQUE VARIABLE NAME
         // ============================================
-        const SUPABASE_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
+        const SB_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
+        const SB_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
         
-        // Create Supabase client with proper configuration
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // Create client with unique variable name (not "supabase")
+        const supabaseClient = supabase.createClient(SB_URL, SB_ANON_KEY);
         
         console.log('Supabase client initialized');
         
@@ -199,7 +199,7 @@
         
         document.getElementById('order-total').innerHTML = `<strong>Total: ${currency === 'USD' ? '$' + total.toFixed(2) : 'KES ' + total}</strong>`;
         
-        // Paystack public key from meta tag
+        // Paystack public key
         const PAYSTACK_PUBLIC_KEY = 'pk_live_846c187859786e61a95522f0cfb0204ac3f54515';
         
         // ============================================
@@ -209,12 +209,9 @@
         // Create order in database
         async function createOrder(paymentMethod) {
             console.log('Creating order with method:', paymentMethod);
-            console.log('Cart items:', cart);
-            console.log('Total amount:', total);
-            console.log('Currency:', currency);
             
             try {
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('orders')
                     .insert([{
                         user_email: 'customer@example.com',
@@ -227,17 +224,15 @@
                     .select();
                 
                 if (error) {
-                    console.error('Order creation error details:', error);
-                    console.error('Error code:', error.code);
-                    console.error('Error message:', error.message);
+                    console.error('Order creation error:', error);
                     showStatus('Database error: ' + error.message, 'error');
                     return null;
                 }
                 
-                console.log('Order created successfully:', data);
+                console.log('Order created:', data);
                 return data[0]?.id;
             } catch (err) {
-                console.error('Unexpected error creating order:', err);
+                console.error('Unexpected error:', err);
                 showStatus('Failed to create order. Please try again.', 'error');
                 return null;
             }
@@ -248,16 +243,12 @@
             const updateData = { status: status };
             if (transactionId) updateData.transaction_id = transactionId;
             
-            const { error } = await supabase
+            await supabaseClient
                 .from('orders')
                 .update(updateData)
                 .eq('id', orderId);
             
-            if (error) {
-                console.error('Error updating order status:', error);
-            } else {
-                console.log(`Order ${orderId} status updated to: ${status}`);
-            }
+            console.log(`Order ${orderId} status updated to: ${status}`);
         }
         
         // ============================================
@@ -336,11 +327,6 @@
             const email = prompt('Enter your email address for receipt:', 'customer@example.com');
             if (!email) {
                 showStatus('Email is required for Paystack payment', 'error');
-                return;
-            }
-            
-            if (!PAYSTACK_PUBLIC_KEY) {
-                showStatus('Paystack is not configured. Please contact support.', 'error');
                 return;
             }
             
@@ -464,7 +450,7 @@
             }
         }
         
-        // Check for PayPal return (success or cancel)
+        // Check for PayPal return
         function checkPayPalReturn() {
             const urlParams = new URLSearchParams(window.location.search);
             const paymentId = urlParams.get('paymentId');

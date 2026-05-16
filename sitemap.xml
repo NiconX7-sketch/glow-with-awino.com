@@ -7,6 +7,12 @@
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>https://growwithawinoo.com/index.html</loc>
+    <lastmod>2026-05-16</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
     <loc>https://growwithawinoo.com/blog.html</loc>
     <lastmod>2026-05-16</lastmod>
     <changefreq>daily</changefreq>
@@ -41,5 +47,11 @@
     <lastmod>2026-05-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://growwithawinoo.com/admin.html</loc>
+    <lastmod>2026-05-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
   </url>
 </urlset>

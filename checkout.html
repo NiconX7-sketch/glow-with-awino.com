@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="css/style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- Paystack Inline Script -->
     <script src="https://js.paystack.co/v1/inline.js"></script>
     <style>
         .checkout-container {
@@ -161,22 +160,17 @@
     </footer>
 
     <script>
-        // ============================================
-        // SUPABASE INITIALIZATION
-        // ============================================
+        // Supabase initialization
         const SUPABASE_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         
         console.log('Supabase client initialized');
         
-        // ============================================
-        // CART DATA
-        // ============================================
+        // Cart data
         let cart = JSON.parse(sessionStorage.getItem('checkoutCart') || '[]');
         let currentOrderId = null;
         
-        // Redirect if cart is empty
         if (cart.length === 0) {
             window.location.href = 'shop.html';
         }
@@ -185,7 +179,6 @@
         let total = 0;
         const orderItemsDiv = document.getElementById('order-items');
         
-        // Display order items
         orderItemsDiv.innerHTML = cart.map(item => {
             const price = currency === 'USD' ? item.price_usd : item.price_kes;
             total += price;
@@ -200,10 +193,7 @@
         // Paystack public key
         const PAYSTACK_PUBLIC_KEY = 'pk_live_846c187859786e61a95522f0cfb0204ac3f54515';
         
-        // ============================================
-        // DATABASE FUNCTIONS
-        // ============================================
-        
+        // Create order in database
         async function createOrder(paymentMethod) {
             console.log('Creating order with method:', paymentMethod);
             
@@ -239,17 +229,9 @@
             const updateData = { status: status };
             if (transactionId) updateData.transaction_id = transactionId;
             
-            await supabaseClient
-                .from('orders')
-                .update(updateData)
-                .eq('id', orderId);
-            
+            await supabaseClient.from('orders').update(updateData).eq('id', orderId);
             console.log(`Order ${orderId} status updated to: ${status}`);
         }
-        
-        // ============================================
-        // UI FUNCTIONS
-        // ============================================
         
         function showStatus(message, type = 'info') {
             const statusDiv = document.getElementById('payment-status');
@@ -257,11 +239,6 @@
             statusDiv.className = `status-message status-${type}`;
             statusDiv.style.display = 'block';
             console.log(`[${type.toUpperCase()}] ${message}`);
-        }
-        
-        function hideStatus() {
-            const statusDiv = document.getElementById('payment-status');
-            statusDiv.style.display = 'none';
         }
         
         function escapeHtml(text) {
@@ -275,10 +252,7 @@
             document.getElementById('navLinks').classList.toggle('active');
         }
         
-        // ============================================
-        // PAYPAL PAYMENT
-        // ============================================
-        
+        // PayPal Payment
         async function processPayPal() {
             console.log('PayPal button clicked');
             showStatus('Redirecting to PayPal...', 'info');
@@ -290,7 +264,7 @@
                 currentTotal += currentCurrency === 'USD' ? item.price_usd : item.price_kes;
             });
             
-            console.log('Sending request:', { total: currentTotal, currency: currentCurrency });
+            console.log('Sending to API:', { total: currentTotal, currency: currentCurrency });
             
             const orderIdFromDb = await createOrder('paypal');
             if (!orderIdFromDb) {
@@ -307,23 +281,18 @@
                         method: 'paypal',
                         amount: currentTotal,
                         currency: currentCurrency,
-                        orderId: currentOrderId,
-                        items: currentCart
+                        orderId: currentOrderId
                     })
                 });
                 
-                console.log('Response status:', response.status);
-                
                 const data = await response.json();
-                console.log('Response data:', data);
+                console.log('PayPal API response:', data);
                 
                 if (data.approvalUrl) {
-                    console.log('Redirecting to PayPal:', data.approvalUrl);
                     sessionStorage.setItem('pendingOrderId', currentOrderId);
                     window.location.href = data.approvalUrl;
                 } else {
-                    console.error('No approval URL in response:', data);
-                    showStatus('Payment failed: ' + (data.error || 'No redirect URL received'), 'error');
+                    showStatus('Payment failed: ' + (data.error || 'No redirect URL'), 'error');
                     await updateOrderStatus(currentOrderId, 'failed');
                 }
             } catch (error) {
@@ -333,10 +302,7 @@
             }
         }
         
-        // ============================================
-        // PAYSTACK PAYMENT
-        // ============================================
-        
+        // Paystack Payment
         async function processPaystack() {
             console.log('Paystack button clicked');
             
@@ -371,25 +337,17 @@
                         amount: currentTotal,
                         currency: currentCurrency,
                         email: email,
-                        orderId: currentOrderId,
-                        items: currentCart
+                        orderId: currentOrderId
                     })
                 });
                 
-                console.log('Response status:', response.status);
-                
                 const data = await response.json();
-                console.log('Response data:', data);
+                console.log('Paystack API response:', data);
                 
                 if (data.authorizationUrl) {
-                    console.log('Redirecting to Paystack:', data.authorizationUrl);
                     window.location.href = data.authorizationUrl;
-                } else if (data.approvalUrl) {
-                    console.log('Redirecting to PayPal:', data.approvalUrl);
-                    window.location.href = data.approvalUrl;
                 } else {
-                    console.error('No authorization URL in response:', data);
-                    showStatus('Payment failed: ' + (data.error || 'No redirect URL received'), 'error');
+                    showStatus('Payment failed: ' + (data.error || 'No redirect URL'), 'error');
                     await updateOrderStatus(currentOrderId, 'failed');
                 }
             } catch (error) {
@@ -399,10 +357,7 @@
             }
         }
         
-        // ============================================
-        // M-PESA PAYMENT (Placeholder)
-        // ============================================
-        
+        // M-Pesa Payment
         async function processMpesa() {
             const phone = prompt('Enter your M-Pesa phone number (e.g., 2547XXXXXXXX):', '2547');
             if (!phone) {
@@ -413,10 +368,7 @@
             showStatus('M-Pesa payment is coming soon. Please use PayPal or Paystack.', 'info');
         }
         
-        // ============================================
-        // CHECK PAYPAL RETURN
-        // ============================================
-        
+        // Check PayPal return
         function checkPayPalReturn() {
             const urlParams = new URLSearchParams(window.location.search);
             const paymentId = urlParams.get('paymentId');
@@ -435,10 +387,7 @@
             }
         }
         
-        // ============================================
-        // EVENT LISTENERS
-        // ============================================
-        
+        // Event listeners
         document.getElementById('paypal-btn').addEventListener('click', processPayPal);
         document.getElementById('paystack-btn').addEventListener('click', processPaystack);
         document.getElementById('mpesa-btn').addEventListener('click', processMpesa);

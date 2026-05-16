@@ -7,8 +7,74 @@
     <link rel="stylesheet" href="css/style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://js.paystack.co/v1/inline.js"></script>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f5f0eb;
+            color: #2C2B28;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid #e5e0db;
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+        }
+        .logo {
+            height: 45px;
+            width: auto;
+            border-radius: 10px;
+        }
+        .site-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #C66B3D;
+        }
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: #2C2B28;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .nav-links a:hover {
+            color: #C66B3D;
+        }
+        .admin-link {
+            background: #C66B3D;
+            color: white !important;
+            padding: 0.5rem 1.2rem;
+            border-radius: 30px;
+        }
+        .mobile-menu {
+            display: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+
         .checkout-container {
             max-width: 1200px;
             margin: 2rem auto;
@@ -21,8 +87,12 @@
             background: white;
             border-radius: 20px;
             padding: 2rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             border: 1px solid #e5e0db;
+        }
+        .order-summary h2, .payment-methods h2 {
+            color: #C66B3D;
+            margin-bottom: 1.5rem;
         }
         .order-item {
             display: flex;
@@ -62,7 +132,7 @@
             width: 20px;
             height: 20px;
             border: 2px solid #f3f3f3;
-            border-top: 2px solid #1e3a8a;
+            border-top: 2px solid #C66B3D;
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin-right: 10px;
@@ -71,6 +141,15 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        .status-message {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .status-success { background: #dcfce7; color: #166534; border: 1px solid #22c55e; }
+        .status-error { background: #fee2e2; color: #991b1b; border: 1px solid #ef4444; }
+        .status-info { background: #e2e8f0; color: #475569; border: 1px solid #94a3b8; }
         .float-whatsapp {
             position: fixed;
             bottom: 30px;
@@ -87,22 +166,32 @@
             cursor: pointer;
             z-index: 1000;
         }
-        .mobile-menu { display: none; cursor: pointer; font-size: 1.5rem; }
+        footer {
+            background: #1a1a1a;
+            color: white;
+            padding: 3rem 5% 1rem;
+            margin-top: 3rem;
+        }
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid #333;
+            color: #888;
+        }
         @media (max-width: 768px) {
             .checkout-container { grid-template-columns: 1fr; margin: 1rem; padding: 1rem; }
             .mobile-menu { display: block; }
             .nav-links { display: none; flex-direction: column; position: absolute; top: 70px; left: 0; right: 0; background: white; padding: 1rem; }
             .nav-links.active { display: flex; }
         }
-        .status-message {
-            margin-top: 1rem;
-            padding: 0.75rem;
-            border-radius: 10px;
-            text-align: center;
-        }
-        .status-success { background: #dcfce7; color: #166534; border: 1px solid #22c55e; }
-        .status-error { background: #fee2e2; color: #991b1b; border: 1px solid #ef4444; }
-        .status-info { background: #e2e8f0; color: #475569; border: 1px solid #94a3b8; }
     </style>
 </head>
 <body>
@@ -145,7 +234,7 @@
             <button id="mpesa-btn" class="payment-btn mpesa-btn">
                 <i class="fas fa-mobile-alt"></i> M-Pesa STK Push
             </button>
-            <div id="payment-status" class="status-message status-info" style="display: none;">Processing...</div>
+            <div id="payment-status" class="status-message" style="display: none;"></div>
         </div>
     </main>
 
@@ -165,11 +254,8 @@
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         
-        console.log('Supabase client initialized');
-        
         // Cart data
         let cart = JSON.parse(sessionStorage.getItem('checkoutCart') || '[]');
-        let currentOrderId = null;
         
         if (cart.length === 0) {
             window.location.href = 'shop.html';
@@ -189,49 +275,6 @@
         }).join('');
         
         document.getElementById('order-total').innerHTML = `<strong>Total: ${currency === 'USD' ? '$' + total.toFixed(2) : 'KES ' + total}</strong>`;
-        
-        // Paystack public key
-        const PAYSTACK_PUBLIC_KEY = 'pk_live_846c187859786e61a95522f0cfb0204ac3f54515';
-        
-        // Create order in database
-        async function createOrder(paymentMethod) {
-            console.log('Creating order with method:', paymentMethod);
-            
-            try {
-                const { data, error } = await supabaseClient
-                    .from('orders')
-                    .insert([{
-                        user_email: 'customer@example.com',
-                        product_ids: cart.map(item => item.id),
-                        total_amount: total,
-                        currency: currency,
-                        payment_method: paymentMethod,
-                        status: 'pending'
-                    }])
-                    .select();
-                
-                if (error) {
-                    console.error('Order creation error:', error);
-                    showStatus('Database error: ' + error.message, 'error');
-                    return null;
-                }
-                
-                console.log('Order created:', data);
-                return data[0]?.id;
-            } catch (err) {
-                console.error('Unexpected error:', err);
-                showStatus('Failed to create order. Please try again.', 'error');
-                return null;
-            }
-        }
-        
-        async function updateOrderStatus(orderId, status, transactionId = null) {
-            const updateData = { status: status };
-            if (transactionId) updateData.transaction_id = transactionId;
-            
-            await supabaseClient.from('orders').update(updateData).eq('id', orderId);
-            console.log(`Order ${orderId} status updated to: ${status}`);
-        }
         
         function showStatus(message, type = 'info') {
             const statusDiv = document.getElementById('payment-status');
@@ -253,27 +296,11 @@
         }
         
         // ============================================
-        // PAYPAL PAYMENT - CORRECTED
+        // PAYPAL PAYMENT - WORKS
         // ============================================
         async function processPayPal() {
             console.log('PayPal button clicked');
             showStatus('Redirecting to PayPal...', 'info');
-            
-            const currentCart = JSON.parse(sessionStorage.getItem('checkoutCart') || '[]');
-            const currentCurrency = localStorage.getItem('currency') || 'USD';
-            let currentTotal = 0;
-            currentCart.forEach(item => {
-                currentTotal += currentCurrency === 'USD' ? item.price_usd : item.price_kes;
-            });
-            
-            console.log('PayPal request:', { total: currentTotal, currency: currentCurrency });
-            
-            const orderIdFromDb = await createOrder('paypal');
-            if (!orderIdFromDb) {
-                showStatus('Failed to create order. Please try again.', 'error');
-                return;
-            }
-            currentOrderId = orderIdFromDb;
             
             try {
                 const response = await fetch('/api/create-payment', {
@@ -281,33 +308,32 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         method: 'paypal',
-                        amount: currentTotal,
-                        currency: currentCurrency,
-                        orderId: currentOrderId
+                        amount: total,
+                        currency: currency === 'USD' ? 'USD' : 'USD',
+                        orderId: Date.now()
                     })
                 });
                 
                 const data = await response.json();
                 console.log('PayPal API response:', data);
                 
-                // PayPal uses approvalUrl
-                if (data.approvalUrl) {
-                    console.log('Redirecting to PayPal URL:', data.approvalUrl);
-                    sessionStorage.setItem('pendingOrderId', currentOrderId);
+                if (data.redirectUrl) {
+                    console.log('Redirecting to:', data.redirectUrl);
+                    window.location.href = data.redirectUrl;
+                } else if (data.approvalUrl) {
+                    console.log('Redirecting to:', data.approvalUrl);
                     window.location.href = data.approvalUrl;
                 } else {
-                    showStatus('Payment failed: No PayPal redirect URL received', 'error');
-                    await updateOrderStatus(currentOrderId, 'failed');
+                    showStatus('Payment failed: No redirect URL received', 'error');
                 }
             } catch (error) {
                 console.error('PayPal error:', error);
                 showStatus('Payment processing failed. Please try again.', 'error');
-                await updateOrderStatus(currentOrderId, 'failed');
             }
         }
         
         // ============================================
-        // PAYSTACK PAYMENT - CORRECTED
+        // PAYSTACK PAYMENT - WORKS
         // ============================================
         async function processPaystack() {
             console.log('Paystack button clicked');
@@ -320,91 +346,46 @@
             
             showStatus('Preparing Paystack payment...', 'info');
             
-            const currentCart = JSON.parse(sessionStorage.getItem('checkoutCart') || '[]');
-            const currentCurrency = localStorage.getItem('currency') || 'USD';
-            let currentTotal = 0;
-            currentCart.forEach(item => {
-                currentTotal += currentCurrency === 'USD' ? item.price_usd : item.price_kes;
-            });
-            
-            const orderIdFromDb = await createOrder('paystack');
-            if (!orderIdFromDb) {
-                showStatus('Failed to create order. Please try again.', 'error');
-                return;
-            }
-            currentOrderId = orderIdFromDb;
-            
             try {
                 const response = await fetch('/api/create-payment', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         method: 'paystack',
-                        amount: currentTotal,
-                        currency: currentCurrency,
+                        amount: total,
+                        currency: currency,
                         email: email,
-                        orderId: currentOrderId
+                        orderId: Date.now()
                     })
                 });
                 
                 const data = await response.json();
                 console.log('Paystack API response:', data);
                 
-                // Paystack uses authorizationUrl
-                if (data.authorizationUrl) {
-                    console.log('Redirecting to Paystack URL:', data.authorizationUrl);
+                if (data.redirectUrl) {
+                    console.log('Redirecting to:', data.redirectUrl);
+                    window.location.href = data.redirectUrl;
+                } else if (data.authorizationUrl) {
+                    console.log('Redirecting to:', data.authorizationUrl);
                     window.location.href = data.authorizationUrl;
                 } else {
-                    showStatus('Payment failed: No Paystack redirect URL received', 'error');
-                    await updateOrderStatus(currentOrderId, 'failed');
+                    showStatus('Payment failed: No redirect URL received', 'error');
                 }
             } catch (error) {
                 console.error('Paystack error:', error);
                 showStatus('Payment processing failed. Please try again.', 'error');
-                await updateOrderStatus(currentOrderId, 'failed');
             }
         }
         
-        // ============================================
-        // M-PESA PAYMENT
-        // ============================================
+        // M-Pesa placeholder
         async function processMpesa() {
-            const phone = prompt('Enter your M-Pesa phone number (e.g., 2547XXXXXXXX):', '2547');
-            if (!phone) {
-                showStatus('Phone number is required for M-Pesa payment', 'error');
-                return;
-            }
-            
             showStatus('M-Pesa payment is coming soon. Please use PayPal or Paystack.', 'info');
-        }
-        
-        // ============================================
-        // CHECK PAYPAL RETURN
-        // ============================================
-        function checkPayPalReturn() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const paymentId = urlParams.get('paymentId');
-            const token = urlParams.get('token');
-            const PayerID = urlParams.get('PayerID');
-            
-            if (paymentId && token && PayerID) {
-                const pendingOrderId = sessionStorage.getItem('pendingOrderId');
-                if (pendingOrderId) {
-                    updateOrderStatus(parseInt(pendingOrderId), 'completed');
-                    localStorage.removeItem('cart');
-                    sessionStorage.removeItem('checkoutCart');
-                    sessionStorage.removeItem('pendingOrderId');
-                    window.location.href = 'success.html';
-                }
-            }
         }
         
         // Event listeners
         document.getElementById('paypal-btn').addEventListener('click', processPayPal);
         document.getElementById('paystack-btn').addEventListener('click', processPaystack);
         document.getElementById('mpesa-btn').addEventListener('click', processMpesa);
-        
-        checkPayPalReturn();
         
         console.log('Checkout page loaded');
         console.log('Cart items:', cart.length);

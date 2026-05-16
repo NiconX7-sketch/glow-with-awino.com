@@ -9,8 +9,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- Paystack Inline Script -->
     <script src="https://js.paystack.co/v1/inline.js"></script>
-    <!-- Paystack Public Key from meta tag (set via deployment) -->
-    <meta name="paystack-public-key" content="pk_live_846c187859786e61a95522f0cfb0204ac3f54515">
     <style>
         .checkout-container {
             max-width: 1200px;
@@ -163,14 +161,24 @@
     </footer>
 
     <script>
-        // Supabase initialization
-        const SB_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
-        const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
-        const supabaseClient = supabase.createClient(SB_URL, SB_KEY);
+        // ============================================
+        // SUPABASE INITIALIZATION - CORRECTED
+        // ============================================
+        const SUPABASE_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
         
+        // Create Supabase client with proper configuration
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        console.log('Supabase client initialized');
+        
+        // ============================================
+        // CART DATA
+        // ============================================
         let cart = JSON.parse(sessionStorage.getItem('checkoutCart') || '[]');
         let currentOrderId = null;
         
+        // Redirect if cart is empty
         if (cart.length === 0) {
             window.location.href = 'shop.html';
         }
@@ -179,6 +187,7 @@
         let total = 0;
         const orderItemsDiv = document.getElementById('order-items');
         
+        // Display order items
         orderItemsDiv.innerHTML = cart.map(item => {
             const price = currency === 'USD' ? item.price_usd : item.price_kes;
             total += price;
@@ -190,40 +199,77 @@
         
         document.getElementById('order-total').innerHTML = `<strong>Total: ${currency === 'USD' ? '$' + total.toFixed(2) : 'KES ' + total}</strong>`;
         
-        // Get Paystack public key from meta tag
-        const PAYSTACK_PUBLIC_KEY = document.querySelector('meta[name="paystack-public-key"]')?.content || '';
+        // Paystack public key from meta tag
+        const PAYSTACK_PUBLIC_KEY = 'pk_live_846c187859786e61a95522f0cfb0204ac3f54515';
         
+        // ============================================
+        // DATABASE FUNCTIONS
+        // ============================================
+        
+        // Create order in database
         async function createOrder(paymentMethod) {
-            const { data, error } = await supabaseClient
-                .from('orders')
-                .insert([{
-                    user_email: 'customer@example.com',
-                    product_ids: cart.map(item => item.id),
-                    total_amount: total,
-                    currency: currency,
-                    payment_method: paymentMethod,
-                    status: 'pending'
-                }])
-                .select();
+            console.log('Creating order with method:', paymentMethod);
+            console.log('Cart items:', cart);
+            console.log('Total amount:', total);
+            console.log('Currency:', currency);
             
-            if (error) {
-                console.error('Order creation error:', error);
+            try {
+                const { data, error } = await supabase
+                    .from('orders')
+                    .insert([{
+                        user_email: 'customer@example.com',
+                        product_ids: cart.map(item => item.id),
+                        total_amount: total,
+                        currency: currency,
+                        payment_method: paymentMethod,
+                        status: 'pending'
+                    }])
+                    .select();
+                
+                if (error) {
+                    console.error('Order creation error details:', error);
+                    console.error('Error code:', error.code);
+                    console.error('Error message:', error.message);
+                    showStatus('Database error: ' + error.message, 'error');
+                    return null;
+                }
+                
+                console.log('Order created successfully:', data);
+                return data[0]?.id;
+            } catch (err) {
+                console.error('Unexpected error creating order:', err);
+                showStatus('Failed to create order. Please try again.', 'error');
                 return null;
             }
-            return data[0]?.id;
         }
         
+        // Update order status
         async function updateOrderStatus(orderId, status, transactionId = null) {
             const updateData = { status: status };
             if (transactionId) updateData.transaction_id = transactionId;
-            await supabaseClient.from('orders').update(updateData).eq('id', orderId);
+            
+            const { error } = await supabase
+                .from('orders')
+                .update(updateData)
+                .eq('id', orderId);
+            
+            if (error) {
+                console.error('Error updating order status:', error);
+            } else {
+                console.log(`Order ${orderId} status updated to: ${status}`);
+            }
         }
+        
+        // ============================================
+        // UI FUNCTIONS
+        // ============================================
         
         function showStatus(message, type = 'info') {
             const statusDiv = document.getElementById('payment-status');
             statusDiv.textContent = message;
             statusDiv.className = `status-message status-${type}`;
             statusDiv.style.display = 'block';
+            console.log(`[${type.toUpperCase()}] ${message}`);
         }
         
         function hideStatus() {
@@ -231,6 +277,22 @@
             statusDiv.style.display = 'none';
         }
         
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function toggleMobileMenu() {
+            document.getElementById('navLinks').classList.toggle('active');
+        }
+        
+        // ============================================
+        // PAYMENT PROCESSING
+        // ============================================
+        
+        // Process PayPal payment
         async function processPayPal() {
             showStatus('Redirecting to PayPal...', 'info');
             
@@ -269,6 +331,7 @@
             }
         }
         
+        // Process Paystack payment
         async function processPaystack() {
             const email = prompt('Enter your email address for receipt:', 'customer@example.com');
             if (!email) {
@@ -327,6 +390,7 @@
             }
         }
         
+        // Process M-Pesa payment
         async function processMpesa() {
             const phone = prompt('Enter your M-Pesa phone number (e.g., 2547XXXXXXXX):', '2547');
             if (!phone) {
@@ -400,17 +464,7 @@
             }
         }
         
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-        
-        function toggleMobileMenu() {
-            document.getElementById('navLinks').classList.toggle('active');
-        }
-        
+        // Check for PayPal return (success or cancel)
         function checkPayPalReturn() {
             const urlParams = new URLSearchParams(window.location.search);
             const paymentId = urlParams.get('paymentId');
@@ -429,11 +483,20 @@
             }
         }
         
+        // ============================================
+        // EVENT LISTENERS
+        // ============================================
+        
         document.getElementById('paypal-btn').addEventListener('click', processPayPal);
         document.getElementById('paystack-btn').addEventListener('click', processPaystack);
         document.getElementById('mpesa-btn').addEventListener('click', processMpesa);
         
+        // Check for PayPal return
         checkPayPalReturn();
+        
+        console.log('Checkout page loaded successfully');
+        console.log('Cart items count:', cart.length);
+        console.log('Total amount:', total, currency);
     </script>
 </body>
 </html>

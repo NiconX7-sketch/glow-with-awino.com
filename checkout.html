@@ -7,6 +7,10 @@
     <link rel="stylesheet" href="css/style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Paystack Inline Script -->
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+    <!-- Paystack Public Key from meta tag (set via deployment) -->
+    <meta name="paystack-public-key" content="pk_live_846c187859786e61a95522f0cfb0204ac3f54515">
     <style>
         .checkout-container {
             max-width: 1200px;
@@ -88,11 +92,20 @@
         }
         .mobile-menu { display: none; cursor: pointer; font-size: 1.5rem; }
         @media (max-width: 768px) {
-            .checkout-container { grid-template-columns: 1fr; }
+            .checkout-container { grid-template-columns: 1fr; margin: 1rem; padding: 1rem; }
             .mobile-menu { display: block; }
             .nav-links { display: none; flex-direction: column; position: absolute; top: 70px; left: 0; right: 0; background: white; padding: 1rem; }
             .nav-links.active { display: flex; }
         }
+        .status-message {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .status-success { background: #dcfce7; color: #166534; border: 1px solid #22c55e; }
+        .status-error { background: #fee2e2; color: #991b1b; border: 1px solid #ef4444; }
+        .status-info { background: #e2e8f0; color: #475569; border: 1px solid #94a3b8; }
     </style>
 </head>
 <body>
@@ -122,7 +135,7 @@
             <h2><i class="fas fa-shopping-cart"></i> Order Summary</h2>
             <div id="order-items"></div>
             <div id="order-total" style="margin-top: 1rem; padding-top: 1rem; border-top: 2px solid #e5e0db; font-size: 1.2rem;"></div>
-            <a href="cart.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Cart</a>
+            <a href="shop.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Shop</a>
         </div>
         <div class="payment-methods">
             <h2><i class="fas fa-credit-card"></i> Select Payment Method</h2>
@@ -130,12 +143,12 @@
                 <i class="fab fa-paypal"></i> PayPal
             </button>
             <button id="paystack-btn" class="payment-btn paystack-btn">
-                <i class="fas fa-credit-card"></i> Paystack (Card, Bank, M-Pesa)
+                <i class="fas fa-credit-card"></i> Paystack (Card, Bank, USSD)
             </button>
             <button id="mpesa-btn" class="payment-btn mpesa-btn">
                 <i class="fas fa-mobile-alt"></i> M-Pesa STK Push
             </button>
-            <div id="payment-status" style="margin-top: 1rem; text-align: center; color: #666;"></div>
+            <div id="payment-status" class="status-message status-info" style="display: none;">Processing...</div>
         </div>
     </main>
 
@@ -143,16 +156,17 @@
         <div class="footer-content">
             <div class="footer-section"><h3>Grow With Awino</h3><p>Empowering beginners to learn digital skills and earn online.</p></div>
             <div class="footer-section"><h3>Quick Links</h3><ul><li><a href="index.html">Home</a></li><li><a href="blog.html">Blog</a></li><li><a href="shop.html">Ebooks</a></li><li><a href="booking.html">Book Training</a></li><li><a href="contact.html">Contact</a></li></ul></div>
-            <div class="footer-section"><h3>Contact</h3><p><i class="fas fa-envelope"></i> awinophoebe44@gmail.com</p></div>
+            <div class="footer-section"><h3>Legal</h3><ul><li><a href="legal.html#disclaimer">Disclaimer</a></li><li><a href="legal.html#privacy">Privacy Policy</a></li><li><a href="legal.html#terms">Terms & Conditions</a></li><li><a href="legal.html#refund">Refund Policy</a></li></ul></div>
+            <div class="footer-section"><h3>Contact</h3><p><i class="fas fa-envelope"></i> awinophoebe44@gmail.com</p><p><i class="fab fa-whatsapp"></i> +254 704 817504</p></div>
         </div>
         <div class="footer-bottom"><p>&copy; 2026 Grow With Awino. All rights reserved.</p></div>
     </footer>
 
     <script>
-        // Supabase initialization - ONLY ONCE with unique variable name
-        const CHECKOUT_SB_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
-        const CHECKOUT_SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
-        const checkoutSupabase = supabase.createClient(CHECKOUT_SB_URL, CHECKOUT_SB_KEY);
+        // Supabase initialization
+        const SB_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
+        const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
+        const supabaseClient = supabase.createClient(SB_URL, SB_KEY);
         
         let cart = JSON.parse(sessionStorage.getItem('checkoutCart') || '[]');
         let currentOrderId = null;
@@ -176,9 +190,11 @@
         
         document.getElementById('order-total').innerHTML = `<strong>Total: ${currency === 'USD' ? '$' + total.toFixed(2) : 'KES ' + total}</strong>`;
         
-        // Create order in database
+        // Get Paystack public key from meta tag
+        const PAYSTACK_PUBLIC_KEY = document.querySelector('meta[name="paystack-public-key"]')?.content || '';
+        
         async function createOrder(paymentMethod) {
-            const { data, error } = await checkoutSupabase
+            const { data, error } = await supabaseClient
                 .from('orders')
                 .insert([{
                     user_email: 'customer@example.com',
@@ -197,12 +213,32 @@
             return data[0]?.id;
         }
         
-        // Process PayPal payment
-        async function processPayPal() {
+        async function updateOrderStatus(orderId, status, transactionId = null) {
+            const updateData = { status: status };
+            if (transactionId) updateData.transaction_id = transactionId;
+            await supabaseClient.from('orders').update(updateData).eq('id', orderId);
+        }
+        
+        function showStatus(message, type = 'info') {
             const statusDiv = document.getElementById('payment-status');
-            statusDiv.innerHTML = '<div class="loading"></div> Redirecting to PayPal...';
+            statusDiv.textContent = message;
+            statusDiv.className = `status-message status-${type}`;
+            statusDiv.style.display = 'block';
+        }
+        
+        function hideStatus() {
+            const statusDiv = document.getElementById('payment-status');
+            statusDiv.style.display = 'none';
+        }
+        
+        async function processPayPal() {
+            showStatus('Redirecting to PayPal...', 'info');
             
             currentOrderId = await createOrder('paypal');
+            if (!currentOrderId) {
+                showStatus('Failed to create order. Please try again.', 'error');
+                return;
+            }
             
             try {
                 const response = await fetch('/api/create-payment', {
@@ -212,73 +248,99 @@
                         method: 'paypal',
                         amount: total,
                         currency: currency,
-                        orderId: currentOrderId
+                        orderId: currentOrderId,
+                        items: cart
                     })
                 });
                 
                 const data = await response.json();
                 
                 if (data.approvalUrl) {
+                    sessionStorage.setItem('pendingOrderId', currentOrderId);
                     window.location.href = data.approvalUrl;
                 } else {
-                    statusDiv.innerHTML = '<span style="color:#dc2626;">Payment failed. Please try again.</span>';
+                    showStatus('Payment failed: ' + (data.error || 'Unknown error'), 'error');
+                    await updateOrderStatus(currentOrderId, 'failed');
                 }
             } catch (error) {
-                statusDiv.innerHTML = '<span style="color:#dc2626;">Error: ' + error.message + '</span>';
+                console.error('PayPal error:', error);
+                showStatus('Payment processing failed. Please try again.', 'error');
+                await updateOrderStatus(currentOrderId, 'failed');
             }
         }
         
-        // Process Paystack payment
         async function processPaystack() {
-            const statusDiv = document.getElementById('payment-status');
-            statusDiv.innerHTML = '<div class="loading"></div> Preparing Paystack...';
-            
             const email = prompt('Enter your email address for receipt:', 'customer@example.com');
             if (!email) {
-                statusDiv.innerHTML = '<span style="color:#dc2626;">Email is required.</span>';
+                showStatus('Email is required for Paystack payment', 'error');
                 return;
             }
             
+            if (!PAYSTACK_PUBLIC_KEY) {
+                showStatus('Paystack is not configured. Please contact support.', 'error');
+                return;
+            }
+            
+            showStatus('Preparing Paystack payment...', 'info');
+            
             currentOrderId = await createOrder('paystack');
+            if (!currentOrderId) {
+                showStatus('Failed to create order. Please try again.', 'error');
+                return;
+            }
             
             try {
-                const response = await fetch('/api/create-payment', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        method: 'paystack',
-                        amount: total,
-                        currency: currency,
-                        email: email,
-                        orderId: currentOrderId
-                    })
+                const handler = PaystackPop.setup({
+                    key: PAYSTACK_PUBLIC_KEY,
+                    email: email,
+                    amount: Math.round(total * 100),
+                    currency: currency,
+                    ref: `order_${currentOrderId}_${Date.now()}`,
+                    metadata: {
+                        custom_fields: [
+                            {
+                                display_name: "Order ID",
+                                variable_name: "order_id",
+                                value: currentOrderId
+                            }
+                        ]
+                    },
+                    callback: async function(response) {
+                        showStatus('Payment successful! Redirecting...', 'success');
+                        await updateOrderStatus(currentOrderId, 'completed', response.reference);
+                        localStorage.removeItem('cart');
+                        sessionStorage.removeItem('checkoutCart');
+                        setTimeout(() => {
+                            window.location.href = 'success.html';
+                        }, 2000);
+                    },
+                    onClose: function() {
+                        showStatus('Payment window closed. You can try again.', 'error');
+                        updateOrderStatus(currentOrderId, 'failed');
+                    }
                 });
-                
-                const data = await response.json();
-                
-                if (data.authorizationUrl) {
-                    window.location.href = data.authorizationUrl;
-                } else {
-                    statusDiv.innerHTML = '<span style="color:#dc2626;">Payment failed. Please try again.</span>';
-                }
+                handler.openIframe();
             } catch (error) {
-                statusDiv.innerHTML = '<span style="color:#dc2626;">Error: ' + error.message + '</span>';
+                console.error('Paystack error:', error);
+                showStatus('Payment processing failed. Please try again.', 'error');
+                await updateOrderStatus(currentOrderId, 'failed');
             }
         }
         
-        // Process M-Pesa payment
         async function processMpesa() {
-            const statusDiv = document.getElementById('payment-status');
-            
             const phone = prompt('Enter your M-Pesa phone number (e.g., 2547XXXXXXXX):', '2547');
             if (!phone) {
-                statusDiv.innerHTML = '<span style="color:#dc2626;">Phone number is required.</span>';
+                showStatus('Phone number is required for M-Pesa payment', 'error');
                 return;
             }
             
-            statusDiv.innerHTML = '<div class="loading"></div> Initiating M-Pesa payment...';
+            showStatus('Initiating M-Pesa payment... Check your phone.', 'info');
             
             currentOrderId = await createOrder('mpesa');
+            if (!currentOrderId) {
+                showStatus('Failed to create order. Please try again.', 'error');
+                return;
+            }
             
             let formattedPhone = phone.replace(/\D/g, '');
             if (formattedPhone.startsWith('0')) {
@@ -302,7 +364,7 @@
                 const data = await response.json();
                 
                 if (data.success) {
-                    statusDiv.innerHTML = '<span style="color:#22c55e;">STK push sent! Check your phone and enter PIN.</span>';
+                    showStatus('STK push sent! Check your phone and enter PIN.', 'success');
                     
                     let attempts = 0;
                     const interval = setInterval(async () => {
@@ -313,23 +375,28 @@
                             
                             if (statusData.status === 'completed') {
                                 clearInterval(interval);
-                                statusDiv.innerHTML = '<span style="color:#22c55e;">Payment successful! Redirecting...</span>';
+                                showStatus('Payment successful! Redirecting...', 'success');
+                                await updateOrderStatus(currentOrderId, 'completed');
                                 localStorage.removeItem('cart');
                                 sessionStorage.removeItem('checkoutCart');
                                 setTimeout(() => { window.location.href = 'success.html'; }, 2000);
                             } else if (statusData.status === 'failed' || attempts > 30) {
                                 clearInterval(interval);
-                                statusDiv.innerHTML = '<span style="color:#dc2626;">Payment failed or timeout. Please try again.</span>';
+                                showStatus('Payment failed or timeout. Please try again.', 'error');
+                                await updateOrderStatus(currentOrderId, 'failed');
                             }
                         } catch (err) {
                             console.log('Status check error:', err);
                         }
                     }, 2000);
                 } else {
-                    statusDiv.innerHTML = '<span style="color:#dc2626;">Payment initiation failed: ' + (data.error || 'Unknown error') + '</span>';
+                    showStatus('Payment initiation failed: ' + (data.error || 'Unknown error'), 'error');
+                    await updateOrderStatus(currentOrderId, 'failed');
                 }
             } catch (error) {
-                statusDiv.innerHTML = '<span style="color:#dc2626;">Error: ' + error.message + '</span>';
+                console.error('M-Pesa error:', error);
+                showStatus('Payment processing failed. Please try again.', 'error');
+                await updateOrderStatus(currentOrderId, 'failed');
             }
         }
         
@@ -344,10 +411,29 @@
             document.getElementById('navLinks').classList.toggle('active');
         }
         
-        // Attach event listeners
+        function checkPayPalReturn() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const paymentId = urlParams.get('paymentId');
+            const token = urlParams.get('token');
+            const PayerID = urlParams.get('PayerID');
+            
+            if (paymentId && token && PayerID) {
+                const pendingOrderId = sessionStorage.getItem('pendingOrderId');
+                if (pendingOrderId) {
+                    updateOrderStatus(parseInt(pendingOrderId), 'completed');
+                    localStorage.removeItem('cart');
+                    sessionStorage.removeItem('checkoutCart');
+                    sessionStorage.removeItem('pendingOrderId');
+                    window.location.href = 'success.html';
+                }
+            }
+        }
+        
         document.getElementById('paypal-btn').addEventListener('click', processPayPal);
         document.getElementById('paystack-btn').addEventListener('click', processPaystack);
         document.getElementById('mpesa-btn').addEventListener('click', processMpesa);
+        
+        checkPayPalReturn();
     </script>
 </body>
 </html>

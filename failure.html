@@ -5,13 +5,179 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Payment Failed - Grow With Awino</title>
     <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .failure-container {
+            max-width: 600px;
+            margin: 4rem auto;
+            padding: 3rem 2rem;
+            text-align: center;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid #fee2e2;
+        }
+        .failure-icon {
+            font-size: 5rem;
+            color: #dc2626;
+            margin-bottom: 1rem;
+        }
+        .error-details {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 12px;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            text-align: left;
+        }
+        .error-reason {
+            font-size: 0.9rem;
+            color: #991b1b;
+            margin: 0.5rem 0;
+        }
+        .btn-primary, .btn-outline {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            margin: 0.5rem;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .btn-primary {
+            background: #C66B3D;
+            color: white;
+            border: none;
+        }
+        .btn-primary:hover {
+            background: #A8552E;
+            transform: translateY(-2px);
+        }
+        .btn-outline {
+            background: transparent;
+            color: #C66B3D;
+            border: 2px solid #C66B3D;
+        }
+        .btn-outline:hover {
+            background: #C66B3D;
+            color: white;
+        }
+        .help-text {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e5e0db;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .whatsapp-support {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #25D366;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            text-decoration: none;
+            margin-top: 1rem;
+        }
+        @media (max-width: 768px) {
+            .failure-container { margin: 1rem; padding: 1.5rem; }
+        }
+    </style>
 </head>
 <body>
-    <main style="text-align:center; padding:4rem;">
-        <i class="fas fa-times-circle" style="font-size:5rem; color:#dc2626;"></i>
-        <h1>Payment Failed</h1>
-        <p>We couldn't process your payment. Please try again.</p>
-        <a href="checkout.html" class="btn-primary">Try Again</a>
+    <header>
+        <nav class="navbar">
+            <div class="logo-container">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='45' height='45' viewBox='0 0 45 45'%3E%3Crect width='45' height='45' fill='%23C66B3D'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='20'%3EGWA%3C/text%3E%3C/svg%3E" class="logo">
+                <span class="site-title">Grow With Awino</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="shop.html">Ebooks</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="failure-container">
+            <div class="failure-icon">
+                <i class="fas fa-times-circle"></i>
+            </div>
+            <h1>Payment Failed</h1>
+            <p>We couldn't process your payment at this time.</p>
+            
+            <div class="error-details" id="error-details">
+                <div class="error-reason">
+                    <i class="fas fa-exclamation-triangle"></i> 
+                    <span id="error-message">The transaction could not be completed successfully.</span>
+                </div>
+            </div>
+            
+            <div>
+                <a href="checkout.html" class="btn-primary">
+                    <i class="fas fa-shopping-cart"></i> Try Again
+                </a>
+                <a href="shop.html" class="btn-outline">
+                    <i class="fas fa-book"></i> Continue Shopping
+                </a>
+            </div>
+            
+            <div class="help-text">
+                <p><strong>Common reasons for failure:</strong></p>
+                <ul style="text-align: left; margin-top: 0.5rem;">
+                    <li>❌ Insufficient funds in your account</li>
+                    <li>❌ Incorrect payment details entered</li>
+                    <li>❌ Transaction timeout or network issues</li>
+                    <li>❌ Card not supported for online payments</li>
+                </ul>
+                
+                <p style="margin-top: 1rem;">
+                    <strong>Need help?</strong> Contact our support team:
+                </p>
+                <a href="https://wa.me/254704817504" class="whatsapp-support" target="_blank">
+                    <i class="fab fa-whatsapp"></i> WhatsApp Support
+                </a>
+                <p style="margin-top: 1rem; font-size: 0.8rem;">
+                    Or email: awinophoebe44@gmail.com
+                </p>
+            </div>
+        </div>
     </main>
+
+    <footer style="background: #1a1a1a; color: white; padding: 2rem; text-align: center; margin-top: 2rem;">
+        <p>&copy; 2026 Grow With Awino. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Display specific error if passed from payment page
+        const urlParams = new URLSearchParams(window.location.search);
+        const errorCode = urlParams.get('error');
+        const errorMsg = urlParams.get('message');
+        
+        const errorElement = document.getElementById('error-message');
+        
+        if (errorMsg) {
+            errorElement.textContent = decodeURIComponent(errorMsg);
+        } else if (errorCode) {
+            const errorMessages = {
+                'insufficient_funds': 'Insufficient funds in your account. Please check your balance and try again.',
+                'invalid_card': 'Your card details appear to be incorrect. Please double-check and try again.',
+                'timeout': 'The transaction timed out. This could be due to network issues. Please try again.',
+                'cancelled': 'You cancelled the payment. No charges were made.',
+                'technical': 'A technical error occurred. Please try again or contact support.'
+            };
+            errorElement.textContent = errorMessages[errorCode] || errorMessages.technical;
+        }
+        
+        // Track failed payment for analytics (optional)
+        console.log('Payment failed page viewed');
+        
+        // Clear any pending payment data
+        sessionStorage.removeItem('downloadToken');
+        sessionStorage.removeItem('purchasedCart');
+        sessionStorage.removeItem('pendingPayment');
+    </script>
 </body>
 </html>

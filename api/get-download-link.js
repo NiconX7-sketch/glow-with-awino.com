@@ -1,4 +1,4 @@
-// api/get-download-link.js
+// api/get-download.js
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
@@ -8,21 +8,25 @@ export default async function handler(req, res) {
 
   const { token, productId } = req.query;
 
-  // Verify the token (in production, store in database)
-  // For now, decode and validate
+  if (!token) {
+    return res.status(401).json({ error: 'No token provided' });
+  }
+
   try {
+    // Decode and validate token
     const decoded = Buffer.from(token, 'base64').toString();
-    const [transactionId, timestamp] = decoded.split('_');
+    const [transactionId, timestamp, random] = decoded.split('_');
     
     // Check if token is less than 24 hours old
     if (Date.now() - parseInt(timestamp) > 86400000) {
-      return res.status(401).json({ error: 'Download link expired' });
+      return res.status(401).json({ error: 'Download link expired (24h limit)' });
     }
 
-    // Product download links (store securely in environment variables)
+    // Map product IDs to secure Google Drive links (store in Vercel env vars)
     const downloadLinks = {
-      'product_1': process.env.EBOOK_1_URL || 'https://drive.google.com/...',
-      'product_2': process.env.EBOOK_2_URL || 'https://drive.google.com/...',
+      'ebook_beginners_guide': process.env.EBOOK_BEGINNERS_URL || 'https://drive.google.com/uc?export=download&id=YOUR_FILE_ID',
+      'ebook_advanced_guide': process.env.EBOOK_ADVANCED_URL || 'https://drive.google.com/uc?export=download&id=YOUR_FILE_ID',
+      'ebook_graphic_design': process.env.EBOOK_DESIGN_URL || 'https://drive.google.com/uc?export=download&id=YOUR_FILE_ID',
     };
 
     const downloadUrl = downloadLinks[productId];
@@ -30,8 +34,16 @@ export default async function handler(req, res) {
       return res.status(404).json({ error: 'Product not found' });
     }
 
-    return res.status(200).json({ downloadUrl: downloadUrl });
+    // Log valid download for analytics (optional)
+    console.log(`Download granted: ${productId} for transaction ${transactionId}`);
+    
+    return res.status(200).json({ 
+      success: true,
+      downloadUrl: downloadUrl,
+      expiresIn: '24 hours'
+    });
   } catch (error) {
-    return res.status(401).json({ error: 'Invalid token' });
+    console.error('Token error:', error);
+    return res.status(401).json({ error: 'Invalid or corrupted token' });
   }
 }

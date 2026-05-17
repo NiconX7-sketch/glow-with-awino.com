@@ -1,5 +1,6 @@
-// api/create-mpesa-payment.js
+// api/verify-payment.js
 export default async function handler(req, res) {
+  // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -7,44 +8,56 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(204).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { amount, phoneNumber, email } = req.body;
+  const { transactionId, paymentMethod, amount, email, cart } = req.body;
 
   try {
-    // Format phone number to international format (2547XXXXXXXX)
-    let formattedPhone = phoneNumber.replace(/\D/g, '');
-    if (formattedPhone.startsWith('0')) formattedPhone = '254' + formattedPhone.substring(1);
-    if (!formattedPhone.startsWith('254')) formattedPhone = '254' + formattedPhone;
+    let isValid = false;
+    let transactionData = null;
 
-    // Paystack M-Pesa STK Push
-    const response = await fetch('https://api.paystack.co/charge', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        email: email,
-        amount: Math.round(amount * 100),
-        mobile_money: {
-          phone: formattedPhone,
-          provider: 'mpesa'
-        }
-      })
-    });
+    if (paymentMethod === 'paypal') {
+      // Get PayPal access token
+      const auth = Buffer.from(`${process.env.PAYPAL_CLIENT_ID}:${process.env.PAYPAL_CLIENT_SECRET}`).toString('base64');
+      const tokenRes = await fetch('https://api-m.paypal.com/v1/oauth2/token', {
+        method: 'POST',
+        headers: { 'Authorization': `Basic ${auth}`, 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'grant_type=client_credentials'
+      });
+      const { access_token } = await tokenRes.json();
+      
+      // Verify order
+      const orderRes = await fetch(`https://api-m.paypal.com/v2/checkout/orders/${transactionId}`, {
+        headers: { 'Authorization': `Bearer ${access_token}` }
+      });
+      const orderData = await orderRes.json();
+      isValid = orderData.status === 'COMPLETED';
+      transactionData = orderData;
+    } 
+    else if (paymentMethod === 'paystack') {
+      const paystackRes = await fetch(`https://api.paystack.co/transaction/verify/${transactionId}`, {
+        headers: { 'Authorization': `Bearer ${process.env.PAYSTACK_SECRET_KEY}` }
+      });
+      const paystackData = await paystackRes.json();
+      isValid = paystackData.data?.status === 'success';
+      transactionData = paystackData.data;
+    }
 
-    const data = await response.json();
-    
-    if (data.status) {
+    if (isValid) {
+      // Generate one-time download token (expires in 24 hours)
+      const downloadToken = Buffer.from(`${transactionId}_${Date.now()}_${Math.random()}`).toString('base64');
+      
+      // Store in your database (Supabase) - optional but recommended
+      // await supabase.from('purchases').insert({ token: downloadToken, transaction_id: transactionId, expires_at: new Date(Date.now() + 86400000) });
+      
       return res.status(200).json({
         success: true,
-        reference: data.data.reference,
-        message: 'STK push sent to your phone'
+        downloadToken: downloadToken,
+        message: 'Payment verified successfully'
       });
     } else {
-      return res.status(400).json({ success: false, error: data.message });
+      return res.status(400).json({ success: false, error: 'Payment not verified' });
     }
   } catch (error) {
-    console.error('M-Pesa error:', error);
-    return res.status(500).json({ success: false, error: 'Payment initiation failed' });
+    console.error('Verification error:', error);
+    return res.status(500).json({ success: false, error: 'Verification failed' });
   }
 }

@@ -2,206 +2,59 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Payment Successful - Grow With Awino</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        .success-container {
-            max-width: 800px;
-            margin: 3rem auto;
-            padding: 2rem;
-            text-align: center;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            border: 1px solid #e5e0db;
-        }
-        .success-icon {
-            font-size: 5rem;
-            color: #22c55e;
-            margin-bottom: 1rem;
-        }
-        .download-btn {
-            display: inline-block;
-            background: #C66B3D;
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 40px;
-            text-decoration: none;
-            font-weight: 600;
-            margin: 1rem 0;
-            transition: all 0.3s;
-        }
-        .download-btn:hover {
-            background: #A8552E;
-            transform: translateY(-2px);
-        }
-        .order-details {
-            background: #f8fafc;
-            padding: 1rem;
-            border-radius: 12px;
-            margin: 1rem 0;
-            text-align: left;
-        }
-        .order-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        .float-whatsapp {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: #25D366;
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            color: white;
-            cursor: pointer;
-            z-index: 1000;
-        }
-        @media (max-width: 768px) {
-            .success-container { margin: 1rem; padding: 1rem; }
-        }
+        .container { max-width: 800px; margin: 3rem auto; text-align: center; padding: 2rem; }
+        .download-btn { background: #C66B3D; color: white; padding: 1rem 2rem; border-radius: 40px; text-decoration: none; display: inline-block; margin: 1rem; }
+        .download-link { display: block; margin: 1rem 0; }
+        .error { color: red; }
     </style>
 </head>
 <body>
-    <div class="float-whatsapp" onclick="window.open('https://wa.me/254704817504','_blank')"><i class="fab fa-whatsapp"></i></div>
-
-    <header>
-        <nav class="navbar">
-            <div class="logo-container">
-                <img id="site-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='45' height='45' viewBox='0 0 45 45'%3E%3Crect width='45' height='45' fill='%23C66B3D'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='20'%3EGWA%3C/text%3E%3C/svg%3E" class="logo">
-                <span class="site-title">Grow With Awino</span>
-            </div>
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="blog.html">Blog</a></li>
-                <li><a href="shop.html">Ebooks</a></li>
-                <li><a href="resources.html">Resources</a></li>
-                <li><a href="booking.html">Book Training</a></li>
-                <li><a href="contact.html">Contact</a></li>
-                <li><a href="admin.html" class="admin-link">Admin</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <main>
-        <div class="success-container">
-            <div class="success-icon">
-                <i class="fas fa-check-circle"></i>
-            </div>
-            <h1>Payment Successful!</h1>
-            <p>Thank you for your purchase. Your transaction has been completed successfully.</p>
-            
-            <div id="order-details" class="order-details">
-                <h3>Order Summary</h3>
-                <div id="order-items-list"></div>
-                <div id="order-total"></div>
-            </div>
-            
-            <div id="download-section">
-                <h3>Your Download Links</h3>
-                <div id="download-links"></div>
-            </div>
-            
-            <p style="margin-top: 1.5rem; color: #666; font-size: 0.9rem;">
-                <i class="fas fa-envelope"></i> A confirmation email has been sent to your email address.
-            </p>
-            
-            <div style="margin-top: 1.5rem;">
-                <a href="shop.html" class="btn-primary">Continue Shopping</a>
-                <a href="index.html" class="btn-outline" style="margin-left: 1rem;">Return Home</a>
-            </div>
-        </div>
-    </main>
-
-    <footer>
-        <div class="footer-content">
-            <div class="footer-section"><h3>Grow With Awino</h3><p>Empowering beginners to learn digital skills and earn online.</p></div>
-            <div class="footer-section"><h3>Quick Links</h3><ul><li><a href="index.html">Home</a></li><li><a href="blog.html">Blog</a></li><li><a href="shop.html">Ebooks</a></li><li><a href="booking.html">Book Training</a></li><li><a href="contact.html">Contact</a></li></ul></div>
-            <div class="footer-section"><h3>Contact</h3><p><i class="fas fa-envelope"></i> awinophoebe44@gmail.com</p><p><i class="fab fa-whatsapp"></i> +254 704 817504</p></div>
-        </div>
-        <div class="footer-bottom"><p>&copy; 2026 Grow With Awino. All rights reserved.</p></div>
-    </footer>
+    <div class="container">
+        <h1>✅ Payment Successful!</h1>
+        <p>Thank you for your purchase. Your download links are below:</p>
+        
+        <div id="download-links"></div>
+        
+        <div id="error-message" class="error" style="display:none;"></div>
+        
+        <a href="shop.html" class="download-btn">Continue Shopping</a>
+    </div>
 
     <script>
-        const SUPABASE_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const downloadToken = sessionStorage.getItem('downloadToken');
+        const purchasedCart = JSON.parse(sessionStorage.getItem('purchasedCart') || '[]');
         
-        // Get purchased items from sessionStorage
-        const purchasedCart = JSON.parse(sessionStorage.getItem('checkoutCart') || '[]');
-        const currency = localStorage.getItem('currency') || 'USD';
-        
-        // Display order items
-        let total = 0;
-        const orderItemsDiv = document.getElementById('order-items-list');
-        const downloadLinksDiv = document.getElementById('download-links');
-        
-        if (purchasedCart.length === 0) {
-            orderItemsDiv.innerHTML = '<p>No items found.</p>';
-            downloadLinksDiv.innerHTML = '<p>No download links available.</p>';
+        if (!downloadToken || purchasedCart.length === 0) {
+            document.getElementById('error-message').innerHTML = 'No valid purchase found. Please contact support.';
+            document.getElementById('error-message').style.display = 'block';
         } else {
-            // Display order items
-            orderItemsDiv.innerHTML = purchasedCart.map(item => {
-                const price = currency === 'USD' ? item.price_usd : item.price_kes;
-                total += price;
-                return `<div class="order-item">
-                    <span>${escapeHtml(item.title)}</span>
-                    <span>${currency === 'USD' ? '$' + price.toFixed(2) : 'KES ' + price}</span>
-                </div>`;
-            }).join('');
+            const downloadLinksDiv = document.getElementById('download-links');
             
-            document.getElementById('order-total').innerHTML = `<div class="order-item" style="font-weight: bold;"><span>Total</span><span>${currency === 'USD' ? '$' + total.toFixed(2) : 'KES ' + total}</span></div>`;
-            
-            // Display download links
-            const hasDownloadLinks = purchasedCart.some(item => item.download_link && item.download_link !== '#');
-            
-            if (hasDownloadLinks) {
-                downloadLinksDiv.innerHTML = purchasedCart.map(item => {
-                    if (item.download_link && item.download_link !== '#') {
-                        return `<div style="margin: 1rem 0; text-align: center;">
-                            <strong>${escapeHtml(item.title)}</strong><br>
-                            <a href="${item.download_link}" class="download-btn" download><i class="fas fa-download"></i> Download ${escapeHtml(item.title)}</a>
-                        </div>`;
-                    } else {
-                        return `<div style="margin: 1rem 0; text-align: center;">
-                            <strong>${escapeHtml(item.title)}</strong><br>
-                            <p style="color: #666;">The download link will be sent to your email within 24 hours.</p>
-                        </div>`;
-                    }
-                }).join('');
-            } else {
-                downloadLinksDiv.innerHTML = `
-                    <p style="text-align: center; color: #666;">
-                        <i class="fas fa-envelope"></i> Your download links will be sent to your email address within 24 hours.
-                    </p>
-                    <p style="text-align: center; margin-top: 0.5rem;">
-                        <a href="contact.html" class="btn-outline">Contact Support</a>
-                    </p>
-                `;
-            }
+            Promise.all(purchasedCart.map(async (item) => {
+                const response = await fetch(`/api/get-download-link?token=${downloadToken}&productId=${item.id}`);
+                const data = await response.json();
+                if (data.downloadUrl) {
+                    return `<div class="download-link">
+                        <strong>${escapeHtml(item.title)}</strong><br>
+                        <a href="${data.downloadUrl}" class="download-btn" download>📥 Download Now</a>
+                    </div>`;
+                }
+                return `<div>${escapeHtml(item.title)} - <span style="color:#666;">Download link will be emailed within 24 hours</span></div>`;
+            })).then(links => {
+                downloadLinksDiv.innerHTML = links.join('');
+                // Clear sensitive data
+                sessionStorage.removeItem('downloadToken');
+                sessionStorage.removeItem('purchasedCart');
+            });
         }
         
         function escapeHtml(text) {
-            if (!text) return '';
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         }
-        
-        // Clear checkout cart from sessionStorage after page loads
-        setTimeout(() => {
-            sessionStorage.removeItem('checkoutCart');
-        }, 3000);
     </script>
 </body>
 </html>

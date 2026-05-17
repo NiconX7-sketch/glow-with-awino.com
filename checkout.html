@@ -8,8 +8,8 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <!-- Paystack Inline JS -->
     <script src="https://js.paystack.co/v1/inline.js"></script>
-    <!-- PayPal SDK - Replace YOUR_PAYPAL_CLIENT_ID with your actual live client ID -->
-    <script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&currency=USD&components=buttons"></script>
+    <!-- PayPal SDK - Using sandbox for testing, replace with live when ready -->
+    <script src="https://www.paypal.com/sdk/js?client-id=sb&currency=USD&components=buttons"></script>
     <style>
         * {
             margin: 0;
@@ -107,6 +107,621 @@
         .order-total {
             margin-top: 1rem;
             padding-top: 1rem;
+            border-top: 2px solid #e5e0db;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        .payment-option {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            border: 2px solid #e5e0db;
+            border-radius: 12px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .payment-option:hover {
+            border-color: #C66B3D;
+            background: #fefaf7;
+        }
+        .payment-option.selected {
+            border-color: #C66B3D;
+            background: #fefaf7;
+        }
+        .payment-option label {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 1rem;
+        }
+        .payment-option input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        .mpesa-input {
+            display: none;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e5e0db;
+        }
+        .mpesa-input.active {
+            display: block;
+        }
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            border: 1px solid #e5e0db;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        .paypal-button-container {
+            margin: 1rem 0;
+            display: none;
+        }
+        .paypal-button-container.active {
+            display: block;
+        }
+        .paystack-btn, .mpesa-pay-btn {
+            width: 100%;
+            padding: 1rem;
+            margin: 0.75rem 0;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        .paystack-btn {
+            background: #0a6e49;
+            color: white;
+            display: none;
+        }
+        .paystack-btn.active {
+            display: flex;
+        }
+        .paystack-btn:hover {
+            background: #085a3b;
+            transform: translateY(-2px);
+        }
+        .mpesa-pay-btn {
+            background: #49b43e;
+            color: white;
+            display: none;
+        }
+        .mpesa-pay-btn.active {
+            display: flex;
+        }
+        .mpesa-pay-btn:hover {
+            background: #3d9e33;
+            transform: translateY(-2px);
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 1rem;
+            color: #C66B3D;
+            text-decoration: none;
+        }
+        .status-message {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border-radius: 10px;
+            display: none;
+            text-align: center;
+            font-weight: 500;
+        }
+        .status-success {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #22c55e;
+        }
+        .status-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+        }
+        .status-info {
+            background: #e2e8f0;
+            color: #475569;
+            border: 1px solid #94a3b8;
+        }
+        .float-whatsapp {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #25D366;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: white;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: transform 0.3s;
+        }
+        .float-whatsapp:hover {
+            transform: scale(1.05);
+        }
+        footer {
+            background: #1a1a1a;
+            color: white;
+            padding: 3rem 5% 1rem;
+            margin-top: 3rem;
+        }
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .footer-section ul {
+            list-style: none;
+        }
+        .footer-section a {
+            color: #ccc;
+            text-decoration: none;
+        }
+        .footer-section a:hover {
+            color: #C66B3D;
+        }
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid #333;
+            color: #888;
+        }
+        @media (max-width: 768px) {
+            .checkout-container {
+                grid-template-columns: 1fr;
+                margin: 1rem;
+                padding: 1rem;
+            }
+            .mobile-menu {
+                display: block;
+            }
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: white;
+                padding: 1rem;
+                gap: 1rem;
+            }
+            .nav-links.active {
+                display: flex;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="float-whatsapp" onclick="window.open('https://wa.me/254704817504','_blank')">
+        <i class="fab fa-whatsapp"></i>
+    </div>
+
+    <header>
+        <nav class="navbar">
+            <div class="logo-container">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='45' height='45' viewBox='0 0 45 45'%3E%3Crect width='45' height='45' fill='%23C66B3D'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='20'%3EGWA%3C/text%3E%3C/svg%3E" class="logo" alt="Logo">
+                <span class="site-title">Grow With Awino</span>
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="shop.html">Ebooks</a></li>
+                <li><a href="resources.html">Resources</a></li>
+                <li><a href="booking.html">Book Training</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="admin.html" class="admin-link">Admin</a></li>
+            </ul>
+            <div class="mobile-menu" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+    </header>
+
+    <main class="checkout-container">
+        <div class="order-summary">
+            <h2><i class="fas fa-shopping-cart"></i> Order Summary</h2>
+            <div id="order-items-list"></div>
+            <div id="order-total" class="order-total"></div>
+            <a href="shop.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Shop</a>
+        </div>
+
+        <div class="payment-methods">
+            <h2><i class="fas fa-credit-card"></i> Select Payment Method</h2>
+            
+            <div class="payment-option" data-method="paypal">
+                <label>
+                    <input type="radio" name="paymentMethod" value="paypal" checked>
+                    <i class="fab fa-paypal" style="font-size: 1.2rem; color: #0070ba;"></i>
+                    PayPal (International)
+                </label>
+            </div>
+
+            <div class="payment-option" data-method="paystack">
+                <label>
+                    <input type="radio" name="paymentMethod" value="paystack">
+                    <i class="fas fa-credit-card" style="font-size: 1.2rem; color: #0a6e49;"></i>
+                    Card / Bank Transfer / USSD
+                </label>
+            </div>
+
+            <div class="payment-option" data-method="mpesa">
+                <label>
+                    <input type="radio" name="paymentMethod" value="mpesa">
+                    <i class="fas fa-mobile-alt" style="font-size: 1.2rem; color: #49b43e;"></i>
+                    M-Pesa (STK Push)
+                </label>
+                <div id="mpesa-input" class="mpesa-input">
+                    <input type="tel" id="mpesa-phone" class="form-input" placeholder="M-Pesa phone number (e.g., 0743 123456)">
+                    <input type="email" id="mpesa-email" class="form-input" placeholder="Your email address for receipt">
+                    <small style="color: #666;">You will receive an STK push on your phone. Enter PIN to complete payment.</small>
+                </div>
+            </div>
+
+            <div id="paypal-button-container" class="paypal-button-container active"></div>
+            <button id="paystack-btn" class="paystack-btn"><i class="fas fa-credit-card"></i> Pay with Paystack</button>
+            <button id="mpesa-pay-btn" class="mpesa-pay-btn"><i class="fas fa-mobile-alt"></i> Pay with M-Pesa</button>
+            <div id="payment-status" class="status-message"></div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Grow With Awino</h3>
+                <p>Empowering beginners to learn digital skills and earn online.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="shop.html">Ebooks</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p><i class="fas fa-envelope"></i> awinophoebe44@gmail.com</p>
+                <p><i class="fab fa-whatsapp"></i> +254 704 817504</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Grow With Awino. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // ============================================
+        // CART DATA & ORDER SUMMARY
+        // ============================================
+        let cart = JSON.parse(sessionStorage.getItem('checkoutCart') || '[]');
+        
+        if (cart.length === 0) {
+            window.location.href = 'shop.html';
+        }
+        
+        const currency = localStorage.getItem('currency') || 'USD';
+        let total = 0;
+        const orderItemsDiv = document.getElementById('order-items-list');
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        orderItemsDiv.innerHTML = cart.map(item => {
+            const price = currency === 'USD' ? item.price_usd : item.price_kes;
+            total += price;
+            return `<div class="order-item">
+                <span>${escapeHtml(item.title)}</span>
+                <span>${currency === 'USD' ? '$' + price.toFixed(2) : 'KES ' + price.toLocaleString()}</span>
+            </div>`;
+        }).join('');
+        
+        document.getElementById('order-total').innerHTML = `
+            <strong>Total: ${currency === 'USD' ? '$' + total.toFixed(2) : 'KES ' + total.toLocaleString()}</strong>
+        `;
+        
+        const paypalAmount = currency === 'USD' ? total : total / 130;
+        
+        // ============================================
+        // UI HELPERS
+        // ============================================
+        function showStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('payment-status');
+            statusDiv.textContent = message;
+            statusDiv.className = `status-message status-${type}`;
+            statusDiv.style.display = 'block';
+            console.log(`[${type.toUpperCase()}] ${message}`);
+            
+            if (type !== 'error') {
+                setTimeout(() => {
+                    if (statusDiv.style.display === 'block') {
+                        statusDiv.style.display = 'none';
+                    }
+                }, 5000);
+            }
+        }
+        
+        function toggleMobileMenu() {
+            document.getElementById('navLinks').classList.toggle('active');
+        }
+        
+        // ============================================
+        // PAYMENT METHOD SELECTION UI
+        // ============================================
+        const paymentOptions = document.querySelectorAll('.payment-option');
+        const paypalContainer = document.getElementById('paypal-button-container');
+        const paystackBtn = document.getElementById('paystack-btn');
+        const mpesaPayBtn = document.getElementById('mpesa-pay-btn');
+        const mpesaInputDiv = document.getElementById('mpesa-input');
+        
+        function updatePaymentUI(method) {
+            paypalContainer.classList.remove('active');
+            paystackBtn.classList.remove('active');
+            mpesaPayBtn.classList.remove('active');
+            mpesaInputDiv.classList.remove('active');
+            
+            if (method === 'paypal') {
+                paypalContainer.classList.add('active');
+            } else if (method === 'paystack') {
+                paystackBtn.classList.add('active');
+            } else if (method === 'mpesa') {
+                mpesaInputDiv.classList.add('active');
+                mpesaPayBtn.classList.add('active');
+            }
+            
+            paymentOptions.forEach(opt => {
+                const radio = opt.querySelector('input[type="radio"]');
+                if (radio && radio.value === method) {
+                    opt.classList.add('selected');
+                } else {
+                    opt.classList.remove('selected');
+                }
+            });
+        }
+        
+        document.querySelectorAll('input[name="paymentMethod"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                updatePaymentUI(this.value);
+            });
+        });
+        
+        // ============================================
+        // VERIFY PAYMENT WITH BACKEND
+        // ============================================
+        async function verifyPayment(transactionId, paymentMethod, email) {
+            showStatus('Verifying payment with server...', 'info');
+            
+            try {
+                const response = await fetch('/api/verify-payment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        transactionId: transactionId,
+                        paymentMethod: paymentMethod,
+                        amount: total,
+                        email: email,
+                        cart: cart
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    sessionStorage.setItem('downloadToken', data.downloadToken);
+                    sessionStorage.setItem('purchasedCart', JSON.stringify(cart));
+                    showStatus('Payment successful! Redirecting...', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'success.html';
+                    }, 1500);
+                } else {
+                    showStatus('Verification failed: ' + (data.error || 'Please contact support'), 'error');
+                }
+            } catch (error) {
+                console.error('Verification error:', error);
+                showStatus('Verification error. Please contact support.', 'error');
+            }
+        }
+        
+        // ============================================
+        // PAYPAL INTEGRATION - FIXED
+        // ============================================
+        function initPayPal() {
+            if (typeof paypal !== 'undefined' && paypal.Buttons) {
+                paypal.Buttons({
+                    createOrder: function(data, actions) {
+                        showStatus('Creating PayPal order...', 'info');
+                        return actions.order.create({
+                            purchase_units: [{
+                                amount: {
+                                    value: paypalAmount.toFixed(2),
+                                    currency_code: 'USD'
+                                },
+                                description: 'Grow With Awino Ebook Purchase'
+                            }],
+                            application_context: {
+                                shipping_preference: 'NO_SHIPPING'
+                            }
+                        });
+                    },
+                    onApprove: function(data, actions) {
+                        showStatus('Processing PayPal payment...', 'info');
+                        return actions.order.capture().then(async function(details) {
+                            console.log('PayPal capture:', details);
+                            await verifyPayment(details.id, 'paypal', details.payer.email_address || 'customer@example.com');
+                        });
+                    },
+                    onError: function(err) {
+                        console.error('PayPal error:', err);
+                        showStatus('PayPal payment failed. Please try again.', 'error');
+                    }
+                }).render('#paypal-button-container');
+            } else {
+                console.log('PayPal SDK not loaded yet, retrying...');
+                setTimeout(initPayPal, 1000);
+            }
+        }
+        
+        // Wait for PayPal to load
+        setTimeout(initPayPal, 500);
+        
+        // ============================================
+        // PAYSTACK INTEGRATION - FIXED
+        // ============================================
+        document.getElementById('paystack-btn').addEventListener('click', function() {
+            const email = prompt('Enter your email address for receipt:', '');
+            if (!email) {
+                showStatus('Email address is required for Paystack payment', 'error');
+                return;
+            }
+            
+            showStatus('Opening Paystack payment window...', 'info');
+            
+            try {
+                // Fixed: Proper callback function format
+                const handler = PaystackPop.setup({
+                    key: 'pk_live_846c187859786e61a95522f0cfb0204ac3f54515', // Your live key
+                    email: email,
+                    amount: Math.round(total * 100),
+                    currency: currency === 'USD' ? 'USD' : 'KES',
+                    ref: 'gwa_' + Date.now() + '_' + Math.random().toString(36).substr(2, 8),
+                    callback: function(response) {
+                        console.log('Paystack callback:', response);
+                        verifyPayment(response.reference, 'paystack', email);
+                    },
+                    onClose: function() {
+                        showStatus('Payment window closed. No charges were made.', 'error');
+                    }
+                });
+                handler.openIframe();
+            } catch (error) {
+                console.error('Paystack error:', error);
+                showStatus('Failed to initialize Paystack. Please try again.', 'error');
+            }
+        });
+        
+        // ============================================
+        // M-PESA INTEGRATION - FIXED with better error handling
+        // ============================================
+        document.getElementById('mpesa-pay-btn').addEventListener('click', async function() {
+            const phone = document.getElementById('mpesa-phone').value;
+            const email = document.getElementById('mpesa-email').value;
+            
+            if (!phone) {
+                showStatus('Please enter your M-Pesa phone number', 'error');
+                return;
+            }
+            
+            if (!email) {
+                showStatus('Please enter your email address for receipt', 'error');
+                return;
+            }
+            
+            showStatus('Initiating M-Pesa STK push... Please check your phone.', 'info');
+            
+            try {
+                // Clean phone number
+                let cleanPhone = phone.replace(/\D/g, '');
+                if (cleanPhone.startsWith('0')) {
+                    cleanPhone = '254' + cleanPhone.substring(1);
+                }
+                if (!cleanPhone.startsWith('254')) {
+                    cleanPhone = '254' + cleanPhone;
+                }
+                
+                const response = await fetch('/api/create-mpesa', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        amount: total,
+                        phoneNumber: cleanPhone,
+                        email: email,
+                        cart: cart
+                    })
+                });
+                
+                const data = await response.json();
+                console.log('M-Pesa response:', data);
+                
+                if (data.success) {
+                    showStatus('STK push sent to ' + cleanPhone + '! Enter your PIN on your phone.', 'success');
+                    
+                    // Poll for payment status
+                    let attempts = 0;
+                    const maxAttempts = 30;
+                    const interval = setInterval(async () => {
+                        attempts++;
+                        try {
+                            const statusRes = await fetch('/api/verify-payment', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    transactionId: data.reference,
+                                    paymentMethod: 'paystack',
+                                    amount: total,
+                                    email: email,
+                                    cart: cart
+                                })
+                            });
+                            
+                            const statusData = await statusRes.json();
+                            
+                            if (statusData.success) {
+                                clearInterval(interval);
+                                sessionStorage.setItem('downloadToken', statusData.downloadToken);
+                                sessionStorage.setItem('purchasedCart', JSON.stringify(cart));
+                                showStatus('M-Pesa payment successful! Redirecting...', 'success');
+                                setTimeout(() => {
+                                    window.location.href = 'success.html';
+                                }, 1500);
+                            } else if (attempts >= maxAttempts) {
+                                clearInterval(interval);
+                                showStatus('Payment timeout. If money was deducted, it will be refunded within 24 hours.', 'error');
+                            }
+                        } catch (err) {
+                            console.log('Status check error:', err);
+                            if (attempts >= maxAttempts) {
+                                clearInterval(interval);
+                                showStatus('Unable to verify payment. Please contact support.', 'error');
+                            }
+                        }
+                    }, 2000);
+                } else {
+                    showStatus('M-Pesa failed: ' + (data.error || 'Please try again'), 'error');
+                }
+            } catch (error) {
+                console.error('M-Pesa error:', error);
+                showStatus('Payment initiation failed. Please check your connection and try again.', 'error');
+            }
+        });
+        
+        updatePaymentUI('paypal');
+        console.log('Checkout ready - Total:', total, currency);
+        console.log('Cart items:', cart.length);
+    </script>
+</body>
+</html>            padding-top: 1rem;
             border-top: 2px solid #e5e0db;
             font-size: 1.2rem;
             font-weight: bold;

@@ -1,32 +1,25 @@
-// api/create-mpesa.js
-// Complete M-Pesa STK Push integration with Paystack
-
+// api/create-mpesa.js - Complete M-Pesa integration
 export default async function handler(req, res) {
-  // ============================================
-  // CORS HEADERS (Required for cross-origin requests)
-  // ============================================
+  // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   
-  // Handle preflight OPTIONS request
+  // Handle preflight
   if (req.method === 'OPTIONS') {
     return res.status(204).end();
   }
   
-  // Only allow POST method
+  // Only allow POST
   if (req.method !== 'POST') {
     return res.status(405).json({ 
       success: false, 
-      error: 'Method not allowed. Please use POST.' 
+      error: 'Method not allowed. Use POST.' 
     });
   }
 
   try {
-    // ============================================
-    // EXTRACT AND VALIDATE INPUT DATA
-    // ============================================
-    const { amount, phoneNumber, email, cart, orderId } = req.body;
+    const { amount, phoneNumber, email, cart } = req.body;
     
     // Validate required fields
     if (!amount) {
@@ -50,51 +43,42 @@ export default async function handler(req, res) {
       });
     }
     
-    // ============================================
-    // FORMAT PHONE NUMBER FOR PAYSTACK
-    // ============================================
-    // Paystack expects format: 2547XXXXXXXX (no spaces, no leading zero)
-    let formattedPhone = phoneNumber.replace(/\D/g, ''); // Remove all non-digits
+    // Format phone number for Paystack
+    let formattedPhone = phoneNumber.replace(/\D/g, '');
     
     if (formattedPhone.startsWith('0')) {
       formattedPhone = '254' + formattedPhone.substring(1);
     }
     
-    if (formattedPhone.startsWith('254') && formattedPhone.length === 12) {
-      // Already correct format (2547XXXXXXXX)
-    } else if (formattedPhone.startsWith('254') && formattedPhone.length === 13) {
-      // Remove extra digit
-      formattedPhone = formattedPhone.substring(0, 3) + formattedPhone.substring(4);
-    } else if (!formattedPhone.startsWith('254')) {
+    if (!formattedPhone.startsWith('254')) {
       formattedPhone = '254' + formattedPhone;
     }
     
-    // Final validation - should be 12 digits starting with 254
+    // Validate Kenyan phone number format
     if (!formattedPhone.match(/^254[17]\d{8}$/)) {
       return res.status(400).json({
         success: false,
-        error: 'Invalid Kenyan phone number format. Use 07XX XXX XXX or 2547XXXXXXXX'
+        error: 'Invalid Kenyan phone number. Use format: 0743XXXXXX or 2547XXXXXXXX'
       });
     }
     
-    // ============================================
-    // GET PAYSTACK SECRET KEY FROM ENVIRONMENT
-    // ============================================
+    // Get Paystack secret key from environment
     const paystackSecretKey = process.env.PAYSTACK_SECRET_KEY;
     
     if (!paystackSecretKey) {
-      console.error('PAYSTACK_SECRET_KEY not found in environment variables');
+      console.error('PAYSTACK_SECRET_KEY not found');
       return res.status(500).json({
         success: false,
         error: 'Payment configuration error. Please contact support.'
       });
     }
     
-    // ============================================
-    // INITIALIZE PAYSTACK M-PESA CHARGE
-    // ============================================
-    console.log(`Initiating M-Pesa charge for ${formattedPhone}, amount: KES ${amount}`);
+    // Calculate amount in cents/kobo
+    const amountInCents = Math.round(amount * 100);
     
+    console.log(`Initiating M-Pesa charge: KES ${amount} for ${formattedPhone} (${email})`);
+    
+    // Initiate Paystack M-Pesa charge
     const paystackResponse = await fetch('https://api.paystack.co/charge', {
       method: 'POST',
       headers: {
@@ -103,17 +87,17 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         email: email,
-        amount: Math.round(amount * 100), // Convert to cents/ko bo
+        amount: amountInCents,
         currency: 'KES',
         mobile_money: {
           phone: formattedPhone,
           provider: 'mpesa'
         },
         metadata: {
-          cart: cart ? JSON.stringify(cart) : null,
-          orderId: orderId || null,
-          phone: formattedPhone,
           payment_for: 'ebooks',
+          customer_email: email,
+          customer_phone: formattedPhone,
+          cart_items: cart ? cart.length : 0,
           timestamp: new Date().toISOString()
         }
       })
@@ -121,38 +105,26 @@ export default async function handler(req, res) {
     
     const responseData = await paystackResponse.json();
     
-    // ============================================
-    // HANDLE PAYSTACK RESPONSE
-    // ============================================
     console.log('Paystack response:', JSON.stringify(responseData, null, 2));
     
     if (responseData.status && responseData.data) {
-      // Successful initialization
       return res.status(200).json({
         success: true,
         reference: responseData.data.reference,
         message: 'STK push sent successfully',
         phone: formattedPhone,
-        amount: amount,
-        status: responseData.data.status
+        amount: amount
       });
     } else {
-      // Failed initialization
-      let errorMessage = 'M-Pesa payment initiation failed';
+      let errorMessage = responseData.message || 'M-Pesa payment initiation failed';
       
-      if (responseData.message) {
-        errorMessage = responseData.message;
-      }
-      
-      if (responseData.data && responseData.data.message) {
-        errorMessage = responseData.data.message;
-      }
-      
-      // Common error messages
-      if (errorMessage.includes('insufficient balance')) {
-        errorMessage = 'Insufficient balance in Paystack account';
-      } else if (errorMessage.includes('invalid phone')) {
-        errorMessage = 'Invalid phone number format. Please check and try again.';
+      // Provide user-friendly error messages
+      if (errorMessage.includes('currency')) {
+        errorMessage = 'Currency not supported. Please contact support or use Card/Bank payment.';
+      } else if (errorMessage.includes('phone')) {
+        errorMessage = 'Invalid phone number. Please check and try again.';
+      } else if (errorMessage.includes('balance')) {
+        errorMessage = 'Service temporarily unavailable. Please try another payment method.';
       }
       
       return res.status(400).json({
@@ -163,15 +135,10 @@ export default async function handler(req, res) {
     }
     
   } catch (error) {
-    // ============================================
-    // HANDLE UNEXPECTED ERRORS
-    // ============================================
     console.error('M-Pesa API Error:', error);
-    
     return res.status(500).json({
       success: false,
-      error: 'An unexpected error occurred. Please try again.',
-      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      error: 'Payment initiation failed. Please try again or use another payment method.'
     });
   }
 }

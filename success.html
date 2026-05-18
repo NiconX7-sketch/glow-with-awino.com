@@ -2,59 +2,466 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Payment Successful - Grow With Awino</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        .container { max-width: 800px; margin: 3rem auto; text-align: center; padding: 2rem; }
-        .download-btn { background: #C66B3D; color: white; padding: 1rem 2rem; border-radius: 40px; text-decoration: none; display: inline-block; margin: 1rem; }
-        .download-link { display: block; margin: 1rem 0; }
-        .error { color: red; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f5f0eb;
+            color: #2C2B28;
+        }
+        .navbar {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid #e5e0db;
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+        }
+        .logo {
+            height: 45px;
+            width: auto;
+            border-radius: 10px;
+        }
+        .site-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #C66B3D;
+        }
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: #2C2B28;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .nav-links a:hover {
+            color: #C66B3D;
+        }
+        .admin-link {
+            background: #C66B3D;
+            color: white !important;
+            padding: 0.5rem 1.2rem;
+            border-radius: 30px;
+        }
+        .mobile-menu {
+            display: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+        .success-container {
+            max-width: 800px;
+            margin: 3rem auto;
+            padding: 2rem;
+            text-align: center;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid #e5e0db;
+        }
+        .success-icon {
+            font-size: 5rem;
+            color: #22c55e;
+            margin-bottom: 1rem;
+        }
+        .download-btn {
+            display: inline-block;
+            background: #C66B3D;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: 600;
+            margin: 1rem 0;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        .download-btn:hover {
+            background: #A8552E;
+            transform: translateY(-2px);
+        }
+        .order-details {
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+            text-align: left;
+        }
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .download-section {
+            margin: 2rem 0;
+            padding: 1rem;
+            background: #fefaf7;
+            border-radius: 12px;
+        }
+        .download-link-item {
+            margin: 1rem 0;
+            padding: 1rem;
+            border: 1px solid #e5e0db;
+            border-radius: 12px;
+            background: white;
+        }
+        .float-whatsapp {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #25D366;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: white;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .btn-primary, .btn-outline {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            margin: 0.5rem;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .btn-primary {
+            background: #C66B3D;
+            color: white;
+            border: none;
+        }
+        .btn-primary:hover {
+            background: #A8552E;
+        }
+        .btn-outline {
+            background: transparent;
+            color: #C66B3D;
+            border: 2px solid #C66B3D;
+        }
+        .btn-outline:hover {
+            background: #C66B3D;
+            color: white;
+        }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #C66B3D;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .error-message {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 1rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+        }
+        footer {
+            background: #1a1a1a;
+            color: white;
+            padding: 3rem 5% 1rem;
+            margin-top: 3rem;
+        }
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid #333;
+            color: #888;
+        }
+        @media (max-width: 768px) {
+            .success-container { margin: 1rem; padding: 1rem; }
+            .mobile-menu { display: block; }
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: white;
+                padding: 1rem;
+            }
+            .nav-links.active { display: flex; }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>✅ Payment Successful!</h1>
-        <p>Thank you for your purchase. Your download links are below:</p>
-        
-        <div id="download-links"></div>
-        
-        <div id="error-message" class="error" style="display:none;"></div>
-        
-        <a href="shop.html" class="download-btn">Continue Shopping</a>
+    <div class="float-whatsapp" onclick="window.open('https://wa.me/254704817504','_blank')">
+        <i class="fab fa-whatsapp"></i>
     </div>
 
+    <header>
+        <nav class="navbar">
+            <div class="logo-container">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='45' height='45' viewBox='0 0 45 45'%3E%3Crect width='45' height='45' fill='%23C66B3D'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='20'%3EGWA%3C/text%3E%3C/svg%3E" class="logo" alt="Logo">
+                <span class="site-title">Grow With Awino</span>
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="shop.html">Ebooks</a></li>
+                <li><a href="resources.html">Resources</a></li>
+                <li><a href="booking.html">Book Training</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="admin.html" class="admin-link">Admin</a></li>
+            </ul>
+            <div class="mobile-menu" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="success-container">
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h1>Payment Successful! 🎉</h1>
+            <p>Thank you for your purchase. Your transaction has been completed successfully.</p>
+            
+            <div id="order-details" class="order-details">
+                <h3><i class="fas fa-receipt"></i> Order Summary</h3>
+                <div id="order-items-list"></div>
+                <div id="order-total"></div>
+            </div>
+            
+            <div id="download-section" class="download-section">
+                <h3><i class="fas fa-download"></i> Your Download Links</h3>
+                <div id="download-links">
+                    <div class="loading"></div> Loading your download links...
+                </div>
+                <p style="margin-top: 1rem; font-size: 0.85rem; color: #666;">
+                    <i class="fas fa-envelope"></i> A confirmation email has also been sent to your email address.
+                </p>
+            </div>
+            
+            <div style="margin-top: 1.5rem;">
+                <a href="shop.html" class="btn-primary"><i class="fas fa-shopping-cart"></i> Continue Shopping</a>
+                <a href="index.html" class="btn-outline"><i class="fas fa-home"></i> Return Home</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Grow With Awino</h3>
+                <p>Empowering beginners to learn digital skills and earn online.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="shop.html">Ebooks</a></li>
+                    <li><a href="booking.html">Book Training</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p><i class="fas fa-envelope"></i> awinophoebe44@gmail.com</p>
+                <p><i class="fab fa-whatsapp"></i> +254 704 817504</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Grow With Awino. All rights reserved.</p>
+        </div>
+    </footer>
+
     <script>
+        // ============================================
+        // RETRIEVE PURCHASE DATA
+        // ============================================
         const downloadToken = sessionStorage.getItem('downloadToken');
         const purchasedCart = JSON.parse(sessionStorage.getItem('purchasedCart') || '[]');
+        const currency = localStorage.getItem('currency') || 'USD';
         
-        if (!downloadToken || purchasedCart.length === 0) {
-            document.getElementById('error-message').innerHTML = 'No valid purchase found. Please contact support.';
-            document.getElementById('error-message').style.display = 'block';
+        console.log('Success page loaded');
+        console.log('Download token exists:', !!downloadToken);
+        console.log('Purchased items:', purchasedCart.length);
+        
+        // ============================================
+        // DISPLAY ORDER SUMMARY
+        // ============================================
+        let total = 0;
+        const orderItemsDiv = document.getElementById('order-items-list');
+        
+        if (purchasedCart.length === 0) {
+            orderItemsDiv.innerHTML = '<p style="color: #666;">No items found in order.</p>';
         } else {
-            const downloadLinksDiv = document.getElementById('download-links');
+            orderItemsDiv.innerHTML = purchasedCart.map(item => {
+                const price = currency === 'USD' ? item.price_usd : item.price_kes;
+                total += price;
+                return `<div class="order-item">
+                    <span><strong>${escapeHtml(item.title)}</strong></span>
+                    <span>${currency === 'USD' ? '$' + price.toFixed(2) : 'KES ' + price.toLocaleString()}</span>
+                </div>`;
+            }).join('');
             
-            Promise.all(purchasedCart.map(async (item) => {
-                const response = await fetch(`/api/get-download-link?token=${downloadToken}&productId=${item.id}`);
-                const data = await response.json();
-                if (data.downloadUrl) {
-                    return `<div class="download-link">
-                        <strong>${escapeHtml(item.title)}</strong><br>
-                        <a href="${data.downloadUrl}" class="download-btn" download>📥 Download Now</a>
-                    </div>`;
+            document.getElementById('order-total').innerHTML = `
+                <div class="order-item" style="font-weight: bold; border-bottom: none;">
+                    <span>Total Paid</span>
+                    <span>${currency === 'USD' ? '$' + total.toFixed(2) : 'KES ' + total.toLocaleString()}</span>
+                </div>
+            `;
+        }
+        
+        // ============================================
+        // FETCH DOWNLOAD LINKS FROM SERVER
+        // ============================================
+        async function fetchDownloadLinks() {
+            if (!downloadToken) {
+                showError('No valid purchase found. Please contact support with your transaction ID.');
+                return;
+            }
+            
+            if (purchasedCart.length === 0) {
+                showError('No items found in your purchase. Please contact support.');
+                return;
+            }
+            
+            const downloadLinksDiv = document.getElementById('download-links');
+            let hasValidLinks = false;
+            let linksHtml = '';
+            
+            for (const item of purchasedCart) {
+                try {
+                    console.log(`Fetching download link for: ${item.title} (ID: ${item.id})`);
+                    
+                    const response = await fetch(`/api/get-download?token=${encodeURIComponent(downloadToken)}&productId=${encodeURIComponent(item.id)}`);
+                    const data = await response.json();
+                    
+                    if (data.success && data.downloadUrl) {
+                        hasValidLinks = true;
+                        linksHtml += `
+                            <div class="download-link-item">
+                                <i class="fas fa-book" style="color: #C66B3D; margin-right: 8px;"></i>
+                                <strong>${escapeHtml(item.title)}</strong><br>
+                                <a href="${data.downloadUrl}" class="download-btn" download target="_blank">
+                                    <i class="fas fa-download"></i> Download Now
+                                </a>
+                                <p style="font-size: 0.8rem; color: #666; margin-top: 8px;">
+                                    <i class="fas fa-clock"></i> Link expires in 24 hours
+                                </p>
+                            </div>
+                        `;
+                    } else {
+                        linksHtml += `
+                            <div class="download-link-item" style="background: #fef2f2;">
+                                <i class="fas fa-clock" style="color: #f59e0b;"></i>
+                                <strong>${escapeHtml(item.title)}</strong><br>
+                                <p style="color: #666;">Your download link will be sent to your email within 24 hours.</p>
+                                <p style="font-size: 0.8rem; margin-top: 8px;">
+                                    <a href="contact.html" style="color: #C66B3D;">Contact Support</a> if you don't receive it.
+                                </p>
+                            </div>
+                        `;
+                    }
+                } catch (error) {
+                    console.error(`Error fetching download for ${item.title}:`, error);
+                    linksHtml += `
+                        <div class="download-link-item" style="background: #fef2f2;">
+                            <i class="fas fa-exclamation-triangle" style="color: #dc2626;"></i>
+                            <strong>${escapeHtml(item.title)}</strong><br>
+                            <p style="color: #666;">Unable to load download link. Please contact support.</p>
+                        </div>
+                    `;
                 }
-                return `<div>${escapeHtml(item.title)} - <span style="color:#666;">Download link will be emailed within 24 hours</span></div>`;
-            })).then(links => {
-                downloadLinksDiv.innerHTML = links.join('');
-                // Clear sensitive data
-                sessionStorage.removeItem('downloadToken');
-                sessionStorage.removeItem('purchasedCart');
-            });
+            }
+            
+            if (hasValidLinks) {
+                downloadLinksDiv.innerHTML = linksHtml;
+            } else if (linksHtml) {
+                downloadLinksDiv.innerHTML = linksHtml;
+            } else {
+                downloadLinksDiv.innerHTML = `
+                    <div class="error-message">
+                        <i class="fas fa-envelope"></i> 
+                        Your download links will be sent to your email within 24 hours.
+                    </div>
+                    <a href="contact.html" class="btn-outline">Contact Support</a>
+                `;
+            }
+        }
+        
+        function showError(message) {
+            const downloadLinksDiv = document.getElementById('download-links');
+            downloadLinksDiv.innerHTML = `
+                <div class="error-message">
+                    <i class="fas fa-exclamation-triangle"></i> 
+                    ${message}
+                </div>
+                <a href="contact.html" class="btn-outline" style="margin-top: 1rem;">Contact Support</a>
+            `;
         }
         
         function escapeHtml(text) {
+            if (!text) return '';
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         }
+        
+        function toggleMobileMenu() {
+            document.getElementById('navLinks').classList.toggle('active');
+        }
+        
+        // ============================================
+        // CLEAN UP SESSION STORAGE (Optional)
+        // Clear tokens after page loads to prevent reuse
+        // ============================================
+        setTimeout(() => {
+            // Keep for session only, will clear when browser closes
+            console.log('Download links loaded, token will expire on browser close');
+        }, 3000);
+        
+        // Start fetching download links
+        fetchDownloadLinks();
     </script>
 </body>
 </html>

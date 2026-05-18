@@ -8,8 +8,8 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <!-- Paystack Inline JS -->
     <script src="https://js.paystack.co/v1/inline.js"></script>
-    <!-- PayPal SDK - Using sandbox for testing, replace with live when ready -->
-    <script src="https://www.paypal.com/sdk/js?client-id=sb&currency=USD&components=buttons"></script>
+    <!-- PayPal SDK - Your LIVE Client ID -->
+    <script src="https://www.paypal.com/sdk/js?client-id=AZT5QbjgNOcB8pykQdMFjwKIcDf_OMneAcpuFssEh4Oabxj4ZNIfBitIaGlA1S886cdAShF0GUaqo2Pn&currency=USD&components=buttons"></script>
     <style>
         * {
             margin: 0;
@@ -545,7 +545,7 @@
         }
         
         // ============================================
-        // PAYPAL INTEGRATION - FIXED
+        // PAYPAL INTEGRATION - LIVE MODE
         // ============================================
         function initPayPal() {
             if (typeof paypal !== 'undefined' && paypal.Buttons) {
@@ -583,11 +583,10 @@
             }
         }
         
-        // Wait for PayPal to load
-        setTimeout(initPayPal, 500);
+        initPayPal();
         
         // ============================================
-        // PAYSTACK INTEGRATION - FIXED
+        // PAYSTACK INTEGRATION - YOUR LIVE KEY
         // ============================================
         document.getElementById('paystack-btn').addEventListener('click', function() {
             const email = prompt('Enter your email address for receipt:', '');
@@ -599,9 +598,8 @@
             showStatus('Opening Paystack payment window...', 'info');
             
             try {
-                // Fixed: Proper callback function format
                 const handler = PaystackPop.setup({
-                    key: 'pk_live_846c187859786e61a95522f0cfb0204ac3f54515', // Your live key
+                    key: 'pk_live_846c187859786e61a95522f0cfb0204ac3f54515',  // Your live key
                     email: email,
                     amount: Math.round(total * 100),
                     currency: currency === 'USD' ? 'USD' : 'KES',
@@ -622,7 +620,7 @@
         });
         
         // ============================================
-        // M-PESA INTEGRATION - FIXED with better error handling
+        // M-PESA INTEGRATION
         // ============================================
         document.getElementById('mpesa-pay-btn').addEventListener('click', async function() {
             const phone = document.getElementById('mpesa-phone').value;
@@ -641,7 +639,6 @@
             showStatus('Initiating M-Pesa STK push... Please check your phone.', 'info');
             
             try {
-                // Clean phone number
                 let cleanPhone = phone.replace(/\D/g, '');
                 if (cleanPhone.startsWith('0')) {
                     cleanPhone = '254' + cleanPhone.substring(1);
@@ -667,7 +664,6 @@
                 if (data.success) {
                     showStatus('STK push sent to ' + cleanPhone + '! Enter your PIN on your phone.', 'success');
                     
-                    // Poll for payment status
                     let attempts = 0;
                     const maxAttempts = 30;
                     const interval = setInterval(async () => {
@@ -697,7 +693,7 @@
                                 }, 1500);
                             } else if (attempts >= maxAttempts) {
                                 clearInterval(interval);
-                                showStatus('Payment timeout. If money was deducted, it will be refunded within 24 hours.', 'error');
+                                showStatus('Payment timeout. If money was deducted, contact support.', 'error');
                             }
                         } catch (err) {
                             console.log('Status check error:', err);

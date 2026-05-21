@@ -300,6 +300,7 @@
                 <li><a href="resources.html">Resources</a></li>
                 <li><a href="booking.html" class="active">Book Training</a></li>
                 <li><a href="contact.html">Contact</a></li>
+                <li><a href="reviews.html">⭐ Reviews</a></li>
                 <li><a href="admin.html" class="admin-link">Admin</a></li>
             </ul>
             <div class="mobile-menu" onclick="toggleMobileMenu()"><i class="fas fa-bars"></i></div>
@@ -312,7 +313,6 @@
                 <h1>📚 1-on-1 Training</h1>
                 <p>Learn how to earn online, master freelancing, and build sustainable digital income streams with personalized coaching from Awino.</p>
                 
-                <!-- Real Image Instead of Emoji -->
                 <img src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600" alt="One on One Training" class="training-image">
                 
                 <div class="price-badge">💰 KES 1,500 / session (1.5 hours)</div>
@@ -409,6 +409,7 @@
                     <li><a href="shop.html">Ebooks</a></li>
                     <li><a href="booking.html">Book Training</a></li>
                     <li><a href="contact.html">Contact</a></li>
+                    <li><a href="reviews.html">⭐ Leave a Review</a></li>
                 </ul>
             </div>
             <div class="footer-section">
@@ -427,6 +428,14 @@
             </div>
         </div>
         <div class="footer-bottom">
+            <div style="max-width:1200px;margin:0 auto;padding:1rem 0;border-top:1px solid #333;margin-bottom:1rem;">
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:2rem;text-align:left;margin-bottom:2rem;">
+                    <div><h4 style="color:#C66B3D; margin-bottom:0.5rem;">📘 Frequently Asked Questions</h4><p style="font-size:0.85rem;line-height:1.5;">Grow With Awino helps beginners learn freelancing, blogging, AI tools & online income. No experience needed. Most content is free; ebooks are downloadable. Results vary by individual effort. Affiliate links may be used.</p></div>
+                    <div><h4 style="color:#C66B3D; margin-bottom:0.5rem;">🎓 Training Programs</h4><p style="font-size:0.85rem;line-height:1.5;">1-on-1 coaching in freelancing, blogging, monetization, AI tools, and digital skills. No technical background required. Contact us via WhatsApp or email for schedules, pricing, and availability.</p></div>
+                    <div><h4 style="color:#C66B3D; margin-bottom:0.5rem;">🔁 Refund Policy Summary</h4><p style="font-size:0.85rem;line-height:1.5;">Digital products (ebooks) are generally non-refundable after delivery. Training refunds considered case-by-case if service not delivered as described. See full Refund Policy page for details.</p></div>
+                    <div><h4 style="color:#C66B3D; margin-bottom:0.5rem;">⚖️ Legal & Privacy</h4><p style="font-size:0.85rem;line-height:1.5;">All content © Grow With Awino. No income guarantees. We use cookies and may collect email for newsletters. Your data is never sold. See our full <a href="legal.html" style="color:#C66B3D;">Terms, Privacy & Disclaimer</a>.</p></div>
+                </div>
+            </div>
             <p>&copy; 2026 Grow With Awino. All rights reserved.</p>
         </div>
     </footer>
@@ -459,7 +468,6 @@
                 return;
             }
             
-            // Format phone number for WhatsApp
             let formattedPhone = phone.replace(/\s/g, '');
             if (formattedPhone.startsWith('0')) {
                 formattedPhone = '254' + formattedPhone.substring(1);
@@ -467,7 +475,6 @@
                 formattedPhone = formattedPhone.substring(1);
             }
             
-            // Create WhatsApp message
             const message = `*NEW TRAINING BOOKING!*%0A%0A*Name:* ${encodeURIComponent(name)}%0A*Email:* ${encodeURIComponent(email)}%0A*Phone:* ${encodeURIComponent(formattedPhone)}%0A*Preferred Date:* ${encodeURIComponent(date)}%0A*Preferred Time:* ${encodeURIComponent(time)}%0A*Learning Goals:* ${encodeURIComponent(goals)}%0A%0A_This booking was made from the website._`;
             
             const whatsappUrl = `https://wa.me/254704817504?text=${message}`;
@@ -480,7 +487,6 @@
             }, 1500);
         });
         
-        // Set minimum date to today
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('preferredDate').min = today;
     </script>

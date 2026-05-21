@@ -15,10 +15,37 @@
         }
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #f5f0eb;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: #2C2B28;
             line-height: 1.6;
+            min-height: 100vh;
         }
+        
+        /* Professional animated background */
+        .reviews-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        .reviews-bg::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1%, transparent 1%);
+            background-size: 50px 50px;
+            animation: bgMove 20s linear infinite;
+            opacity: 0.3;
+        }
+        @keyframes bgMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+        
         .navbar {
             background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(10px);
@@ -29,7 +56,8 @@
             position: sticky;
             top: 0;
             z-index: 1000;
-            border-bottom: 1px solid #e5e0db;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
         }
         .logo-container {
             display: flex;
@@ -74,57 +102,92 @@
             font-size: 1.5rem;
         }
         .reviews-container {
-            max-width: 900px;
+            max-width: 1000px;
             margin: 3rem auto;
             padding: 2rem;
         }
+        
+        /* Glass morphism cards */
         .rating-card, .review-card {
-            background: white;
-            border-radius: 20px;
-            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 1.8rem;
             margin-bottom: 2rem;
-            border: 1px solid #e5e0db;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
+        .rating-card:hover, .review-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+        
         .star-rating {
             color: #ffc107;
-            font-size: 1.8rem;
+            font-size: 2rem;
             cursor: pointer;
             display: inline-block;
         }
         .star-rating .fa-star:hover,
         .star-rating .fa-star.active {
             color: #ff9f00;
+            transform: scale(1.1);
+            transition: transform 0.2s;
         }
+        
         .btn-submit {
-            background: #C66B3D;
+            background: linear-gradient(135deg, #C66B3D, #A8552E);
             color: white;
             border: none;
-            padding: 0.8rem 2rem;
-            border-radius: 40px;
+            padding: 0.9rem 2rem;
+            border-radius: 50px;
             cursor: pointer;
             font-weight: 600;
+            font-size: 1rem;
             margin-top: 1rem;
+            width: 100%;
+            transition: all 0.3s;
         }
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(198, 107, 61, 0.4);
+        }
+        
         .average-score {
-            font-size: 2rem;
+            font-size: 3rem;
             font-weight: bold;
-            color: #C66B3D;
+            background: linear-gradient(135deg, #C66B3D, #2D6A4F);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-block;
         }
+        
         .form-group {
-            margin-bottom: 1rem;
+            margin-bottom: 1.2rem;
         }
         .form-group label {
             display: block;
             margin-bottom: 0.5rem;
-            font-weight: 500;
+            font-weight: 600;
+            color: #2C2B28;
         }
         .form-group input, .form-group textarea {
             width: 100%;
-            padding: 0.8rem;
-            border: 1px solid #e5e0db;
-            border-radius: 12px;
+            padding: 0.9rem;
+            border: 2px solid #e5e0db;
+            border-radius: 16px;
             font-family: 'Inter', sans-serif;
+            transition: all 0.3s;
+            background: white;
         }
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #C66B3D;
+            box-shadow: 0 0 0 3px rgba(198, 107, 61, 0.1);
+        }
+        
         .float-whatsapp {
             position: fixed;
             bottom: 30px;
@@ -140,7 +203,13 @@
             color: white;
             cursor: pointer;
             z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s;
         }
+        .float-whatsapp:hover {
+            transform: scale(1.1);
+        }
+        
         footer {
             background: #1a1a1a;
             color: white;
@@ -200,15 +269,49 @@
             background: #C66B3D;
             transform: translateY(-3px);
         }
+        
         @media (max-width: 768px) {
             .mobile-menu { display: block; }
             .nav-links { display: none; flex-direction: column; position: absolute; top: 70px; left: 0; right: 0; background: white; padding: 1rem; border-bottom: 1px solid #e5e0db; }
             .nav-links.active { display: flex; }
             .reviews-container { margin: 1rem; padding: 1rem; }
+            .rating-card, .review-card { padding: 1.2rem; }
+            .average-score { font-size: 2rem; }
+        }
+        
+        .stars-display {
+            color: #ffc107;
+            font-size: 1.2rem;
+            margin: 0.5rem 0;
+        }
+        .review-date {
+            font-size: 0.75rem;
+            color: #888;
+            margin-top: 0.5rem;
+        }
+        .total-reviews-badge {
+            display: inline-block;
+            background: rgba(0,0,0,0.1);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-left: 1rem;
+        }
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        .subtitle {
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
         }
     </style>
 </head>
 <body>
+    <div class="reviews-bg"></div>
     <div class="float-whatsapp" onclick="window.open('https://wa.me/254704817504','_blank')"><i class="fab fa-whatsapp"></i></div>
 
     <header>
@@ -233,28 +336,32 @@
 
     <main>
         <div class="reviews-container">
-            <h1>⭐ Rate & Review Grow With Awino</h1>
-            <p>Your feedback helps us improve and helps others discover genuine resources.</p>
+            <h1>⭐ What Our Community Says</h1>
+            <div class="subtitle">Real reviews from real learners who transformed their digital journey</div>
 
             <div class="rating-card">
-                <h3>Overall Rating</h3>
-                <div id="averageRating" class="average-score">Loading...</div>
-                <div id="totalReviews"></div>
+                <h3>Community Rating</h3>
+                <div>
+                    <span id="averageRating" class="average-score">0</span>
+                    <span style="font-size: 1.5rem;"> / 5</span>
+                    <span id="totalReviews" class="total-reviews-badge">0 reviews</span>
+                </div>
+                <div id="starBreakdown" style="margin-top: 1rem;"></div>
             </div>
 
             <div class="rating-card">
-                <h3>Submit Your Review</h3>
+                <h3>📝 Share Your Experience</h3>
                 <form id="reviewForm">
                     <div class="form-group">
                         <label>Your Name *</label>
-                        <input type="text" id="reviewName" required>
+                        <input type="text" id="reviewName" required placeholder="e.g., John Doe">
                     </div>
                     <div class="form-group">
-                        <label>Your Email (optional)</label>
-                        <input type="email" id="reviewEmail">
+                        <label>Your Email (optional - for verification only)</label>
+                        <input type="email" id="reviewEmail" placeholder="you@example.com">
                     </div>
                     <div class="form-group">
-                        <label>Rating *</label>
+                        <label>Your Rating *</label>
                         <div id="starSelector" class="star-rating">
                             <i class="far fa-star" data-value="1"></i>
                             <i class="far fa-star" data-value="2"></i>
@@ -266,14 +373,16 @@
                     </div>
                     <div class="form-group">
                         <label>Your Review *</label>
-                        <textarea id="reviewComment" rows="4" required></textarea>
+                        <textarea id="reviewComment" rows="4" required placeholder="Tell us about your experience with Grow With Awino..."></textarea>
                     </div>
-                    <button type="submit" class="btn-submit">Submit Review</button>
+                    <button type="submit" class="btn-submit">
+                        <i class="fas fa-paper-plane"></i> Submit Review
+                    </button>
                     <div id="reviewMessage" style="margin-top:1rem;"></div>
                 </form>
             </div>
 
-            <h3>What Our Users Say</h3>
+            <h3 style="color: white; margin-top: 1rem;">📖 Recent Reviews</h3>
             <div id="reviewsList">Loading reviews...</div>
         </div>
     </main>
@@ -319,10 +428,10 @@
         <div class="footer-bottom">
             <div style="max-width:1200px;margin:0 auto;padding:1rem 0;border-top:1px solid #333;margin-bottom:1rem;">
                 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:2rem;text-align:left;margin-bottom:2rem;">
-                    <div><h4 style="color:#C66B3D; margin-bottom:0.5rem;">📘 Frequently Asked Questions</h4><p style="font-size:0.85rem;line-height:1.5;">Grow With Awino helps beginners learn freelancing, blogging, AI tools & online income. No experience needed. Most content is free; ebooks are downloadable. Results vary by individual effort. Affiliate links may be used.</p></div>
-                    <div><h4 style="color:#C66B3D; margin-bottom:0.5rem;">🎓 Training Programs</h4><p style="font-size:0.85rem;line-height:1.5;">1-on-1 coaching in freelancing, blogging, monetization, AI tools, and digital skills. No technical background required. Contact us via WhatsApp or email for schedules, pricing, and availability.</p></div>
-                    <div><h4 style="color:#C66B3D; margin-bottom:0.5rem;">🔁 Refund Policy Summary</h4><p style="font-size:0.85rem;line-height:1.5;">Digital products (ebooks) are generally non-refundable after delivery. Training refunds considered case-by-case if service not delivered as described. See full Refund Policy page for details.</p></div>
-                    <div><h4 style="color:#C66B3D; margin-bottom:0.5rem;">⚖️ Legal & Privacy</h4><p style="font-size:0.85rem;line-height:1.5;">All content © Grow With Awino. No income guarantees. We use cookies and may collect email for newsletters. Your data is never sold. See our full <a href="legal.html" style="color:#C66B3D;">Terms, Privacy & Disclaimer</a>.</p></div>
+                    <div><h4 style="color:#C66B3D; margin-bottom:0.5rem;">📘 Frequently Asked Questions</h4><p style="font-size:0.85rem;line-height:1.5;">Grow With Awino helps beginners learn freelancing, blogging, AI tools & online income. No experience needed. Most content is free; ebooks are downloadable. Results vary by individual effort.</p></div>
+                    <div><h4 style="color:#C66B3D; margin-bottom:0.5rem;">🎓 Training Programs</h4><p style="font-size:0.85rem;line-height:1.5;">1-on-1 coaching in freelancing, blogging, monetization, AI tools, and digital skills. No technical background required. Contact us via WhatsApp or email.</p></div>
+                    <div><h4 style="color:#C66B3D; margin-bottom:0.5rem;">🔁 Refund Policy</h4><p style="font-size:0.85rem;line-height:1.5;">Digital products generally non-refundable after delivery. Training refunds considered case-by-case. See full Refund Policy page for details.</p></div>
+                    <div><h4 style="color:#C66B3D; margin-bottom:0.5rem;">⚖️ Legal & Privacy</h4><p style="font-size:0.85rem;line-height:1.5;">All content © Grow With Awino. No income guarantees. See our full <a href="legal.html" style="color:#C66B3D;">Terms, Privacy & Disclaimer</a>.</p></div>
                 </div>
             </div>
             <p>&copy; 2026 Grow With Awino. All rights reserved.</p>
@@ -330,9 +439,10 @@
     </footer>
 
     <script>
-        const SB_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
-        const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
-        const supabase = supabase.createClient(SB_URL, SB_KEY);
+        // Supabase initialization - SINGLE DECLARATION
+        const SUPABASE_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let selectedRating = 0;
 
@@ -340,6 +450,7 @@
             document.getElementById('navLinks').classList.toggle('active');
         }
 
+        // Star selector
         document.querySelectorAll('#starSelector i').forEach(star => {
             star.addEventListener('click', function() {
                 selectedRating = parseInt(this.dataset.value);
@@ -355,24 +466,50 @@
             });
         });
 
+        // Load reviews and stats
         async function loadReviewsAndAverage() {
-            const { data } = await supabase.from('site_reviews').select('*').eq('approved', true).order('created_at', { ascending: false });
-            if(data) {
-                const avg = data.length ? (data.reduce((a,b) => a + b.rating, 0) / data.length).toFixed(1) : 0;
-                document.getElementById('averageRating').innerHTML = avg + ' / 5';
-                document.getElementById('totalReviews').innerHTML = `Based on ${data.length} review${data.length !== 1 ? 's' : ''}`;
+            const { data } = await supabaseClient.from('site_reviews').select('*').eq('approved', true).order('created_at', { ascending: false });
+            
+            if(data && data.length > 0) {
+                const avg = (data.reduce((a,b) => a + b.rating, 0) / data.length).toFixed(1);
+                document.getElementById('averageRating').innerHTML = avg;
+                document.getElementById('totalReviews').innerHTML = `${data.length} review${data.length !== 1 ? 's' : ''}`;
+                
+                // Star breakdown
+                const breakdown = {1:0,2:0,3:0,4:0,5:0};
+                data.forEach(r => breakdown[r.rating]++);
+                let breakdownHtml = '<div style="display:flex;flex-direction:column;gap:0.5rem;">';
+                for(let i=5; i>=1; i--) {
+                    let percent = (breakdown[i] / data.length) * 100;
+                    breakdownHtml += `<div style="display:flex;align-items:center;gap:0.5rem;">
+                        <span style="width:30px;">${i} ★</span>
+                        <div style="flex:1;background:#e5e0db;height:8px;border-radius:4px;overflow:hidden;">
+                            <div style="width:${percent}%;background:#ffc107;height:8px;"></div>
+                        </div>
+                        <span style="width:40px;">${breakdown[i]}</span>
+                    </div>`;
+                }
+                breakdownHtml += '</div>';
+                document.getElementById('starBreakdown').innerHTML = breakdownHtml;
+                
+                // Reviews list
                 document.getElementById('reviewsList').innerHTML = data.map(r => `
                     <div class="review-card">
-                        <strong>${escapeHtml(r.reviewer_name)}</strong>
-                        <div>${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div>
-                        <p>${escapeHtml(r.comment)}</p>
-                        <small>${new Date(r.created_at).toLocaleDateString()}</small>
+                        <strong><i class="fas fa-user-circle"></i> ${escapeHtml(r.reviewer_name)}</strong>
+                        <div class="stars-display">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div>
+                        <p style="margin-top:0.5rem;">"${escapeHtml(r.comment)}"</p>
+                        <div class="review-date"><i class="far fa-calendar-alt"></i> ${new Date(r.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
                     </div>
                 `).join('');
-                if(data.length === 0) document.getElementById('reviewsList').innerHTML = '<p>No reviews yet. Be the first!</p>';
+            } else {
+                document.getElementById('averageRating').innerHTML = '0';
+                document.getElementById('totalReviews').innerHTML = '0 reviews';
+                document.getElementById('reviewsList').innerHTML = '<div class="review-card" style="text-align:center;">✨ No reviews yet. Be the first to share your experience!</div>';
+                document.getElementById('starBreakdown').innerHTML = '<p style="color:#888;">No ratings yet</p>';
             }
         }
 
+        // Submit review
         document.getElementById('reviewForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const name = document.getElementById('reviewName').value;
@@ -382,11 +519,11 @@
             const msgDiv = document.getElementById('reviewMessage');
 
             if(!name || rating === 0 || !comment) {
-                msgDiv.innerHTML = '<span style="color:red;">Please fill all required fields and select a rating.</span>';
+                msgDiv.innerHTML = '<span style="color:#ff6b6b;"><i class="fas fa-exclamation-triangle"></i> Please fill all required fields and select a rating.</span>';
                 return;
             }
 
-            const { error } = await supabase.from('site_reviews').insert([{
+            const { error } = await supabaseClient.from('site_reviews').insert([{
                 reviewer_name: name,
                 reviewer_email: email || null,
                 rating: rating,
@@ -395,9 +532,9 @@
             }]);
 
             if(error) {
-                msgDiv.innerHTML = '<span style="color:red;">Error submitting review. Please try again.</span>';
+                msgDiv.innerHTML = '<span style="color:#ff6b6b;"><i class="fas fa-times-circle"></i> Error submitting review. Please try again.</span>';
             } else {
-                msgDiv.innerHTML = '<span style="color:green;">Thank you! Your review will appear after approval.</span>';
+                msgDiv.innerHTML = '<span style="color:#51cf66;"><i class="fas fa-check-circle"></i> Thank you! Your review will appear after moderation.</span>';
                 document.getElementById('reviewForm').reset();
                 selectedRating = 0;
                 document.getElementById('ratingValue').value = '';
@@ -405,6 +542,7 @@
                     s.classList.remove('fas', 'active');
                     s.classList.add('far');
                 });
+                setTimeout(() => loadReviewsAndAverage(), 2000);
             }
         });
 
@@ -415,6 +553,13 @@
             return d.innerHTML;
         }
 
+        // Load site logo
+        async function loadSiteLogo() {
+            const { data } = await supabaseClient.from('site_settings').select('logo_url').single();
+            if (data?.logo_url) document.getElementById('site-logo').src = data.logo_url;
+        }
+
+        loadSiteLogo();
         loadReviewsAndAverage();
     </script>
 </body>

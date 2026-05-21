@@ -22,6 +22,47 @@
         .mobile-menu { display: none; cursor: pointer; font-size: 1.5rem; }
         @media (max-width: 768px) { .legal-container { margin: 1rem; padding: 1rem; } .legal-tab { padding: 0.5rem 1rem; font-size: 0.8rem; } .mobile-menu { display: block; } .nav-links { display: none; flex-direction: column; position: absolute; top: 70px; left: 0; right: 0; background: white; padding: 1rem; } .nav-links.active { display: flex; } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .navbar {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid #e5e0db;
+        }
+        .logo-container { display: flex; align-items: center; gap: 0.75rem; }
+        .logo { height: 45px; width: auto; border-radius: 10px; }
+        .site-title { font-size: 1.3rem; font-weight: 700; color: #C66B3D; }
+        .nav-links { display: flex; list-style: none; gap: 2rem; align-items: center; }
+        .nav-links a { text-decoration: none; color: #2C2B28; font-weight: 500; transition: all 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: #C66B3D; }
+        .admin-link { background: #C66B3D; color: white !important; padding: 0.5rem 1.2rem; border-radius: 30px; }
+        footer {
+            background: #1a1a1a;
+            color: white;
+            padding: 3rem 5% 1rem;
+            margin-top: 3rem;
+        }
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .footer-section h3 { margin-bottom: 1rem; font-size: 1.1rem; color: #C66B3D; }
+        .footer-section ul { list-style: none; }
+        .footer-section ul li { margin-bottom: 0.5rem; }
+        .footer-section a { color: #aaa; text-decoration: none; }
+        .footer-section a:hover { color: #C66B3D; }
+        .footer-bottom { text-align: center; padding-top: 2rem; margin-top: 2rem; border-top: 1px solid #333; color: #888; font-size: 0.8rem; }
+        .social-links { display: flex; gap: 1rem; margin-top: 1rem; }
+        .social-links a { width: 38px; height: 38px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s; color: white; }
+        .social-links a:hover { background: #C66B3D; transform: translateY(-3px); }
     </style>
 </head>
 <body>
@@ -37,6 +78,7 @@
                 <li><a href="resources.html">Resources</a></li>
                 <li><a href="booking.html">Book Training</a></li>
                 <li><a href="contact.html">Contact</a></li>
+                <li><a href="reviews.html">⭐ Reviews</a></li>
                 <li><a href="admin.html" class="admin-link">Admin</a></li>
             </ul>
             <div class="mobile-menu" onclick="toggleMobileMenu()"><i class="fas fa-bars"></i></div>
@@ -51,47 +93,88 @@
                 <button class="legal-tab" data-tab="terms">Terms & Conditions</button>
                 <button class="legal-tab" data-tab="refund">Refund Policy</button>
             </div>
+
             <div id="disclaimer" class="legal-content active">
                 <h1>Disclaimer</h1>
-                <p>The information provided on Grow With Awino is for general educational and informational purposes only. While we strive to ensure all content is accurate and up to date, we make no guarantees of any kind regarding completeness, reliability, or accuracy.</p>
-                <p>Any action you take based on the information found on this website is strictly at your own risk. Grow With Awino will not be liable for any losses or damages in connection with the use of our website.</p>
-                <p>Our website may contain links to external websites that are not provided or maintained by us. We do not guarantee the accuracy or reliability of information on these third-party sites.</p>
-                <p>All opinions expressed are those of the author and do not constitute professional, financial, or technical advice. Always seek professional guidance where necessary.</p>
-                <p>By using this website, you hereby consent to this disclaimer and agree to its terms.</p>
+                <p>The information provided on Grow With Awino is for general educational and informational purposes only. While we strive to keep all information accurate and up to date, we make no guarantees regarding the completeness, reliability, suitability, or accuracy of any content published on this website.</p>
+                <p>Any action you take based on the information found on this website is strictly at your own risk. Grow With Awino shall not be held responsible for any losses, damages, or inconveniences arising from the use of our website or reliance on any information provided.</p>
+                <p>The content published on this website does not constitute professional financial, legal, business, or technical advice. Visitors are encouraged to seek professional guidance where necessary before making decisions based on the information available on this platform.</p>
+                <p>Our website may contain links to external websites or third-party resources that are not controlled or maintained by us. While we aim to provide quality and relevant links, we do not guarantee the accuracy, reliability, or availability of information found on these external sites.</p>
+                <p>Some pages on this website may contain affiliate links. This means we may earn a small commission if you purchase products or services through those links, at no additional cost to you.</p>
+                <p>By using this website, you consent to this disclaimer and agree to its terms.</p>
+                <p>We reserve the right to update, modify, or change this disclaimer at any time without prior notice.</p>
             </div>
+
             <div id="privacy" class="legal-content">
                 <h1>Privacy Policy</h1>
-                <p>At Grow With Awino, accessible from our website, protecting your privacy is one of our top priorities.</p>
+                <p>At Grow With Awino, accessible from our website, protecting the privacy of our visitors is one of our top priorities. This Privacy Policy explains the types of information we collect, how we use it, and the steps we take to protect your data.</p>
                 <h2>1. Information We Collect</h2>
-                <p>We may collect personal information such as your name, email address, or payment details when you subscribe to our newsletter, purchase ebooks, or contact us directly.</p>
+                <p>We may collect personal and non-personal information when you interact with our website, including: name and email address when subscribing to newsletters or contacting us, information submitted through forms, browser type, device information, IP address, pages visited, cookies and usage data.</p>
                 <h2>2. How We Use Your Information</h2>
-                <p>We use the information to operate our website, improve our content, process transactions, and communicate with you.</p>
+                <p>The information collected may be used to improve website functionality and content, respond to inquiries and support requests, send newsletters or updates (only if subscribed), analyze website traffic, and maintain website security. We do not sell, trade, or rent users' personal information to third parties.</p>
                 <h2>3. Cookies</h2>
-                <p>Grow With Awino uses cookies to store visitor preferences and optimize user experience.</p>
-                <h2>4. Your Consent</h2>
-                <p>By using our website, you hereby consent to our Privacy Policy.</p>
+                <p>Grow With Awino uses cookies to improve user experience and personalize content. Users can choose to disable cookies through browser settings, but some parts of the website may not function properly.</p>
+                <h2>4. Google AdSense and Advertising</h2>
+                <p>We may use third-party advertising services such as Google AdSense to display advertisements. Google and its partners may use cookies to serve ads based on users' visits to this website and other websites. Users may opt out of personalized advertising by visiting Google Ads Settings.</p>
+                <h2>5. Third-Party Services</h2>
+                <p>Our website may use third-party services such as Google Analytics, advertising partners, email marketing tools, and payment processors. These services may collect and process data according to their own privacy policies.</p>
+                <h2>6. Data Protection</h2>
+                <p>We take reasonable security measures to protect your personal information from unauthorized access, disclosure, or misuse. However, no online platform can be guaranteed 100% secure.</p>
+                <h2>7. Children's Privacy</h2>
+                <p>Grow With Awino does not knowingly collect personal information from children under the age of 13. If we become aware, we will take steps to remove it promptly.</p>
+                <h2>8. Your Rights</h2>
+                <p>Depending on your location, you may have the right to access, correct, or delete your personal data. To exercise these rights, contact us using the information below.</p>
+                <h2>9. Changes to This Policy</h2>
+                <p>We may update this Privacy Policy from time to time. Any updates will be posted on this page with the revised effective date.</p>
+                <h2>10. Contact Us</h2>
+                <p>📧 awinophoebe44@gmail.com | 📞 +254 704 817504</p>
+                <p><strong>Effective Date: May 2026</strong></p>
             </div>
+
             <div id="terms" class="legal-content">
                 <h1>Terms and Conditions</h1>
-                <p>Welcome to Grow With Awino. By accessing and using this website, you accept and agree to be bound by these terms.</p>
+                <p>Welcome to Grow With Awino. By accessing and using this website, you agree to comply with and be bound by the following Terms and Conditions. If you do not agree with any part of these terms, please discontinue use of the website.</p>
                 <h2>1. Use of the Website</h2>
-                <p>The content is for general informational purposes only. You agree to use this website lawfully.</p>
+                <p>The content provided on Grow With Awino is for informational and educational purposes only. Users agree to use this website lawfully and in a manner that does not harm the website, its owner, or other users. You must not use the website for unlawful activities, attempt to gain unauthorized access, copy or reproduce content without permission, or distribute harmful software or spam.</p>
                 <h2>2. Intellectual Property</h2>
-                <p>All content, including ebooks, is the property of Grow With Awino. You may not copy or distribute without permission.</p>
-                <h2>3. Digital Products</h2>
-                <p>All ebooks are for personal use only. Sharing or reselling is prohibited.</p>
-                <h2>4. Limitation of Liability</h2>
-                <p>Grow With Awino is not responsible for any losses resulting from the use of this website.</p>
+                <p>All content published on Grow With Awino, including articles, graphics, logos, ebooks, and digital materials, is the property of Grow With Awino unless otherwise stated. Unauthorized reproduction, distribution, or modification of website content is prohibited without written permission.</p>
+                <h2>3. User Responsibilities</h2>
+                <p>By using this website, you agree that any information you provide is accurate, you are responsible for your own actions and decisions, and you will not misuse the website or its services. Users are solely responsible for how they apply information obtained from this website.</p>
+                <h2>4. Digital Products and Services</h2>
+                <p>Grow With Awino may offer ebooks, training programs, or digital resources for educational purposes. We strive to provide accurate product descriptions and quality materials. However, results may vary depending on individual effort, experience, and circumstances. Purchasing a product or service does not guarantee specific financial or business outcomes.</p>
+                <h2>5. Payments and Refunds</h2>
+                <p>Payments for digital products or services must be completed before access is granted. Refunds, where applicable, are subject to our Refund Policy.</p>
+                <h2>6. External Links</h2>
+                <p>This website may contain links to third-party websites or services. We do not control or guarantee the accuracy, reliability, or availability of information found on external websites. Users access third-party websites at their own risk.</p>
+                <h2>7. Limitation of Liability</h2>
+                <p>Grow With Awino shall not be held liable for any direct, indirect, incidental, or consequential damages arising from use of the website, reliance on website content, technical interruptions or errors, or loss of data or business opportunities. All use of the website is at the user's own risk.</p>
+                <h2>8. Modifications to Terms</h2>
+                <p>We reserve the right to update, modify, or replace these Terms and Conditions at any time without prior notice. Continued use of the website after changes are posted constitutes acceptance of the updated terms.</p>
+                <h2>9. Governing Law</h2>
+                <p>These Terms and Conditions shall be governed and interpreted in accordance with applicable laws and regulations.</p>
+                <h2>10. Contact Information</h2>
+                <p>📧 awinophoebe44@gmail.com | 📞 +254 704 817504</p>
+                <p><strong>Effective Date: May 2026</strong></p>
             </div>
+
             <div id="refund" class="legal-content">
                 <h1>Refund Policy</h1>
-                <p>We strive to provide high-quality digital products.</p>
+                <p>At Grow With Awino, we are committed to providing high-quality digital products, ebooks, training materials, and educational resources. Please read this Refund Policy carefully before making any purchase.</p>
                 <h2>1. Digital Products</h2>
-                <p>All ebook sales are final due to the nature of digital content. No refunds or exchanges.</p>
-                <h2>2. Exceptions</h2>
-                <p>Refunds may be considered if you were charged multiple times, didn't receive your product, or the file is corrupted.</p>
-                <h2>3. Refund Request</h2>
-                <p>Contact us within 3-7 days with proof of payment to request a refund.</p>
+                <p>Due to the nature of digital products, all sales of ebooks, downloadable materials, templates, and digital resources are generally considered final once the product has been delivered or accessed. Because digital content can be downloaded instantly, we do not guarantee refunds after successful delivery unless stated otherwise.</p>
+                <h2>2. Training Programs and Services</h2>
+                <p>Refund eligibility for online training programs, consultations, or services may vary depending on the specific offer or agreement. Refund requests may be considered if the service was not delivered as described, a technical issue prevented access to the purchased content, or duplicate payments were made accidentally.</p>
+                <h2>3. Non-Refundable Situations</h2>
+                <p>Refunds will not be issued for change of mind after purchase, failure to read product descriptions before buying, lack of expected results due to individual effort or circumstances, downloaded or accessed digital products, or delayed results from applying educational content.</p>
+                <h2>4. Refund Request Process</h2>
+                <p>To request a refund, contact us within a reasonable period after purchase and provide your full name, proof of payment, product or service purchased, and reason for the refund request. All refund requests will be reviewed fairly and on a case-by-case basis.</p>
+                <h2>5. Processing Time</h2>
+                <p>If a refund is approved, processing may take several business days depending on the payment provider or financial institution involved.</p>
+                <h2>6. Changes to This Policy</h2>
+                <p>We reserve the right to update or modify this Refund Policy at any time without prior notice. Any changes will be posted on this page.</p>
+                <h2>7. Contact Us</h2>
+                <p>📧 awinophoebe44@gmail.com | 📞 +254 704 817504</p>
+                <p><strong>Effective Date: May 2026</strong></p>
             </div>
         </div>
     </main>
@@ -99,11 +182,21 @@
     <footer>
         <div class="footer-content">
             <div class="footer-section"><h3>Grow With Awino</h3><p>Empowering beginners to learn digital skills and earn online.</p></div>
-            <div class="footer-section"><h3>Quick Links</h3><ul><li><a href="index.html">Home</a></li><li><a href="blog.html">Blog</a></li><li><a href="shop.html">Ebooks</a></li><li><a href="booking.html">Book Training</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+            <div class="footer-section"><h3>Quick Links</h3><ul><li><a href="index.html">Home</a></li><li><a href="blog.html">Blog</a></li><li><a href="shop.html">Ebooks</a></li><li><a href="booking.html">Book Training</a></li><li><a href="contact.html">Contact</a></li><li><a href="reviews.html">⭐ Leave a Review</a></li></ul></div>
             <div class="footer-section"><h3>Legal</h3><ul><li><a href="legal.html#disclaimer">Disclaimer</a></li><li><a href="legal.html#privacy">Privacy Policy</a></li><li><a href="legal.html#terms">Terms & Conditions</a></li><li><a href="legal.html#refund">Refund Policy</a></li></ul></div>
             <div class="footer-section"><h3>Contact</h3><p><i class="fas fa-envelope"></i> awinophoebe44@gmail.com</p><p><i class="fab fa-whatsapp"></i> +254 704 817504</p></div>
         </div>
-        <div class="footer-bottom"><p>&copy; 2026 Grow With Awino. All rights reserved.</p></div>
+        <div class="footer-bottom">
+            <div style="max-width:1200px;margin:0 auto;padding:1rem 0;border-top:1px solid #333;margin-bottom:1rem;">
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:2rem;text-align:left;margin-bottom:2rem;">
+                    <div><h4 style="color:#C66B3D; margin-bottom:0.5rem;">📘 Frequently Asked Questions</h4><p style="font-size:0.85rem;line-height:1.5;">Grow With Awino helps beginners learn freelancing, blogging, AI tools & online income. No experience needed. Most content is free; ebooks are downloadable. Results vary by individual effort. Affiliate links may be used.</p></div>
+                    <div><h4 style="color:#C66B3D; margin-bottom:0.5rem;">🎓 Training Programs</h4><p style="font-size:0.85rem;line-height:1.5;">1-on-1 coaching in freelancing, blogging, monetization, AI tools, and digital skills. No technical background required. Contact us via WhatsApp or email for schedules, pricing, and availability.</p></div>
+                    <div><h4 style="color:#C66B3D; margin-bottom:0.5rem;">🔁 Refund Policy Summary</h4><p style="font-size:0.85rem;line-height:1.5;">Digital products (ebooks) are generally non-refundable after delivery. Training refunds considered case-by-case if service not delivered as described. See full Refund Policy page for details.</p></div>
+                    <div><h4 style="color:#C66B3D; margin-bottom:0.5rem;">⚖️ Legal & Privacy</h4><p style="font-size:0.85rem;line-height:1.5;">All content © Grow With Awino. No income guarantees. We use cookies and may collect email for newsletters. Your data is never sold. See our full <a href="legal.html" style="color:#C66B3D;">Terms, Privacy & Disclaimer</a>.</p></div>
+                </div>
+            </div>
+            <p>&copy; 2026 Grow With Awino. All rights reserved.</p>
+        </div>
     </footer>
 
     <script>

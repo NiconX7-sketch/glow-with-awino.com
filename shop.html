@@ -34,6 +34,7 @@
                 <li><a href="resources.html">Resources</a></li>
                 <li><a href="booking.html">Book Training</a></li>
                 <li><a href="contact.html">Contact</a></li>
+                <li><a href="reviews.html">⭐ Reviews</a></li>
                 <li><a href="admin.html" class="admin-link">Admin</a></li>
                 <li class="cart-icon-container"><a href="#" onclick="viewCart(); return false;"><i class="fas fa-shopping-cart"></i><span id="cart-count" class="cart-count">0</span></a></li>
             </ul>
@@ -55,7 +56,6 @@
         </div>
     </main>
 
-    <!-- Cart Modal -->
     <div id="cart-modal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeCartModal()">&times;</span>
@@ -69,15 +69,24 @@
     <footer>
         <div class="footer-content">
             <div class="footer-section"><h3>Grow With Awino</h3><p>Empowering beginners to learn digital skills and earn online.</p></div>
-            <div class="footer-section"><h3>Quick Links</h3><ul><li><a href="index.html">Home</a></li><li><a href="blog.html">Blog</a></li><li><a href="shop.html">Ebooks</a></li><li><a href="booking.html">Book Training</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+            <div class="footer-section"><h3>Quick Links</h3><ul><li><a href="index.html">Home</a></li><li><a href="blog.html">Blog</a></li><li><a href="shop.html">Ebooks</a></li><li><a href="booking.html">Book Training</a></li><li><a href="contact.html">Contact</a></li><li><a href="reviews.html">⭐ Leave a Review</a></li></ul></div>
             <div class="footer-section"><h3>Legal</h3><ul><li><a href="legal.html#disclaimer">Disclaimer</a></li><li><a href="legal.html#privacy">Privacy Policy</a></li><li><a href="legal.html#terms">Terms & Conditions</a></li><li><a href="legal.html#refund">Refund Policy</a></li></ul></div>
             <div class="footer-section"><h3>Contact</h3><p><i class="fas fa-envelope"></i> awinophoebe44@gmail.com</p><p><i class="fab fa-whatsapp"></i> +254 704 817504</p></div>
         </div>
-        <div class="footer-bottom"><p>&copy; 2026 Grow With Awino. All rights reserved.</p></div>
+        <div class="footer-bottom">
+            <div style="max-width:1200px;margin:0 auto;padding:1rem 0;border-top:1px solid #333;margin-bottom:1rem;">
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:2rem;text-align:left;margin-bottom:2rem;">
+                    <div><h4 style="color:#C66B3D; margin-bottom:0.5rem;">📘 Frequently Asked Questions</h4><p style="font-size:0.85rem;line-height:1.5;">Grow With Awino helps beginners learn freelancing, blogging, AI tools & online income. No experience needed. Most content is free; ebooks are downloadable. Results vary by individual effort. Affiliate links may be used.</p></div>
+                    <div><h4 style="color:#C66B3D; margin-bottom:0.5rem;">🎓 Training Programs</h4><p style="font-size:0.85rem;line-height:1.5;">1-on-1 coaching in freelancing, blogging, monetization, AI tools, and digital skills. No technical background required. Contact us via WhatsApp or email for schedules, pricing, and availability.</p></div>
+                    <div><h4 style="color:#C66B3D; margin-bottom:0.5rem;">🔁 Refund Policy Summary</h4><p style="font-size:0.85rem;line-height:1.5;">Digital products (ebooks) are generally non-refundable after delivery. Training refunds considered case-by-case if service not delivered as described. See full Refund Policy page for details.</p></div>
+                    <div><h4 style="color:#C66B3D; margin-bottom:0.5rem;">⚖️ Legal & Privacy</h4><p style="font-size:0.85rem;line-height:1.5;">All content © Grow With Awino. No income guarantees. We use cookies and may collect email for newsletters. Your data is never sold. See our full <a href="legal.html" style="color:#C66B3D;">Terms, Privacy & Disclaimer</a>.</p></div>
+                </div>
+            </div>
+            <p>&copy; 2026 Grow With Awino. All rights reserved.</p>
+        </div>
     </footer>
 
     <script>
-        // Supabase initialization - ONLY ONCE
         const SB_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
         const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
         const supabaseClient = supabase.createClient(SB_URL, SB_KEY);

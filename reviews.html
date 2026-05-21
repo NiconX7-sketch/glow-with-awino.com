@@ -15,39 +15,41 @@
         }
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #2C2B28;
+            color: #ffffff;
             line-height: 1.6;
             min-height: 100vh;
+            position: relative;
         }
         
-        /* Professional animated background */
-        .reviews-bg {
+        /* Full-screen background image */
+        body::before {
+            content: '';
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
-            overflow: hidden;
+            background-image: url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1600');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: -2;
         }
-        .reviews-bg::before {
+        
+        /* Dark overlay for better text readability */
+        body::after {
             content: '';
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 1%, transparent 1%);
-            background-size: 50px 50px;
-            animation: bgMove 20s linear infinite;
-            opacity: 0.3;
-        }
-        @keyframes bgMove {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(50px, 50px); }
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: -1;
         }
         
         .navbar {
-            background: rgba(255, 255, 255, 0.98);
+            background: rgba(10, 10, 15, 0.95);
             backdrop-filter: blur(10px);
             padding: 1rem 5%;
             display: flex;
@@ -56,8 +58,8 @@
             position: sticky;
             top: 0;
             z-index: 1000;
-            border-bottom: 1px solid rgba(0,0,0,0.1);
-            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            border-bottom: 1px solid rgba(198,107,61,0.3);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.2);
         }
         .logo-container {
             display: flex;
@@ -83,7 +85,7 @@
         }
         .nav-links a {
             text-decoration: none;
-            color: #2C2B28;
+            color: #ffffff;
             font-weight: 500;
             transition: all 0.3s;
         }
@@ -96,31 +98,39 @@
             padding: 0.5rem 1.2rem;
             border-radius: 30px;
         }
+        .admin-link:hover {
+            background: #A8552E;
+            color: white !important;
+        }
         .mobile-menu {
             display: none;
             cursor: pointer;
             font-size: 1.5rem;
+            color: white;
         }
         .reviews-container {
             max-width: 1000px;
             margin: 3rem auto;
             padding: 2rem;
+            position: relative;
+            z-index: 1;
         }
         
         /* Glass morphism cards */
         .rating-card, .review-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
             border-radius: 24px;
             padding: 1.8rem;
             margin-bottom: 2rem;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.15);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
         .rating-card:hover, .review-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+            border-color: rgba(198,107,61,0.4);
         }
         
         .star-rating {
@@ -137,7 +147,7 @@
         }
         
         .btn-submit {
-            background: linear-gradient(135deg, #C66B3D, #A8552E);
+            background: linear-gradient(135deg, #C66B3D, #2D6A4F);
             color: white;
             border: none;
             padding: 0.9rem 2rem;
@@ -157,7 +167,7 @@
         .average-score {
             font-size: 3rem;
             font-weight: bold;
-            background: linear-gradient(135deg, #C66B3D, #2D6A4F);
+            background: linear-gradient(135deg, #ff9f00, #C66B3D);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -171,21 +181,26 @@
             display: block;
             margin-bottom: 0.5rem;
             font-weight: 600;
-            color: #2C2B28;
+            color: #e0e0e0;
         }
         .form-group input, .form-group textarea {
             width: 100%;
             padding: 0.9rem;
-            border: 2px solid #e5e0db;
+            border: 1px solid rgba(255,255,255,0.2);
             border-radius: 16px;
             font-family: 'Inter', sans-serif;
             transition: all 0.3s;
-            background: white;
+            background: rgba(0,0,0,0.4);
+            color: white;
+        }
+        .form-group input::placeholder, .form-group textarea::placeholder {
+            color: rgba(255,255,255,0.5);
         }
         .form-group input:focus, .form-group textarea:focus {
             outline: none;
             border-color: #C66B3D;
-            box-shadow: 0 0 0 3px rgba(198, 107, 61, 0.1);
+            box-shadow: 0 0 0 3px rgba(198, 107, 61, 0.2);
+            background: rgba(0,0,0,0.6);
         }
         
         .float-whatsapp {
@@ -211,10 +226,13 @@
         }
         
         footer {
-            background: #1a1a1a;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
             color: white;
             padding: 3rem 5% 1rem;
             margin-top: 3rem;
+            position: relative;
+            z-index: 1;
         }
         .footer-content {
             display: grid;
@@ -245,7 +263,7 @@
             text-align: center;
             padding-top: 2rem;
             margin-top: 2rem;
-            border-top: 1px solid #333;
+            border-top: 1px solid rgba(255,255,255,0.1);
             color: #888;
             font-size: 0.8rem;
         }
@@ -272,7 +290,7 @@
         
         @media (max-width: 768px) {
             .mobile-menu { display: block; }
-            .nav-links { display: none; flex-direction: column; position: absolute; top: 70px; left: 0; right: 0; background: white; padding: 1rem; border-bottom: 1px solid #e5e0db; }
+            .nav-links { display: none; flex-direction: column; position: absolute; top: 70px; left: 0; right: 0; background: rgba(0,0,0,0.95); padding: 1rem; border-bottom: 1px solid rgba(198,107,61,0.3); }
             .nav-links.active { display: flex; }
             .reviews-container { margin: 1rem; padding: 1rem; }
             .rating-card, .review-card { padding: 1.2rem; }
@@ -286,12 +304,12 @@
         }
         .review-date {
             font-size: 0.75rem;
-            color: #888;
+            color: rgba(255,255,255,0.5);
             margin-top: 0.5rem;
         }
         .total-reviews-badge {
             display: inline-block;
-            background: rgba(0,0,0,0.1);
+            background: rgba(255,255,255,0.1);
             padding: 0.3rem 0.8rem;
             border-radius: 20px;
             font-size: 0.85rem;
@@ -301,17 +319,23 @@
             font-size: 2.2rem;
             margin-bottom: 0.5rem;
             color: white;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
         .subtitle {
-            color: rgba(255,255,255,0.9);
+            color: rgba(255,255,255,0.85);
             margin-bottom: 2rem;
             font-size: 1.1rem;
+        }
+        h3 {
+            color: #C66B3D;
+            margin-bottom: 0.5rem;
+        }
+        .review-comment-text {
+            color: #e0e0e0;
         }
     </style>
 </head>
 <body>
-    <div class="reviews-bg"></div>
     <div class="float-whatsapp" onclick="window.open('https://wa.me/254704817504','_blank')"><i class="fab fa-whatsapp"></i></div>
 
     <header>
@@ -382,7 +406,7 @@
                 </form>
             </div>
 
-            <h3 style="color: white; margin-top: 1rem;">📖 Recent Reviews</h3>
+            <h3 style="margin-top: 1rem;">📖 Recent Reviews</h3>
             <div id="reviewsList">Loading reviews...</div>
         </div>
     </main>
@@ -426,12 +450,12 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <div style="max-width:1200px;margin:0 auto;padding:1rem 0;border-top:1px solid #333;margin-bottom:1rem;">
+            <div style="max-width:1200px;margin:0 auto;padding:1rem 0;border-top:1px solid rgba(255,255,255,0.1);margin-bottom:1rem;">
                 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:2rem;text-align:left;margin-bottom:2rem;">
-                    <div><h4 style="color:#C66B3D; margin-bottom:0.5rem;">📘 Frequently Asked Questions</h4><p style="font-size:0.85rem;line-height:1.5;">Grow With Awino helps beginners learn freelancing, blogging, AI tools & online income. No experience needed. Most content is free; ebooks are downloadable. Results vary by individual effort.</p></div>
-                    <div><h4 style="color:#C66B3D; margin-bottom:0.5rem;">🎓 Training Programs</h4><p style="font-size:0.85rem;line-height:1.5;">1-on-1 coaching in freelancing, blogging, monetization, AI tools, and digital skills. No technical background required. Contact us via WhatsApp or email.</p></div>
-                    <div><h4 style="color:#C66B3D; margin-bottom:0.5rem;">🔁 Refund Policy</h4><p style="font-size:0.85rem;line-height:1.5;">Digital products generally non-refundable after delivery. Training refunds considered case-by-case. See full Refund Policy page for details.</p></div>
-                    <div><h4 style="color:#C66B3D; margin-bottom:0.5rem;">⚖️ Legal & Privacy</h4><p style="font-size:0.85rem;line-height:1.5;">All content © Grow With Awino. No income guarantees. See our full <a href="legal.html" style="color:#C66B3D;">Terms, Privacy & Disclaimer</a>.</p></div>
+                    <div><h4 style="color:#C66B3D; margin-bottom:0.5rem;">📘 Frequently Asked Questions</h4><p style="font-size:0.85rem;line-height:1.5;">Grow With Awino helps beginners learn freelancing, blogging, AI tools & online income. No experience needed. Most content is free; ebooks are downloadable. Results vary by individual effort. Affiliate links may be used.</p></div>
+                    <div><h4 style="color:#C66B3D; margin-bottom:0.5rem;">🎓 Training Programs</h4><p style="font-size:0.85rem;line-height:1.5;">1-on-1 coaching in freelancing, blogging, monetization, AI tools, and digital skills. No technical background required. Contact us via WhatsApp or email for schedules, pricing, and availability.</p></div>
+                    <div><h4 style="color:#C66B3D; margin-bottom:0.5rem;">🔁 Refund Policy Summary</h4><p style="font-size:0.85rem;line-height:1.5;">Digital products (ebooks) are generally non-refundable after delivery. Training refunds considered case-by-case if service not delivered as described. See full Refund Policy page for details.</p></div>
+                    <div><h4 style="color:#C66B3D; margin-bottom:0.5rem;">⚖️ Legal & Privacy</h4><p style="font-size:0.85rem;line-height:1.5;">All content © Grow With Awino. No income guarantees. We use cookies and may collect email for newsletters. Your data is never sold. See our full <a href="legal.html" style="color:#C66B3D;">Terms, Privacy & Disclaimer</a>.</p></div>
                 </div>
             </div>
             <p>&copy; 2026 Grow With Awino. All rights reserved.</p>
@@ -439,7 +463,7 @@
     </footer>
 
     <script>
-        // Supabase initialization - SINGLE DECLARATION
+        // Supabase initialization
         const SUPABASE_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -483,7 +507,7 @@
                     let percent = (breakdown[i] / data.length) * 100;
                     breakdownHtml += `<div style="display:flex;align-items:center;gap:0.5rem;">
                         <span style="width:30px;">${i} ★</span>
-                        <div style="flex:1;background:#e5e0db;height:8px;border-radius:4px;overflow:hidden;">
+                        <div style="flex:1;background:rgba(255,255,255,0.2);height:8px;border-radius:4px;overflow:hidden;">
                             <div style="width:${percent}%;background:#ffc107;height:8px;"></div>
                         </div>
                         <span style="width:40px;">${breakdown[i]}</span>
@@ -497,7 +521,7 @@
                     <div class="review-card">
                         <strong><i class="fas fa-user-circle"></i> ${escapeHtml(r.reviewer_name)}</strong>
                         <div class="stars-display">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div>
-                        <p style="margin-top:0.5rem;">"${escapeHtml(r.comment)}"</p>
+                        <p class="review-comment-text" style="margin-top:0.5rem;">"${escapeHtml(r.comment)}"</p>
                         <div class="review-date"><i class="far fa-calendar-alt"></i> ${new Date(r.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
                     </div>
                 `).join('');
@@ -505,7 +529,7 @@
                 document.getElementById('averageRating').innerHTML = '0';
                 document.getElementById('totalReviews').innerHTML = '0 reviews';
                 document.getElementById('reviewsList').innerHTML = '<div class="review-card" style="text-align:center;">✨ No reviews yet. Be the first to share your experience!</div>';
-                document.getElementById('starBreakdown').innerHTML = '<p style="color:#888;">No ratings yet</p>';
+                document.getElementById('starBreakdown').innerHTML = '<p style="color:rgba(255,255,255,0.6);">No ratings yet</p>';
             }
         }
 

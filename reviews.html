@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Reviews & Ratings - Grow With Awino</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f5f0eb;
+            color: #2C2B28;
+            line-height: 1.6;
+        }
+        .navbar {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid #e5e0db;
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+        }
+        .logo {
+            height: 45px;
+            width: auto;
+            border-radius: 10px;
+        }
+        .site-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #C66B3D;
+        }
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: #2C2B28;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .nav-links a:hover, .nav-links a.active {
+            color: #C66B3D;
+        }
+        .admin-link {
+            background: #C66B3D;
+            color: white !important;
+            padding: 0.5rem 1.2rem;
+            border-radius: 30px;
+        }
+        .mobile-menu {
+            display: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+        .reviews-container {
+            max-width: 900px;
+            margin: 3rem auto;
+            padding: 2rem;
+        }
+        .rating-card, .review-card {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid #e5e0db;
+        }
+        .star-rating {
+            color: #ffc107;
+            font-size: 1.8rem;
+            cursor: pointer;
+            display: inline-block;
+        }
+        .star-rating .fa-star:hover,
+        .star-rating .fa-star.active {
+            color: #ff9f00;
+        }
+        .btn-submit {
+            background: #C66B3D;
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+        .average-score {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #C66B3D;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #e5e0db;
+            border-radius: 12px;
+            font-family: 'Inter', sans-serif;
+        }
+        .float-whatsapp {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #25D366;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: white;
+            cursor: pointer;
+            z-index: 1000;
+        }
+        footer {
+            background: #1a1a1a;
+            color: white;
+            padding: 3rem 5% 1rem;
+            margin-top: 3rem;
+        }
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            color: #C66B3D;
+        }
+        .footer-section ul {
+            list-style: none;
+        }
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+        .footer-section a {
+            color: #aaa;
+            text-decoration: none;
+        }
+        .footer-section a:hover {
+            color: #C66B3D;
+        }
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid #333;
+            color: #888;
+            font-size: 0.8rem;
+        }
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .social-links a {
+            width: 38px;
+            height: 38px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            color: white;
+        }
+        .social-links a:hover {
+            background: #C66B3D;
+            transform: translateY(-3px);
+        }
+        @media (max-width: 768px) {
+            .mobile-menu { display: block; }
+            .nav-links { display: none; flex-direction: column; position: absolute; top: 70px; left: 0; right: 0; background: white; padding: 1rem; border-bottom: 1px solid #e5e0db; }
+            .nav-links.active { display: flex; }
+            .reviews-container { margin: 1rem; padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="float-whatsapp" onclick="window.open('https://wa.me/254704817504','_blank')"><i class="fab fa-whatsapp"></i></div>
+
+    <header>
+        <nav class="navbar">
+            <div class="logo-container">
+                <img id="site-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='45' height='45' viewBox='0 0 45 45'%3E%3Crect width='45' height='45' fill='%23C66B3D'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='20'%3EGWA%3C/text%3E%3C/svg%3E" class="logo">
+                <span class="site-title">Grow With Awino</span>
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="shop.html">Ebooks</a></li>
+                <li><a href="resources.html">Resources</a></li>
+                <li><a href="booking.html">Book Training</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="reviews.html" class="active">⭐ Reviews</a></li>
+                <li><a href="admin.html" class="admin-link">Admin</a></li>
+            </ul>
+            <div class="mobile-menu" onclick="toggleMobileMenu()"><i class="fas fa-bars"></i></div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="reviews-container">
+            <h1>⭐ Rate & Review Grow With Awino</h1>
+            <p>Your feedback helps us improve and helps others discover genuine resources.</p>
+
+            <div class="rating-card">
+                <h3>Overall Rating</h3>
+                <div id="averageRating" class="average-score">Loading...</div>
+                <div id="totalReviews"></div>
+            </div>
+
+            <div class="rating-card">
+                <h3>Submit Your Review</h3>
+                <form id="reviewForm">
+                    <div class="form-group">
+                        <label>Your Name *</label>
+                        <input type="text" id="reviewName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Your Email (optional)</label>
+                        <input type="email" id="reviewEmail">
+                    </div>
+                    <div class="form-group">
+                        <label>Rating *</label>
+                        <div id="starSelector" class="star-rating">
+                            <i class="far fa-star" data-value="1"></i>
+                            <i class="far fa-star" data-value="2"></i>
+                            <i class="far fa-star" data-value="3"></i>
+                            <i class="far fa-star" data-value="4"></i>
+                            <i class="far fa-star" data-value="5"></i>
+                        </div>
+                        <input type="hidden" id="ratingValue" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Your Review *</label>
+                        <textarea id="reviewComment" rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="btn-submit">Submit Review</button>
+                    <div id="reviewMessage" style="margin-top:1rem;"></div>
+                </form>
+            </div>
+
+            <h3>What Our Users Say</h3>
+            <div id="reviewsList">Loading reviews...</div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Grow With Awino</h3>
+                <p>Empowering beginners to learn digital skills and earn online.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="shop.html">Ebooks</a></li>
+                    <li><a href="booking.html">Book Training</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="reviews.html">⭐ Leave a Review</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Legal</h3>
+                <ul>
+                    <li><a href="legal.html#disclaimer">Disclaimer</a></li>
+                    <li><a href="legal.html#privacy">Privacy Policy</a></li>
+                    <li><a href="legal.html#terms">Terms & Conditions</a></li>
+                    <li><a href="legal.html#refund">Refund Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p><i class="fas fa-envelope"></i> awinophoebe44@gmail.com</p>
+                <p><i class="fab fa-whatsapp"></i> +254 704 817504</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div style="max-width:1200px;margin:0 auto;padding:1rem 0;border-top:1px solid #333;margin-bottom:1rem;">
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:2rem;text-align:left;margin-bottom:2rem;">
+                    <div><h4 style="color:#C66B3D; margin-bottom:0.5rem;">📘 Frequently Asked Questions</h4><p style="font-size:0.85rem;line-height:1.5;">Grow With Awino helps beginners learn freelancing, blogging, AI tools & online income. No experience needed. Most content is free; ebooks are downloadable. Results vary by individual effort. Affiliate links may be used.</p></div>
+                    <div><h4 style="color:#C66B3D; margin-bottom:0.5rem;">🎓 Training Programs</h4><p style="font-size:0.85rem;line-height:1.5;">1-on-1 coaching in freelancing, blogging, monetization, AI tools, and digital skills. No technical background required. Contact us via WhatsApp or email for schedules, pricing, and availability.</p></div>
+                    <div><h4 style="color:#C66B3D; margin-bottom:0.5rem;">🔁 Refund Policy Summary</h4><p style="font-size:0.85rem;line-height:1.5;">Digital products (ebooks) are generally non-refundable after delivery. Training refunds considered case-by-case if service not delivered as described. See full Refund Policy page for details.</p></div>
+                    <div><h4 style="color:#C66B3D; margin-bottom:0.5rem;">⚖️ Legal & Privacy</h4><p style="font-size:0.85rem;line-height:1.5;">All content © Grow With Awino. No income guarantees. We use cookies and may collect email for newsletters. Your data is never sold. See our full <a href="legal.html" style="color:#C66B3D;">Terms, Privacy & Disclaimer</a>.</p></div>
+                </div>
+            </div>
+            <p>&copy; 2026 Grow With Awino. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        const SB_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
+        const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
+        const supabase = supabase.createClient(SB_URL, SB_KEY);
+
+        let selectedRating = 0;
+
+        function toggleMobileMenu() {
+            document.getElementById('navLinks').classList.toggle('active');
+        }
+
+        document.querySelectorAll('#starSelector i').forEach(star => {
+            star.addEventListener('click', function() {
+                selectedRating = parseInt(this.dataset.value);
+                document.getElementById('ratingValue').value = selectedRating;
+                document.querySelectorAll('#starSelector i').forEach(s => {
+                    s.classList.remove('fas', 'active');
+                    s.classList.add('far');
+                });
+                for(let i = 0; i < selectedRating; i++) {
+                    document.querySelectorAll('#starSelector i')[i].classList.remove('far');
+                    document.querySelectorAll('#starSelector i')[i].classList.add('fas', 'active');
+                }
+            });
+        });
+
+        async function loadReviewsAndAverage() {
+            const { data } = await supabase.from('site_reviews').select('*').eq('approved', true).order('created_at', { ascending: false });
+            if(data) {
+                const avg = data.length ? (data.reduce((a,b) => a + b.rating, 0) / data.length).toFixed(1) : 0;
+                document.getElementById('averageRating').innerHTML = avg + ' / 5';
+                document.getElementById('totalReviews').innerHTML = `Based on ${data.length} review${data.length !== 1 ? 's' : ''}`;
+                document.getElementById('reviewsList').innerHTML = data.map(r => `
+                    <div class="review-card">
+                        <strong>${escapeHtml(r.reviewer_name)}</strong>
+                        <div>${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div>
+                        <p>${escapeHtml(r.comment)}</p>
+                        <small>${new Date(r.created_at).toLocaleDateString()}</small>
+                    </div>
+                `).join('');
+                if(data.length === 0) document.getElementById('reviewsList').innerHTML = '<p>No reviews yet. Be the first!</p>';
+            }
+        }
+
+        document.getElementById('reviewForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('reviewName').value;
+            const email = document.getElementById('reviewEmail').value;
+            const rating = selectedRating;
+            const comment = document.getElementById('reviewComment').value;
+            const msgDiv = document.getElementById('reviewMessage');
+
+            if(!name || rating === 0 || !comment) {
+                msgDiv.innerHTML = '<span style="color:red;">Please fill all required fields and select a rating.</span>';
+                return;
+            }
+
+            const { error } = await supabase.from('site_reviews').insert([{
+                reviewer_name: name,
+                reviewer_email: email || null,
+                rating: rating,
+                comment: comment,
+                approved: false
+            }]);
+
+            if(error) {
+                msgDiv.innerHTML = '<span style="color:red;">Error submitting review. Please try again.</span>';
+            } else {
+                msgDiv.innerHTML = '<span style="color:green;">Thank you! Your review will appear after approval.</span>';
+                document.getElementById('reviewForm').reset();
+                selectedRating = 0;
+                document.getElementById('ratingValue').value = '';
+                document.querySelectorAll('#starSelector i').forEach(s => {
+                    s.classList.remove('fas', 'active');
+                    s.classList.add('far');
+                });
+            }
+        });
+
+        function escapeHtml(str) {
+            if(!str) return '';
+            const d = document.createElement('div');
+            d.textContent = str;
+            return d.innerHTML;
+        }
+
+        loadReviewsAndAverage();
+    </script>
+</body>
+</html>

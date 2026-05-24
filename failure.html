@@ -4,6 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Payment Failed - Grow With Awino</title>
+    
+    <!-- Google Analytics (gtag.js) ONLY - NO AdSense on failure page -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-F0Q2Q8998D"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-F0Q2Q8998D');
+    </script>
+    
     <link rel="stylesheet" href="css/style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -151,7 +161,6 @@
     </footer>
 
     <script>
-        // Display specific error if passed from payment page
         const urlParams = new URLSearchParams(window.location.search);
         const errorCode = urlParams.get('error');
         const errorMsg = urlParams.get('message');
@@ -171,10 +180,8 @@
             errorElement.textContent = errorMessages[errorCode] || errorMessages.technical;
         }
         
-        // Track failed payment for analytics (optional)
         console.log('Payment failed page viewed');
         
-        // Clear any pending payment data
         sessionStorage.removeItem('downloadToken');
         sessionStorage.removeItem('purchasedCart');
         sessionStorage.removeItem('pendingPayment');

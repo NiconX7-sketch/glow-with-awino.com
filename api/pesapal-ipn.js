@@ -3,14 +3,23 @@
 
 export default async function handler(req, res) {
     // Always respond with 200 to acknowledge receipt
+    if (req.method === 'OPTIONS') {
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+        return res.status(204).end();
+    }
+    
+    // Always return 200 to prevent Pesapal from resending
     if (req.method !== 'POST' && req.method !== 'GET') {
-        return res.status(405).json({ error: 'Method not allowed' });
+        return res.status(200).send('IPN received');
     }
 
     try {
+        // Get order tracking ID from query (GET) or body (POST)
         const orderTrackingId = req.method === 'GET' 
             ? req.query.OrderTrackingId 
-            : req.body.OrderTrackingId || req.query.OrderTrackingId;
+            : req.body?.OrderTrackingId || req.query?.OrderTrackingId;
 
         if (!orderTrackingId) {
             console.log('IPN received without OrderTrackingId');
@@ -19,6 +28,11 @@ export default async function handler(req, res) {
 
         const consumerKey = process.env.PESAPAL_CONSUMER_KEY;
         const consumerSecret = process.env.PESAPAL_CONSUMER_SECRET;
+
+        if (!consumerKey || !consumerSecret) {
+            console.error('Missing Pesapal credentials for IPN');
+            return res.status(200).send('IPN received');
+        }
 
         // LIVE PRODUCTION URL
         const PESAPAL_API = 'https://pay.pesapal.com/v3';
@@ -38,7 +52,7 @@ export default async function handler(req, res) {
 
         const authData = await authResponse.json();
         
-        if (!authData.token) {
+        if (!authData || !authData.token) {
             console.error('Failed to authenticate for IPN');
             return res.status(200).send('IPN received');
         }
@@ -56,27 +70,22 @@ export default async function handler(req, res) {
 
         const statusData = await statusResponse.json();
 
-        console.log('IPN Transaction Status:', {
+        console.log('💰 IPN Transaction Status:', {
             orderTrackingId: orderTrackingId,
             status: statusData.status,
             amount: statusData.amount,
             paymentMethod: statusData.payment_method,
-            createdAt: statusData.created_at
+            createdAt: statusData.created_at,
+            merchantReference: statusData.merchant_reference
         });
 
         if (statusData.status === 'COMPLETED') {
-            // Payment successful - Update your database here
-            // await supabase.from('orders').update({ 
-            //     status: 'completed', 
-            //     transaction_id: orderTrackingId,
-            //     payment_method: statusData.payment_method
-            // }).eq('merchant_reference', statusData.merchant_reference);
-            
-            console.log(`✅ Payment completed: ${orderTrackingId}`);
+            console.log(`✅✅✅ Payment COMPLETED: ${orderTrackingId}`);
+            // TODO: Update your database here
         } else if (statusData.status === 'FAILED') {
-            console.log(`❌ Payment failed: ${orderTrackingId}`);
+            console.log(`❌ Payment FAILED: ${orderTrackingId}`);
         } else if (statusData.status === 'PENDING') {
-            console.log(`⏳ Payment pending: ${orderTrackingId}`);
+            console.log(`⏳ Payment PENDING: ${orderTrackingId}`);
         }
 
         res.status(200).send('IPN received');

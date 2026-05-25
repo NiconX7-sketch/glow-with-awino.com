@@ -1,5 +1,5 @@
 // api/create-pesapal-order.js
-// Pesapal API integration - LIVE PRODUCTION with error handling
+// Pesapal API integration - LIVE PRODUCTION
 
 export default async function handler(req, res) {
     // Enable CORS
@@ -38,7 +38,7 @@ export default async function handler(req, res) {
             });
         }
 
-        // Check for environment variables
+        // Get credentials from environment variables
         const consumerKey = process.env.PESAPAL_CONSUMER_KEY;
         const consumerSecret = process.env.PESAPAL_CONSUMER_SECRET;
         
@@ -50,12 +50,12 @@ export default async function handler(req, res) {
             });
         }
 
-        // LIVE PRODUCTION URL
+        // ✅ LIVE PRODUCTION URL - NOT sandbox
         const PESAPAL_API = 'https://pay.pesapal.com/v3';
         
-        // Step 1: Get OAuth token
-        console.log('Authenticating with Pesapal...');
+        console.log('Authenticating with Pesapal Live...');
         
+        // Step 1: Get OAuth token
         const authResponse = await fetch(`${PESAPAL_API}/api/Auth/RequestToken`, {
             method: 'POST',
             headers: {
@@ -105,9 +105,6 @@ export default async function handler(req, res) {
             
             if (ipnId) {
                 console.log('New IPN registered:', ipnId);
-            } else {
-                console.warn('Could not register IPN, using default');
-                // You can still proceed without an IPN, but callbacks won't work
             }
         }
 
@@ -152,7 +149,7 @@ export default async function handler(req, res) {
         const orderResult = await orderResponse.json();
 
         if (orderResult.redirect_url) {
-            console.log('Order created successfully, redirecting to:', orderResult.redirect_url);
+            console.log('Order created successfully');
             return res.status(200).json({
                 success: true,
                 redirect_url: orderResult.redirect_url,
@@ -169,7 +166,6 @@ export default async function handler(req, res) {
 
     } catch (error) {
         console.error('Pesapal error:', error.message);
-        console.error('Stack:', error.stack);
         return res.status(500).json({
             success: false,
             error: 'Payment initiation failed: ' + error.message

@@ -2,7 +2,7 @@
 // Pesapal Instant Payment Notification - LIVE PRODUCTION
 
 export default async function handler(req, res) {
-    // Always respond with 200 to acknowledge receipt
+    // Always respond with 200 to acknowledge receipt to Pesapal
     if (req.method === 'OPTIONS') {
         res.setHeader('Access-Control-Allow-Origin', '*');
         res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -34,7 +34,7 @@ export default async function handler(req, res) {
             return res.status(200).send('IPN received');
         }
 
-        // LIVE PRODUCTION URL
+        // ✅ LIVE PRODUCTION URL
         const PESAPAL_API = 'https://pay.pesapal.com/v3';
 
         // Get OAuth token
@@ -82,6 +82,7 @@ export default async function handler(req, res) {
         if (statusData.status === 'COMPLETED') {
             console.log(`✅✅✅ Payment COMPLETED: ${orderTrackingId}`);
             // TODO: Update your database here
+            // Example: await supabase.from('orders').update({ status: 'completed' }).eq('merchant_reference', statusData.merchant_reference);
         } else if (statusData.status === 'FAILED') {
             console.log(`❌ Payment FAILED: ${orderTrackingId}`);
         } else if (statusData.status === 'PENDING') {
@@ -92,6 +93,7 @@ export default async function handler(req, res) {
 
     } catch (error) {
         console.error('IPN error:', error);
+        // Still return 200 to prevent retries
         res.status(200).send('IPN received with error');
     }
 }

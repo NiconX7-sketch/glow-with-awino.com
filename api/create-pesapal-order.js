@@ -1,5 +1,4 @@
-// api/create-pesapal-order.js
-// Pesapal API integration - LIVE PRODUCTION
+// api/create-pesapal-order.js - FIXED VERSION
 
 export default async function handler(req, res) {
     // Enable CORS
@@ -7,12 +6,10 @@ export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     
-    // Handle preflight
     if (req.method === 'OPTIONS') {
         return res.status(204).end();
     }
     
-    // Only allow POST
     if (req.method !== 'POST') {
         return res.status(405).json({ 
             success: false, 
@@ -23,7 +20,6 @@ export default async function handler(req, res) {
     try {
         const { amount, email, phone, orderId, cart } = req.body;
 
-        // Validate required fields
         if (!amount) {
             return res.status(400).json({ 
                 success: false, 
@@ -38,19 +34,17 @@ export default async function handler(req, res) {
             });
         }
 
-        // Get credentials from environment variables
         const consumerKey = process.env.PESAPAL_CONSUMER_KEY;
         const consumerSecret = process.env.PESAPAL_CONSUMER_SECRET;
         
         if (!consumerKey || !consumerSecret) {
-            console.error('Missing Pesapal credentials in environment variables');
+            console.error('Missing Pesapal credentials');
             return res.status(500).json({
                 success: false,
                 error: 'Payment configuration error. Please contact support.'
             });
         }
 
-        // ✅ LIVE PRODUCTION URL - NOT sandbox
         const PESAPAL_API = 'https://pay.pesapal.com/v3';
         
         console.log('Authenticating with Pesapal Live...');
@@ -81,7 +75,7 @@ export default async function handler(req, res) {
         const token = authData.token;
         console.log('Authentication successful');
 
-        // Step 2: Use existing IPN ID or register a new one
+        // Step 2: Register IPN (if not already saved)
         let ipnId = process.env.PESAPAL_IPN_ID;
         
         if (!ipnId) {
@@ -108,8 +102,13 @@ export default async function handler(req, res) {
             }
         }
 
-        // Step 3: Create order
-        const merchantReference = `GWA_${Date.now()}_${orderId || Math.random().toString(36).substr(2, 8)}`;
+        // Step 3: Create order - FIXED FORMAT
+        // Generate a clean merchant reference (no special characters)
+        const timestamp = Date.now();
+        const randomNum = Math.floor(Math.random() * 10000);
+        const merchantReference = `GWA${timestamp}${randomNum}`;
+        
+        console.log('Creating order with merchant reference:', merchantReference);
         
         // Format cart items for description
         let description = 'Ebook purchase';
@@ -117,9 +116,12 @@ export default async function handler(req, res) {
             description = cart.map(item => item.title).join(', ').substring(0, 200);
         }
         
+        // Ensure amount is a number with 2 decimal places
+        const formattedAmount = Number(amount).toFixed(2);
+        
         const orderData = {
             merchant_reference: merchantReference,
-            amount: Number(amount),
+            amount: formattedAmount,
             currency: 'KES',
             description: description,
             callback_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://growwithawinoo.com'}/success.html`,
@@ -134,7 +136,7 @@ export default async function handler(req, res) {
             }
         };
 
-        console.log('Submitting order to Pesapal...', { merchantReference, amount: Number(amount) });
+        console.log('Order data being sent:', JSON.stringify(orderData, null, 2));
 
         const orderResponse = await fetch(`${PESAPAL_API}/api/Transactions/SubmitOrderRequest`, {
             method: 'POST',
@@ -149,7 +151,7 @@ export default async function handler(req, res) {
         const orderResult = await orderResponse.json();
 
         if (orderResult.redirect_url) {
-            console.log('Order created successfully');
+            console.log('Order created successfully. Redirect URL:', orderResult.redirect_url);
             return res.status(200).json({
                 success: true,
                 redirect_url: orderResult.redirect_url,

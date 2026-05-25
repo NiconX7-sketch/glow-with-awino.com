@@ -1,11 +1,30 @@
 {
   "name": "grow-with-awino",
   "version": "1.0.0",
-  "type": "module",
+  "description": "Grow With Awino - Digital Skills & Freelancing Hub",
+  "type": "commonjs",
   "scripts": {
-    "dev": "vercel dev"
+    "dev": "vercel dev",
+    "build": "echo 'No build step required'",
+    "start": "vercel start",
+    "deploy": "vercel --prod"
   },
-  "dependencies": {
-    "@supabase/supabase-js": "^2.39.0"
-  }
+  "dependencies": {},
+  "devDependencies": {
+    "vercel": "^37.0.0"
+  },
+  "engines": {
+    "node": ">=18.x"
+  },
+  "keywords": [
+    "ebooks",
+    "digital-skills",
+    "freelancing",
+    "payment-gateway",
+    "paypal",
+    "paystack",
+    "pesapal"
+  ],
+  "author": "Grow With Awino",
+  "license": "ISC"
 }

@@ -92,12 +92,10 @@ async function trackVisitor() {
 
 function setCurrency(currency) {
     localStorage.setItem('currency', currency);
-    // Update active button styling
     document.querySelectorAll('.currency-btn').forEach(btn => {
         btn.classList.remove('active');
         if (btn.dataset.currency === currency) btn.classList.add('active');
     });
-    // Re-render products if function exists
     if (typeof renderProducts === 'function') {
         renderProducts();
     }
@@ -107,12 +105,10 @@ function setCurrency(currency) {
 // INITIALIZATION
 // ============================================
 
-// Update cart count when page loads
 document.addEventListener('DOMContentLoaded', function() {
     cart = JSON.parse(localStorage.getItem('cart') || '[]');
     updateCartCount();
     
-    // Set up currency buttons if they exist
     document.querySelectorAll('.currency-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             setCurrency(this.dataset.currency);
@@ -120,8 +116,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Close modal when clicking outside
 window.onclick = function(e) {
     const modal = document.getElementById('cart-modal');
     if (e.target === modal) closeCartModal();
 }
+
+// ❌ MAKE SURE THIS IS DELETED - NO module.exports in browser files

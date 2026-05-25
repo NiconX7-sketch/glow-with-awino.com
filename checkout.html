@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Checkout - Grow With Awino</title>
     
-    <!-- Google Analytics (gtag.js) ONLY - NO AdSense on checkout page -->
+    <!-- Google Analytics (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-F0Q2Q8998D"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -150,23 +150,6 @@
             height: 18px;
             cursor: pointer;
         }
-        .mpesa-input {
-            display: none;
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid #e5e0db;
-        }
-        .mpesa-input.active {
-            display: block;
-        }
-        .form-input {
-            width: 100%;
-            padding: 0.75rem;
-            margin: 0.5rem 0;
-            border: 1px solid #e5e0db;
-            border-radius: 8px;
-            font-size: 1rem;
-        }
         .paypal-button-container {
             margin: 1rem 0;
             display: none;
@@ -174,7 +157,7 @@
         .paypal-button-container.active {
             display: block;
         }
-        .paystack-btn, .mpesa-pay-btn {
+        .paystack-btn, .pesapal-btn {
             width: 100%;
             padding: 1rem;
             margin: 0.75rem 0;
@@ -201,16 +184,16 @@
             background: #085a3b;
             transform: translateY(-2px);
         }
-        .mpesa-pay-btn {
-            background: #49b43e;
+        .pesapal-btn {
+            background: #1a73e8;
             color: white;
             display: none;
         }
-        .mpesa-pay-btn.active {
+        .pesapal-btn.active {
             display: flex;
         }
-        .mpesa-pay-btn:hover {
-            background: #3d9e33;
+        .pesapal-btn:hover {
+            background: #1557b0;
             transform: translateY(-2px);
         }
         .back-link {
@@ -368,26 +351,21 @@
                 <label>
                     <input type="radio" name="paymentMethod" value="paystack">
                     <i class="fas fa-credit-card" style="font-size: 1.2rem; color: #0a6e49;"></i>
-                    Card / Bank Transfer / USSD
+                    Paystack (Card / Bank Transfer / USSD)
                 </label>
             </div>
 
-            <div class="payment-option" data-method="mpesa">
+            <div class="payment-option" data-method="pesapal">
                 <label>
-                    <input type="radio" name="paymentMethod" value="mpesa">
-                    <i class="fas fa-mobile-alt" style="font-size: 1.2rem; color: #49b43e;"></i>
-                    M-Pesa (STK Push)
+                    <input type="radio" name="paymentMethod" value="pesapal">
+                    <i class="fas fa-mobile-alt" style="font-size: 1.2rem; color: #1a73e8;"></i>
+                    Pesapal (M-Pesa STK Push / Card / Bank)
                 </label>
-                <div id="mpesa-input" class="mpesa-input">
-                    <input type="tel" id="mpesa-phone" class="form-input" placeholder="M-Pesa phone number (e.g., 0743 123456)">
-                    <input type="email" id="mpesa-email" class="form-input" placeholder="Your email address for receipt">
-                    <small style="color: #666;">You will receive an STK push on your phone. Enter PIN to complete payment.</small>
-                </div>
             </div>
 
             <div id="paypal-button-container" class="paypal-button-container active"></div>
             <button id="paystack-btn" class="paystack-btn"><i class="fas fa-credit-card"></i> Pay with Paystack</button>
-            <button id="mpesa-pay-btn" class="mpesa-pay-btn"><i class="fas fa-mobile-alt"></i> Pay with M-Pesa</button>
+            <button id="pesapal-btn" class="pesapal-btn"><i class="fas fa-mobile-alt"></i> Pay with Pesapal</button>
             <div id="payment-status" class="status-message"></div>
         </div>
     </main>
@@ -483,22 +461,19 @@
         const paymentOptions = document.querySelectorAll('.payment-option');
         const paypalContainer = document.getElementById('paypal-button-container');
         const paystackBtn = document.getElementById('paystack-btn');
-        const mpesaPayBtn = document.getElementById('mpesa-pay-btn');
-        const mpesaInputDiv = document.getElementById('mpesa-input');
+        const pesapalBtn = document.getElementById('pesapal-btn');
         
         function updatePaymentUI(method) {
             paypalContainer.classList.remove('active');
             paystackBtn.classList.remove('active');
-            mpesaPayBtn.classList.remove('active');
-            mpesaInputDiv.classList.remove('active');
+            pesapalBtn.classList.remove('active');
             
             if (method === 'paypal') {
                 paypalContainer.classList.add('active');
             } else if (method === 'paystack') {
                 paystackBtn.classList.add('active');
-            } else if (method === 'mpesa') {
-                mpesaInputDiv.classList.add('active');
-                mpesaPayBtn.classList.add('active');
+            } else if (method === 'pesapal') {
+                pesapalBtn.classList.add('active');
             }
             
             paymentOptions.forEach(opt => {
@@ -609,11 +584,12 @@
             
             try {
                 const handler = PaystackPop.setup({
-                    key: 'pk_live_846c187859786e61a95522f0cfb0204ac3f54515',  // Your live key
+                    key: 'pk_live_846c187859786e61a95522f0cfb0204ac3f54515',
                     email: email,
                     amount: Math.round(total * 100),
                     currency: currency === 'USD' ? 'USD' : 'KES',
                     ref: 'gwa_' + Date.now() + '_' + Math.random().toString(36).substr(2, 8),
+                    channels: ['card', 'bank_transfer'],
                     callback: function(response) {
                         console.log('Paystack callback:', response);
                         verifyPayment(response.reference, 'paystack', email);
@@ -630,95 +606,47 @@
         });
         
         // ============================================
-        // M-PESA INTEGRATION
+        // PESAPAL INTEGRATION - LIVE PRODUCTION
         // ============================================
-        document.getElementById('mpesa-pay-btn').addEventListener('click', async function() {
-            const phone = document.getElementById('mpesa-phone').value;
-            const email = document.getElementById('mpesa-email').value;
-            
-            if (!phone) {
-                showStatus('Please enter your M-Pesa phone number', 'error');
-                return;
-            }
-            
+        document.getElementById('pesapal-btn').addEventListener('click', async function() {
+            const email = prompt('Enter your email address for receipt:', '');
             if (!email) {
-                showStatus('Please enter your email address for receipt', 'error');
+                showStatus('Email address is required', 'error');
                 return;
             }
             
-            showStatus('Initiating M-Pesa STK push... Please check your phone.', 'info');
+            const phone = prompt('Enter your M-Pesa phone number for STK push (e.g., 2547XXXXXXXX):', '2547');
+            
+            showStatus('Redirecting to Pesapal secure payment page...', 'info');
             
             try {
-                let cleanPhone = phone.replace(/\D/g, '');
-                if (cleanPhone.startsWith('0')) {
-                    cleanPhone = '254' + cleanPhone.substring(1);
-                }
-                if (!cleanPhone.startsWith('254')) {
-                    cleanPhone = '254' + cleanPhone;
-                }
-                
-                const response = await fetch('/api/create-mpesa', {
+                const response = await fetch('/api/create-pesapal-order', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         amount: total,
-                        phoneNumber: cleanPhone,
                         email: email,
+                        phone: phone || '',
+                        orderId: Date.now().toString(),
                         cart: cart
                     })
                 });
                 
                 const data = await response.json();
-                console.log('M-Pesa response:', data);
                 
-                if (data.success) {
-                    showStatus('STK push sent to ' + cleanPhone + '! Enter your PIN on your phone.', 'success');
-                    
-                    let attempts = 0;
-                    const maxAttempts = 30;
-                    const interval = setInterval(async () => {
-                        attempts++;
-                        try {
-                            const statusRes = await fetch('/api/verify-payment', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({
-                                    transactionId: data.reference,
-                                    paymentMethod: 'paystack',
-                                    amount: total,
-                                    email: email,
-                                    cart: cart
-                                })
-                            });
-                            
-                            const statusData = await statusRes.json();
-                            
-                            if (statusData.success) {
-                                clearInterval(interval);
-                                sessionStorage.setItem('downloadToken', statusData.downloadToken);
-                                sessionStorage.setItem('purchasedCart', JSON.stringify(cart));
-                                showStatus('M-Pesa payment successful! Redirecting...', 'success');
-                                setTimeout(() => {
-                                    window.location.href = 'success.html';
-                                }, 1500);
-                            } else if (attempts >= maxAttempts) {
-                                clearInterval(interval);
-                                showStatus('Payment timeout. If money was deducted, contact support.', 'error');
-                            }
-                        } catch (err) {
-                            console.log('Status check error:', err);
-                            if (attempts >= maxAttempts) {
-                                clearInterval(interval);
-                                showStatus('Unable to verify payment. Please contact support.', 'error');
-                            }
-                        }
-                    }, 2000);
+                if (data.success && data.redirect_url) {
+                    sessionStorage.setItem('pendingPayment', JSON.stringify({
+                        method: 'pesapal',
+                        order_tracking_id: data.order_tracking_id,
+                        cart: cart
+                    }));
+                    window.location.href = data.redirect_url;
                 } else {
-                    showStatus('M-Pesa failed: ' + (data.error || 'Please try again'), 'error');
+                    showStatus('Pesapal failed: ' + (data.error || 'Please try again'), 'error');
                 }
             } catch (error) {
-                console.error('M-Pesa error:', error);
-                showStatus('Payment initiation failed. Please check your connection and try again.', 'error');
+                console.error('Pesapal error:', error);
+                showStatus('Payment initiation failed. Please try again.', 'error');
             }
         });
         

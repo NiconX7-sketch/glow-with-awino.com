@@ -1,10 +1,6 @@
 // js/payments.js
 // Payment and cart helper functions for Grow With Awino
 
-// ============================================
-// CART FUNCTIONS
-// ============================================
-
 let cart = JSON.parse(localStorage.getItem('cart') || '[]');
 
 function updateCartCount() {
@@ -69,10 +65,6 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-// ============================================
-// TRACKING FUNCTIONS
-// ============================================
-
 async function trackVisitor() {
     const today = new Date().toISOString().split('T')[0];
     const lastVisit = localStorage.getItem('lastVisitDate');
@@ -86,10 +78,6 @@ async function trackVisitor() {
     }
 }
 
-// ============================================
-// CURRENCY FUNCTIONS (for shop page)
-// ============================================
-
 function setCurrency(currency) {
     localStorage.setItem('currency', currency);
     document.querySelectorAll('.currency-btn').forEach(btn => {
@@ -100,10 +88,6 @@ function setCurrency(currency) {
         renderProducts();
     }
 }
-
-// ============================================
-// INITIALIZATION
-// ============================================
 
 document.addEventListener('DOMContentLoaded', function() {
     cart = JSON.parse(localStorage.getItem('cart') || '[]');
@@ -120,5 +104,3 @@ window.onclick = function(e) {
     const modal = document.getElementById('cart-modal');
     if (e.target === modal) closeCartModal();
 }
-
-// ❌ MAKE SURE THIS IS DELETED - NO module.exports in browser files

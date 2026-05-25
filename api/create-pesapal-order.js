@@ -1,7 +1,6 @@
-// api/create-pesapal-order.js - FIXED VERSION
+// api/create-pesapal-order.js - COMPLETE FIXED VERSION
 
 export default async function handler(req, res) {
-    // Enable CORS
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -20,17 +19,10 @@ export default async function handler(req, res) {
     try {
         const { amount, email, phone, orderId, cart } = req.body;
 
-        if (!amount) {
+        if (!amount || !email) {
             return res.status(400).json({ 
                 success: false, 
-                error: 'Amount is required' 
-            });
-        }
-        
-        if (!email) {
-            return res.status(400).json({ 
-                success: false, 
-                error: 'Email address is required' 
+                error: 'Amount and email are required' 
             });
         }
 
@@ -41,7 +33,7 @@ export default async function handler(req, res) {
             console.error('Missing Pesapal credentials');
             return res.status(500).json({
                 success: false,
-                error: 'Payment configuration error. Please contact support.'
+                error: 'Payment configuration error.'
             });
         }
 
@@ -49,7 +41,7 @@ export default async function handler(req, res) {
         
         console.log('Authenticating with Pesapal Live...');
         
-        // Step 1: Get OAuth token
+        // Get OAuth token
         const authResponse = await fetch(`${PESAPAL_API}/api/Auth/RequestToken`, {
             method: 'POST',
             headers: {
@@ -68,14 +60,14 @@ export default async function handler(req, res) {
             console.error('Auth failed:', authData);
             return res.status(400).json({
                 success: false,
-                error: 'Failed to authenticate with Pesapal. Please check your API credentials.'
+                error: 'Failed to authenticate with Pesapal.'
             });
         }
 
         const token = authData.token;
         console.log('Authentication successful');
 
-        // Step 2: Register IPN (if not already saved)
+        // Get or register IPN
         let ipnId = process.env.PESAPAL_IPN_ID;
         
         if (!ipnId) {
@@ -96,34 +88,21 @@ export default async function handler(req, res) {
             
             const ipnData = await ipnResponse.json();
             ipnId = ipnData.ipn_id;
-            
-            if (ipnId) {
-                console.log('New IPN registered:', ipnId);
-            }
+            console.log('New IPN registered:', ipnId);
         }
 
-        // Step 3: Create order - FIXED FORMAT
-        // Generate a clean merchant reference (no special characters)
+        // ✅ FIXED: Generate merchant reference WITHOUT underscores
         const timestamp = Date.now();
         const randomNum = Math.floor(Math.random() * 10000);
         const merchantReference = `GWA${timestamp}${randomNum}`;
         
-        console.log('Creating order with merchant reference:', merchantReference);
-        
-        // Format cart items for description
-        let description = 'Ebook purchase';
-        if (cart && cart.length > 0) {
-            description = cart.map(item => item.title).join(', ').substring(0, 200);
-        }
-        
-        // Ensure amount is a number with 2 decimal places
-        const formattedAmount = Number(amount).toFixed(2);
+        console.log('Submitting order to Pesapal...', { merchantReference, amount });
         
         const orderData = {
             merchant_reference: merchantReference,
-            amount: formattedAmount,
+            amount: Number(amount).toFixed(2),
             currency: 'KES',
-            description: description,
+            description: cart?.map(item => item.title).join(', ').substring(0, 200) || 'Ebook purchase',
             callback_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://growwithawinoo.com'}/success.html`,
             cancellation_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://growwithawinoo.com'}/failure.html`,
             notification_id: ipnId || '',
@@ -135,8 +114,6 @@ export default async function handler(req, res) {
                 last_name: 'Purchase'
             }
         };
-
-        console.log('Order data being sent:', JSON.stringify(orderData, null, 2));
 
         const orderResponse = await fetch(`${PESAPAL_API}/api/Transactions/SubmitOrderRequest`, {
             method: 'POST',
@@ -151,7 +128,7 @@ export default async function handler(req, res) {
         const orderResult = await orderResponse.json();
 
         if (orderResult.redirect_url) {
-            console.log('Order created successfully. Redirect URL:', orderResult.redirect_url);
+            console.log('Order created successfully');
             return res.status(200).json({
                 success: true,
                 redirect_url: orderResult.redirect_url,
@@ -162,7 +139,7 @@ export default async function handler(req, res) {
             console.error('Order creation failed:', orderResult);
             return res.status(400).json({
                 success: false,
-                error: orderResult.error?.message || 'Failed to create Pesapal order. Please try again.'
+                error: orderResult.error?.message || 'Failed to create order'
             });
         }
 
@@ -170,7 +147,7 @@ export default async function handler(req, res) {
         console.error('Pesapal error:', error.message);
         return res.status(500).json({
             success: false,
-            error: 'Payment initiation failed: ' + error.message
+            error: error.message || 'Payment initiation failed'
         });
     }
 }

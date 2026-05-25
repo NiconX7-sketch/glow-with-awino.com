@@ -1,4 +1,4 @@
-// api/verify-payment.js - Updated to support Pesapal
+// api/verify-payment.js - Supports PayPal, Paystack, and Pesapal
 export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -16,7 +16,7 @@ export default async function handler(req, res) {
         let transactionData = null;
 
         if (paymentMethod === 'paypal') {
-            // PayPal verification (already working)
+            // PayPal verification (Live)
             const clientId = process.env.PAYPAL_CLIENT_ID;
             const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
             
@@ -57,9 +57,14 @@ export default async function handler(req, res) {
             transactionData = paystackData.data;
         }
         else if (paymentMethod === 'pesapal') {
-            // Pesapal verification
+            // ✅ Pesapal verification - Live Production
             const consumerKey = process.env.PESAPAL_CONSUMER_KEY;
             const consumerSecret = process.env.PESAPAL_CONSUMER_SECRET;
+            
+            if (!consumerKey || !consumerSecret) {
+                throw new Error('Missing Pesapal credentials');
+            }
+            
             const PESAPAL_API = 'https://pay.pesapal.com/v3';
             
             // Get token
@@ -68,7 +73,13 @@ export default async function handler(req, res) {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ consumer_key: consumerKey, consumer_secret: consumerSecret })
             });
-            const { token } = await authRes.json();
+            const authData = await authRes.json();
+            
+            if (!authData.token) {
+                throw new Error('Failed to authenticate with Pesapal');
+            }
+            
+            const token = authData.token;
             
             // Get transaction status
             const statusRes = await fetch(`${PESAPAL_API}/api/Transactions/GetTransactionStatus?orderTrackingId=${transactionId}`, {

@@ -125,8 +125,3 @@ window.onclick = function(e) {
     const modal = document.getElementById('cart-modal');
     if (e.target === modal) closeCartModal();
 }
-
-// Export for use in other scripts (if needed)
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { updateCartCount, viewCart, removeFromCart, proceedToCheckout, closeCartModal, setCurrency, trackVisitor };
-}

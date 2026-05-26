@@ -1,144 +1,67 @@
-// api/pesapal-ipn.js
-// Pesapal Instant Payment Notification - COMPLETE PRODUCTION VERSION
+// api/pesapal-ipn.js - COMPLETE WORKING VERSION
 
 export default async function handler(req, res) {
-    // Enable CORS for webhook
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-    
-    // Handle preflight
-    if (req.method === 'OPTIONS') {
-        return res.status(204).end();
-    }
-    
-    // Log the request for debugging
+    // Log everything for debugging
     console.log('=== IPN RECEIVED ===');
     console.log('Method:', req.method);
-    console.log('Headers:', JSON.stringify(req.headers, null, 2));
     console.log('Query:', req.query);
     console.log('Body:', req.body);
     
-    // Always respond with 200 to acknowledge receipt to Pesapal
-    // This prevents Pesapal from resending the same notification
-    res.status(200).send('IPN received successfully');
+    // Extract order tracking ID from request
+    let orderTrackingId = null;
+    let merchantReference = null;
     
-    // Process the IPN asynchronously (after sending response)
-    try {
-        // Get order tracking ID from either GET or POST request
-        let orderTrackingId = null;
-        let merchantReference = null;
-        
-        if (req.method === 'GET') {
-            // Pesapal sends GET requests with query parameters
-            orderTrackingId = req.query.OrderTrackingId || req.query.order_tracking_id;
-            merchantReference = req.query.MerchantReference || req.query.merchant_reference;
-        } else if (req.method === 'POST') {
-            // Pesapal sends POST requests with JSON body
-            orderTrackingId = req.body?.OrderTrackingId || req.body?.order_tracking_id;
-            merchantReference = req.body?.MerchantReference || req.body?.merchant_reference;
-        }
-        
-        console.log('Order Tracking ID:', orderTrackingId);
-        console.log('Merchant Reference:', merchantReference);
-        
-        if (!orderTrackingId) {
-            console.log('No OrderTrackingId found in IPN request');
-            return;
-        }
-        
-        // Get Pesapal credentials
-        const consumerKey = process.env.PESAPAL_CONSUMER_KEY;
-        const consumerSecret = process.env.PESAPAL_CONSUMER_SECRET;
-        
-        if (!consumerKey || !consumerSecret) {
-            console.error('Missing Pesapal credentials');
-            return;
-        }
-        
-        // Get authentication token from Pesapal
-        const authResponse = await fetch('https://pay.pesapal.com/v3/api/Auth/RequestToken', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({
-                consumer_key: consumerKey,
-                consumer_secret: consumerSecret
-            })
-        });
-        
-        const authData = await authResponse.json();
-        
-        if (!authData || !authData.token) {
-            console.error('Failed to authenticate with Pesapal for IPN');
-            return;
-        }
-        
-        const token = authData.token;
-        console.log('IPN: Authentication successful');
-        
-        // Get transaction status from Pesapal
-        const statusResponse = await fetch(`https://pay.pesapal.com/v3/api/Transactions/GetTransactionStatus?orderTrackingId=${orderTrackingId}`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Accept': 'application/json'
+    if (req.method === 'GET') {
+        orderTrackingId = req.query.OrderTrackingId;
+        merchantReference = req.query.OrderMerchantReference;
+    } else if (req.method === 'POST') {
+        orderTrackingId = req.body?.OrderTrackingId;
+        merchantReference = req.body?.OrderMerchantReference;
+    }
+    
+    console.log('OrderTrackingId:', orderTrackingId);
+    console.log('MerchantReference:', merchantReference);
+    
+    // Respond immediately to acknowledge receipt (prevents retries)
+    res.status(200).json({
+        orderNotificationType: req.query.OrderNotificationType || req.body?.OrderNotificationType || 'IPNCHANGE',
+        orderTrackingId: orderTrackingId,
+        orderMerchantReference: merchantReference,
+        status: 200
+    });
+    
+    // Process payment asynchronously
+    if (orderTrackingId) {
+        try {
+            const consumerKey = process.env.PESAPAL_CONSUMER_KEY;
+            const consumerSecret = process.env.PESAPAL_CONSUMER_SECRET;
+            
+            // Get token
+            const authRes = await fetch('https://pay.pesapal.com/v3/api/Auth/RequestToken', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ consumer_key: consumerKey, consumer_secret: consumerSecret })
+            });
+            const authData = await authRes.json();
+            
+            if (authData.token) {
+                // Get transaction status
+                const statusRes = await fetch(`https://pay.pesapal.com/v3/api/Transactions/GetTransactionStatus?orderTrackingId=${orderTrackingId}`, {
+                    headers: { 'Authorization': `Bearer ${authData.token}` }
+                });
+                const statusData = await statusRes.json();
+                
+                console.log('Payment Status:', statusData.payment_status_description);
+                console.log('Amount:', statusData.amount);
+                console.log('Payment Method:', statusData.payment_method);
+                
+                if (statusData.payment_status_description === 'COMPLETED') {
+                    console.log(`✅ PAYMENT COMPLETED: ${orderTrackingId}`);
+                    // Update your database here
+                }
             }
-        });
-        
-        const statusData = await statusResponse.json();
-        
-        console.log('IPN Transaction Status:', {
-            orderTrackingId: orderTrackingId,
-            status: statusData.status,
-            amount: statusData.amount,
-            currency: statusData.currency,
-            paymentMethod: statusData.payment_method,
-            paymentStatusDescription: statusData.payment_status_description,
-            createdDate: statusData.created_date,
-            confirmationCode: statusData.confirmation_code,
-            merchantReference: statusData.merchant_reference
-        });
-        
-        // Handle different payment statuses
-        if (statusData.status === 'COMPLETED') {
-            console.log(`✅✅✅ PAYMENT SUCCESSFUL: ${orderTrackingId}`);
-            console.log(`Amount: ${statusData.amount} ${statusData.currency}`);
-            console.log(`Payment Method: ${statusData.payment_method}`);
-            
-            // TODO: Update your Supabase orders table here
-            // Example:
-            // await supabase
-            //     .from('orders')
-            //     .update({ 
-            //         status: 'completed',
-            //         transaction_id: orderTrackingId,
-            //         payment_method: statusData.payment_method,
-            //         paid_at: new Date().toISOString(),
-            //         confirmation_code: statusData.confirmation_code
-            //     })
-            //     .eq('merchant_reference', statusData.merchant_reference);
-            
-        } else if (statusData.status === 'PENDING') {
-            console.log(`⏳ Payment PENDING: ${orderTrackingId}`);
-            // Optional: Update order status to 'pending'
-            
-        } else if (statusData.status === 'FAILED') {
-            console.log(`❌ Payment FAILED: ${orderTrackingId}`);
-            // Optional: Update order status to 'failed'
-            
-        } else if (statusData.status === 'REVERSED') {
-            console.log(`🔄 Payment REVERSED: ${orderTrackingId}`);
-            
-        } else {
-            console.log(`⚠️ Unknown status: ${statusData.status} for ${orderTrackingId}`);
+        } catch (error) {
+            console.error('IPN processing error:', error.message);
         }
-        
-    } catch (error) {
-        console.error('IPN processing error:', error.message);
-        console.error('Stack:', error.stack);
-        // We still return 200 above, so Pesapal won't retry
     }
 }

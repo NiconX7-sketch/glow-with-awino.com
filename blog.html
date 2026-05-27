@@ -100,14 +100,10 @@
     </footer>
 
     <script>
-        // Wait for supabase client to be ready
-        function waitForSupabase(callback) {
-            if (window.supabaseClient && window.supabaseClient.from) {
-                callback();
-            } else {
-                setTimeout(function() { waitForSupabase(callback); }, 100);
-            }
-        }
+        // DIRECT SUPABASE INITIALIZATION
+        const SUPABASE_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         
         let allPosts = [];
         
@@ -122,22 +118,19 @@
         }
         
         async function loadSiteLogo() {
-            if (!window.supabaseClient) return;
-            const { data } = await window.supabaseClient.from('site_settings').select('logo_url').single();
+            const { data } = await supabaseClient.from('site_settings').select('logo_url').single();
             if (data?.logo_url) document.getElementById('site-logo').src = data.logo_url;
         }
         
         async function loadCategories() {
-            if (!window.supabaseClient) return;
-            const { data } = await window.supabaseClient.from('categories').select('*').order('name');
+            const { data } = await supabaseClient.from('categories').select('*').order('name');
             const container = document.getElementById('categories-list'), filter = document.getElementById('category-filter');
             if (container && data?.length) { container.innerHTML = data.map(cat => `<li><a href="#" onclick="filterByCategory('${escapeHtml(cat.name)}')">${escapeHtml(cat.name)}</a></li>`).join(''); }
             if (filter && data?.length) { filter.innerHTML = '<option value="all">All Categories</option>' + data.map(cat => `<option value="${escapeHtml(cat.name)}">${escapeHtml(cat.name)}</option>`).join(''); }
         }
         
         async function loadBlogs() {
-            if (!window.supabaseClient) return;
-            const { data } = await window.supabaseClient.from('blog_posts').select('*').eq('published', true).order('created_at', { ascending: false });
+            const { data } = await supabaseClient.from('blog_posts').select('*').eq('published', true).order('created_at', { ascending: false });
             allPosts = data || [];
             renderBlogs();
             loadRecentPosts();
@@ -156,8 +149,7 @@
         }
         
         async function loadRecentPosts() {
-            if (!window.supabaseClient) return;
-            const { data } = await window.supabaseClient.from('blog_posts').select('id,title').eq('published', true).order('created_at', { ascending: false }).limit(5);
+            const { data } = await supabaseClient.from('blog_posts').select('id,title').eq('published', true).order('created_at', { ascending: false }).limit(5);
             const container = document.getElementById('recent-posts');
             if (container && data?.length) { container.innerHTML = data.map(post => `<li><a href="post.html?id=${post.id}">${escapeHtml(post.title)}</a></li>`).join(''); }
         }
@@ -170,14 +162,9 @@
         document.getElementById('search-posts')?.addEventListener('input', renderBlogs);
         
         trackVisitor();
-        
-        waitForSupabase(function() {
-            console.log('Supabase ready, loading blog data...');
-            loadSiteLogo();
-            loadCategories();
-            loadBlogs();
-        });
-        
+        loadSiteLogo();
+        loadCategories();
+        loadBlogs();
         updateCartCount();
         window.onclick = function(e) { if (e.target === document.getElementById('cart-modal')) closeCartModal(); }
     </script>

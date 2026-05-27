@@ -101,12 +101,10 @@
     </footer>
 
     <script>
-        const SB_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
-        const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
-        const supabaseClient = supabase.createClient(SB_URL, SB_KEY);
+        // REMOVED: duplicate cart declaration - now using window.gwaCart from payments.js
+        // REMOVED: duplicate supabaseClient - already in payments.js
         
         let products = [];
-        let cart = JSON.parse(localStorage.getItem('cart') || '[]');
         let currency = localStorage.getItem('currency') || 'USD';
         
         function toggleMobileMenu() { document.getElementById('navLinks').classList.toggle('active'); }
@@ -142,56 +140,11 @@
         function addToCart(productId) { 
             const product = products.find(p => p.id === productId); 
             if(product) { 
-                cart.push(product); 
-                localStorage.setItem('cart', JSON.stringify(cart)); 
+                window.gwaCart.push(product); 
+                localStorage.setItem('cart', JSON.stringify(window.gwaCart)); 
                 updateCartCount(); 
                 alert(`${product.title} added to cart!`); 
             } 
-        }
-        
-        function updateCartCount() { 
-            const el = document.getElementById('cart-count'); 
-            if (el) el.textContent = cart.length; 
-        }
-        
-        function viewCart() {
-            const modal = document.getElementById('cart-modal'), items = document.getElementById('cart-items'), totalDiv = document.getElementById('cart-total');
-            if (cart.length === 0) { 
-                items.innerHTML = '<p style="text-align:center;padding:2rem;">Your cart is empty.</p>'; 
-                totalDiv.innerHTML = ''; 
-            } else {
-                let total = 0;
-                items.innerHTML = cart.map((item,i) => { 
-                    let p = currency === 'USD' ? item.price_usd : item.price_kes; 
-                    total += p; 
-                    return `<div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem 0;border-bottom:1px solid #eee;">
-                        <div><strong>${escapeHtml(item.title)}</strong><div style="color:#C66B3D;">${currency === 'USD' ? '$' + p : 'KES ' + p}</div></div>
-                        <button onclick="removeFromCart(${i})" style="background:#dc2626;color:white;border:none;padding:0.3rem 0.8rem;border-radius:5px;cursor:pointer;">Remove</button>
-                    </div>`; 
-                }).join('');
-                totalDiv.innerHTML = `<div style="text-align:center; font-size:1.2rem;"><strong>Total: ${currency === 'USD' ? '$' + total.toFixed(2) : 'KES ' + total}</strong></div>`;
-            }
-            modal.style.display = 'flex';
-        }
-        
-        function removeFromCart(i) { 
-            cart.splice(i,1); 
-            localStorage.setItem('cart', JSON.stringify(cart)); 
-            updateCartCount(); 
-            viewCart(); 
-        }
-        
-        function proceedToCheckout() { 
-            if(cart.length === 0){ 
-                alert('Cart empty'); 
-                return; 
-            } 
-            sessionStorage.setItem('checkoutCart', JSON.stringify(cart)); 
-            window.location.href = 'checkout.html'; 
-        }
-        
-        function closeCartModal() { 
-            document.getElementById('cart-modal').style.display = 'none'; 
         }
         
         function setCurrency(cur) { 

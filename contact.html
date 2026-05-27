@@ -122,8 +122,14 @@
     </div>
 
     <script>
-        // Supabase client is now globally available from payments.js
-        // Cart functions are now globally available from payments.js
+        // Wait for supabase client to be ready
+        function waitForSupabase(callback) {
+            if (window.supabaseClient && window.supabaseClient.from) {
+                callback();
+            } else {
+                setTimeout(function() { waitForSupabase(callback); }, 100);
+            }
+        }
         
         function toggleMobileMenu() { document.getElementById('navLinks').classList.toggle('active'); }
         
@@ -136,6 +142,7 @@
         }
         
         async function loadSiteLogo() {
+            if (!window.supabaseClient) return;
             const { data } = await window.supabaseClient.from('site_settings').select('logo_url').single();
             if (data?.logo_url) document.getElementById('site-logo').src = data.logo_url;
         }
@@ -144,6 +151,7 @@
             e.preventDefault();
             const name = document.getElementById('contactName').value, email = document.getElementById('contactEmail').value, subject = document.getElementById('contactSubject').value, message = document.getElementById('contactMessage').value, msgDiv = document.getElementById('formMessage');
             msgDiv.textContent = 'Sending...'; msgDiv.style.cssText = 'background:#e2e8f0;color:#475569;display:block';
+            if (!window.supabaseClient) return;
             const { error } = await window.supabaseClient.from('contact_messages').insert([{ name, email, subject, message }]);
             if (error) { msgDiv.textContent = '❌ Failed to send. Please try again.'; msgDiv.style.cssText = 'background:#fee2e2;color:#991b1b;display:block'; }
             else { msgDiv.textContent = '✅ Message sent! We\'ll get back to you soon.'; msgDiv.style.cssText = 'background:#dcfce7;color:#166534;display:block'; document.getElementById('contactForm').reset(); }
@@ -153,7 +161,12 @@
         function escapeHtml(t) { if(!t) return ''; const d=document.createElement('div'); d.textContent=t; return d.innerHTML; }
         
         trackVisitor();
-        loadSiteLogo();
+        
+        waitForSupabase(function() {
+            console.log('Supabase ready, loading contact data...');
+            loadSiteLogo();
+        });
+        
         updateCartCount();
         window.onclick = function(e) { if (e.target === document.getElementById('cart-modal')) closeCartModal(); }
     </script>

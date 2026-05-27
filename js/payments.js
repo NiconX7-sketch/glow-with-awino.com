@@ -1,30 +1,11 @@
 // js/payments.js
-// Payment and cart helper functions for Grow With Awino
+// Cart helper functions only - Supabase is initialized in each HTML file
 
 // ============================================
-// SUPABASE CLIENT - GLOBAL EXPOSURE
+// CART FUNCTIONS
 // ============================================
 
-// Make supabaseClient available globally
-const SUPABASE_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
-
-// Create supabase client and expose globally
-window.supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-// Set a flag to indicate supabase is ready
-window.supabaseReady = true;
-
-// Dispatch an event so other scripts know supabase is ready
-if (typeof window !== 'undefined') {
-    window.dispatchEvent(new Event('supabase-ready'));
-}
-
-// ============================================
-// CART FUNCTIONS - Using window object to avoid conflicts
-// ============================================
-
-// Store cart in window object to avoid global conflicts
+// Store cart in window object
 window.gwaCart = JSON.parse(localStorage.getItem('cart') || '[]');
 
 function updateCartCount() {
@@ -89,10 +70,6 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-// ============================================
-// TRACKING FUNCTIONS
-// ============================================
-
 async function trackVisitor() {
     const today = new Date().toISOString().split('T')[0];
     const lastVisit = localStorage.getItem('lastVisitDate');
@@ -106,10 +83,6 @@ async function trackVisitor() {
     }
 }
 
-// ============================================
-// CURRENCY FUNCTIONS (for shop page)
-// ============================================
-
 function setCurrency(currency) {
     localStorage.setItem('currency', currency);
     document.querySelectorAll('.currency-btn').forEach(btn => {
@@ -120,10 +93,6 @@ function setCurrency(currency) {
         renderProducts();
     }
 }
-
-// ============================================
-// INITIALIZATION
-// ============================================
 
 document.addEventListener('DOMContentLoaded', function() {
     window.gwaCart = JSON.parse(localStorage.getItem('cart') || '[]');
@@ -141,7 +110,7 @@ window.onclick = function(e) {
     if (e.target === modal) closeCartModal();
 }
 
-// Make critical functions available globally
+// Make functions globally available
 window.updateCartCount = updateCartCount;
 window.viewCart = viewCart;
 window.removeFromCart = removeFromCart;

@@ -2,6 +2,20 @@
 // Payment and cart helper functions for Grow With Awino
 
 // ============================================
+// SUPABASE CLIENT - GLOBAL EXPOSURE
+// ============================================
+
+// Make supabaseClient available globally
+const SUPABASE_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
+
+// Create supabase client and expose globally
+window.supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// Also keep a local reference for convenience
+const supabaseClient = window.supabaseClient;
+
+// ============================================
 // CART FUNCTIONS - Using window object to avoid conflicts
 // ============================================
 
@@ -70,6 +84,10 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
+// ============================================
+// TRACKING FUNCTIONS
+// ============================================
+
 async function trackVisitor() {
     const today = new Date().toISOString().split('T')[0];
     const lastVisit = localStorage.getItem('lastVisitDate');
@@ -83,6 +101,10 @@ async function trackVisitor() {
     }
 }
 
+// ============================================
+// CURRENCY FUNCTIONS (for shop page)
+// ============================================
+
 function setCurrency(currency) {
     localStorage.setItem('currency', currency);
     document.querySelectorAll('.currency-btn').forEach(btn => {
@@ -93,6 +115,10 @@ function setCurrency(currency) {
         renderProducts();
     }
 }
+
+// ============================================
+// INITIALIZATION
+// ============================================
 
 document.addEventListener('DOMContentLoaded', function() {
     window.gwaCart = JSON.parse(localStorage.getItem('cart') || '[]');
@@ -109,3 +135,12 @@ window.onclick = function(e) {
     const modal = document.getElementById('cart-modal');
     if (e.target === modal) closeCartModal();
 }
+
+// Make critical functions available globally
+window.updateCartCount = updateCartCount;
+window.viewCart = viewCart;
+window.removeFromCart = removeFromCart;
+window.proceedToCheckout = proceedToCheckout;
+window.closeCartModal = closeCartModal;
+window.setCurrency = setCurrency;
+window.trackVisitor = trackVisitor;

@@ -150,8 +150,8 @@
     </div>
 
     <script>
-        // REMOVED: duplicate cart declaration - now using window.gwaCart from payments.js
-        // REMOVED: duplicate supabaseClient - already in payments.js
+        // Supabase client is now globally available from payments.js
+        // Cart functions are now globally available from payments.js
         
         function toggleMobileMenu() { document.getElementById('navLinks').classList.toggle('active'); }
         
@@ -164,13 +164,13 @@
         }
         
         async function loadSiteSettings() {
-            const { data } = await supabaseClient.from('site_settings').select('logo_url, profile_image_url').single();
+            const { data } = await window.supabaseClient.from('site_settings').select('logo_url, profile_image_url').single();
             if (data?.logo_url) document.getElementById('site-logo').src = data.logo_url;
             if (data?.profile_image_url) document.getElementById('profile-image').src = data.profile_image_url;
         }
         
         async function loadLatestPosts() {
-            const { data } = await supabaseClient.from('blog_posts').select('*').eq('published', true).order('created_at', { ascending: false }).limit(3);
+            const { data } = await window.supabaseClient.from('blog_posts').select('*').eq('published', true).order('created_at', { ascending: false }).limit(3);
             const container = document.getElementById('latest-posts');
             if (!data || data.length === 0) { container.innerHTML = '<p style="text-align:center;padding:2rem;">No blog posts yet.</p>'; return; }
             container.innerHTML = data.map(post => `
@@ -187,7 +187,7 @@
             e.preventDefault();
             const email = document.getElementById('newsletter-email').value;
             const msg = document.getElementById('newsletter-message');
-            const { error } = await supabaseClient.from('newsletter_subscribers').insert([{ email }]);
+            const { error } = await window.supabaseClient.from('newsletter_subscribers').insert([{ email }]);
             if (error?.code === '23505') { msg.textContent = '✅ Already subscribed!'; msg.style.cssText = 'background:#fef3c7;color:#d97706;display:block'; }
             else if (error) { msg.textContent = '❌ Error. Please try again.'; msg.style.cssText = 'background:#fee2e2;color:#dc2626;display:block'; }
             else { msg.textContent = '✅ Subscribed!'; msg.style.cssText = 'background:#dcfce7;color:#16a34a;display:block'; e.target.reset(); }

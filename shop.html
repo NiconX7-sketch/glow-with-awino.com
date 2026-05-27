@@ -101,8 +101,14 @@
     </footer>
 
     <script>
-        // Supabase client is now globally available from payments.js
-        // Cart functions are now globally available from payments.js
+        // Wait for supabase client to be ready
+        function waitForSupabase(callback) {
+            if (window.supabaseClient && window.supabaseClient.from) {
+                callback();
+            } else {
+                setTimeout(function() { waitForSupabase(callback); }, 100);
+            }
+        }
         
         let products = [];
         let currency = localStorage.getItem('currency') || 'USD';
@@ -118,11 +124,13 @@
         }
         
         async function loadSiteLogo() {
+            if (!window.supabaseClient) return;
             const { data } = await window.supabaseClient.from('site_settings').select('logo_url').single();
             if (data?.logo_url) document.getElementById('site-logo').src = data.logo_url;
         }
         
         async function loadProducts() {
+            if (!window.supabaseClient) return;
             const { data } = await window.supabaseClient.from('products').select('*').order('created_at', { ascending: false });
             products = data || [];
             renderProducts();
@@ -165,8 +173,13 @@
         }
         
         trackVisitor();
-        loadSiteLogo();
-        loadProducts();
+        
+        waitForSupabase(function() {
+            console.log('Supabase ready, loading shop data...');
+            loadSiteLogo();
+            loadProducts();
+        });
+        
         updateCartCount();
         
         window.onclick = function(e) { 

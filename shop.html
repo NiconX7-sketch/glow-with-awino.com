@@ -101,8 +101,8 @@
     </footer>
 
     <script>
-        // REMOVED: duplicate cart declaration - now using window.gwaCart from payments.js
-        // REMOVED: duplicate supabaseClient - already in payments.js
+        // Supabase client is now globally available from payments.js
+        // Cart functions are now globally available from payments.js
         
         let products = [];
         let currency = localStorage.getItem('currency') || 'USD';
@@ -118,12 +118,12 @@
         }
         
         async function loadSiteLogo() {
-            const { data } = await supabaseClient.from('site_settings').select('logo_url').single();
+            const { data } = await window.supabaseClient.from('site_settings').select('logo_url').single();
             if (data?.logo_url) document.getElementById('site-logo').src = data.logo_url;
         }
         
         async function loadProducts() {
-            const { data } = await supabaseClient.from('products').select('*').order('created_at', { ascending: false });
+            const { data } = await window.supabaseClient.from('products').select('*').order('created_at', { ascending: false });
             products = data || [];
             renderProducts();
         }

@@ -150,15 +150,10 @@
     </div>
 
     <script>
-        // Wait for supabase client to be ready
-        function waitForSupabase(callback) {
-            if (window.supabaseClient && window.supabaseClient.from) {
-                callback();
-            } else {
-                console.log('Waiting for supabase client...');
-                setTimeout(function() { waitForSupabase(callback); }, 100);
-            }
-        }
+        // DIRECT SUPABASE INITIALIZATION
+        const SUPABASE_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         
         function toggleMobileMenu() { document.getElementById('navLinks').classList.toggle('active'); }
         
@@ -171,15 +166,13 @@
         }
         
         async function loadSiteSettings() {
-            if (!window.supabaseClient) return;
-            const { data } = await window.supabaseClient.from('site_settings').select('logo_url, profile_image_url').single();
+            const { data } = await supabaseClient.from('site_settings').select('logo_url, profile_image_url').single();
             if (data?.logo_url) document.getElementById('site-logo').src = data.logo_url;
             if (data?.profile_image_url) document.getElementById('profile-image').src = data.profile_image_url;
         }
         
         async function loadLatestPosts() {
-            if (!window.supabaseClient) return;
-            const { data } = await window.supabaseClient.from('blog_posts').select('*').eq('published', true).order('created_at', { ascending: false }).limit(3);
+            const { data } = await supabaseClient.from('blog_posts').select('*').eq('published', true).order('created_at', { ascending: false }).limit(3);
             const container = document.getElementById('latest-posts');
             if (!data || data.length === 0) { container.innerHTML = '<p style="text-align:center;padding:2rem;">No blog posts yet.</p>'; return; }
             container.innerHTML = data.map(post => `
@@ -196,8 +189,7 @@
             e.preventDefault();
             const email = document.getElementById('newsletter-email').value;
             const msg = document.getElementById('newsletter-message');
-            if (!window.supabaseClient) return;
-            const { error } = await window.supabaseClient.from('newsletter_subscribers').insert([{ email }]);
+            const { error } = await supabaseClient.from('newsletter_subscribers').insert([{ email }]);
             if (error?.code === '23505') { msg.textContent = '✅ Already subscribed!'; msg.style.cssText = 'background:#fef3c7;color:#d97706;display:block'; }
             else if (error) { msg.textContent = '❌ Error. Please try again.'; msg.style.cssText = 'background:#fee2e2;color:#dc2626;display:block'; }
             else { msg.textContent = '✅ Subscribed!'; msg.style.cssText = 'background:#dcfce7;color:#16a34a;display:block'; e.target.reset(); }
@@ -205,14 +197,8 @@
         });
         
         trackVisitor();
-        
-        // Initialize everything after supabase is ready
-        waitForSupabase(function() {
-            console.log('Supabase ready, loading data...');
-            loadSiteSettings();
-            loadLatestPosts();
-        });
-        
+        loadSiteSettings();
+        loadLatestPosts();
         updateCartCount();
         
         window.onclick = function(e) { if (e.target === document.getElementById('cart-modal')) closeCartModal(); }

@@ -98,11 +98,8 @@
     </div>
 
     <script>
-        const SUPABASE_URL = 'https://orxrpwncwyrkmubqywhw.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeHJwd25jd3lya211YnF5d2h3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjYwMjYsImV4cCI6MjA5MTY0MjAyNn0.I2eYzCfOnRf9F2h9f1sfcUTHNaU6rfdjVdKAti0KR4c';
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        
-        let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        // REMOVED: duplicate supabase declaration - now using supabaseClient from payments.js
+        // REMOVED: duplicate cart declaration - now using window.gwaCart from payments.js
         
         function toggleMobileMenu() { document.getElementById('navLinks').classList.toggle('active'); }
         
@@ -115,12 +112,12 @@
         }
         
         async function loadSiteLogo() {
-            const { data } = await supabase.from('site_settings').select('logo_url').single();
+            const { data } = await supabaseClient.from('site_settings').select('logo_url').single();
             if (data?.logo_url) document.getElementById('site-logo').src = data.logo_url;
         }
         
         async function loadAffiliateResources() {
-            const { data: settings } = await supabase.from('site_settings').select('affiliate_settings').single();
+            const { data: settings } = await supabaseClient.from('site_settings').select('affiliate_settings').single();
             const ids = settings?.affiliate_settings || {};
             const resources = [
                 { name: "Amazon", icon: "fab fa-amazon", color: "#ff9900", url: ids.amazon ? `https://www.amazon.com/?tag=${ids.amazon}` : null, description: "Shop millions of products" },
@@ -134,20 +131,6 @@
             else { container.innerHTML = available.map(r => `<div class="resource-card"><div class="resource-icon" style="color:${r.color}"><i class="${r.icon}"></i></div><h3>${r.name}</h3><p>${r.description}</p><a href="${r.url}" target="_blank" class="resource-btn">Visit ${r.name} →</a></div>`).join(''); }
         }
         
-        function updateCartCount() { const el = document.getElementById('cart-count'); if (el) el.textContent = cart.length; }
-        function viewCart() {
-            const modal = document.getElementById('cart-modal'), items = document.getElementById('cart-items'), totalDiv = document.getElementById('cart-total');
-            if (cart.length === 0) { items.innerHTML = '<p style="text-align:center;padding:2rem;">Your cart is empty.</p>'; totalDiv.innerHTML = ''; }
-            else {
-                let total = 0;
-                items.innerHTML = cart.map((item,i) => { let p = item.price_usd || 29.99; total += p; return `<div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem 0;border-bottom:1px solid #eee;"><div><strong>${escapeHtml(item.title)}</strong><div style="color:#C66B3D;">$${p}</div></div><button onclick="removeFromCart(${i})" style="background:#dc2626;color:white;border:none;padding:0.3rem 0.8rem;border-radius:5px;cursor:pointer;">Remove</button></div>`; }).join('');
-                totalDiv.innerHTML = `<div style="text-align:center; font-size:1.2rem;"><strong>Total: $${total.toFixed(2)}</strong></div>`;
-            }
-            modal.style.display = 'flex';
-        }
-        function removeFromCart(i) { cart.splice(i,1); localStorage.setItem('cart',JSON.stringify(cart)); updateCartCount(); viewCart(); }
-        function proceedToCheckout() { if(cart.length===0){ alert('Cart empty'); return; } sessionStorage.setItem('checkoutCart',JSON.stringify(cart)); window.location.href='checkout.html'; }
-        function closeCartModal() { document.getElementById('cart-modal').style.display = 'none'; }
         function escapeHtml(t) { if(!t) return ''; const d=document.createElement('div'); d.textContent=t; return d.innerHTML; }
         
         trackVisitor();

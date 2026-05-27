@@ -1,6 +1,10 @@
 // js/payments.js
 // Payment and cart helper functions for Grow With Awino
 
+// ============================================
+// CART FUNCTIONS
+// ============================================
+
 let cart = JSON.parse(localStorage.getItem('cart') || '[]');
 
 function updateCartCount() {

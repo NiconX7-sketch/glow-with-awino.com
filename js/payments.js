@@ -2,14 +2,15 @@
 // Payment and cart helper functions for Grow With Awino
 
 // ============================================
-// CART FUNCTIONS
+// CART FUNCTIONS - Using window object to avoid conflicts
 // ============================================
 
-let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+// Store cart in window object to avoid global conflicts
+window.gwaCart = JSON.parse(localStorage.getItem('cart') || '[]');
 
 function updateCartCount() {
     const el = document.getElementById('cart-count');
-    if (el) el.textContent = cart.length;
+    if (el) el.textContent = window.gwaCart.length;
 }
 
 function viewCart() {
@@ -20,12 +21,12 @@ function viewCart() {
     
     if (!modal) return;
     
-    if (cart.length === 0) {
+    if (window.gwaCart.length === 0) {
         items.innerHTML = '<p style="text-align:center;padding:2rem;">Your cart is empty.</p>';
         totalDiv.innerHTML = '';
     } else {
         let total = 0;
-        items.innerHTML = cart.map((item, i) => {
+        items.innerHTML = window.gwaCart.map((item, i) => {
             let price = currency === 'USD' ? (item.price_usd || 29.99) : (item.price_kes || 2500);
             total += price;
             return `<div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem 0;border-bottom:1px solid #eee;">
@@ -42,18 +43,18 @@ function viewCart() {
 }
 
 function removeFromCart(index) {
-    cart.splice(index, 1);
-    localStorage.setItem('cart', JSON.stringify(cart));
+    window.gwaCart.splice(index, 1);
+    localStorage.setItem('cart', JSON.stringify(window.gwaCart));
     updateCartCount();
     viewCart();
 }
 
 function proceedToCheckout() {
-    if (cart.length === 0) {
+    if (window.gwaCart.length === 0) {
         alert('Your cart is empty. Add some ebooks first!');
         return;
     }
-    sessionStorage.setItem('checkoutCart', JSON.stringify(cart));
+    sessionStorage.setItem('checkoutCart', JSON.stringify(window.gwaCart));
     window.location.href = 'checkout.html';
 }
 
@@ -94,7 +95,7 @@ function setCurrency(currency) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    window.gwaCart = JSON.parse(localStorage.getItem('cart') || '[]');
     updateCartCount();
     
     document.querySelectorAll('.currency-btn').forEach(btn => {

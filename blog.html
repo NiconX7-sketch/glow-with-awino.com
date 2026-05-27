@@ -100,8 +100,8 @@
     </footer>
 
     <script>
-        // REMOVED: duplicate cart declaration - now using window.gwaCart from payments.js
-        // REMOVED: duplicate supabaseClient - already in payments.js
+        // Supabase client is now globally available from payments.js
+        // Cart functions are now globally available from payments.js
         
         let allPosts = [];
         
@@ -116,19 +116,19 @@
         }
         
         async function loadSiteLogo() {
-            const { data } = await supabaseClient.from('site_settings').select('logo_url').single();
+            const { data } = await window.supabaseClient.from('site_settings').select('logo_url').single();
             if (data?.logo_url) document.getElementById('site-logo').src = data.logo_url;
         }
         
         async function loadCategories() {
-            const { data } = await supabaseClient.from('categories').select('*').order('name');
+            const { data } = await window.supabaseClient.from('categories').select('*').order('name');
             const container = document.getElementById('categories-list'), filter = document.getElementById('category-filter');
             if (container && data?.length) { container.innerHTML = data.map(cat => `<li><a href="#" onclick="filterByCategory('${escapeHtml(cat.name)}')">${escapeHtml(cat.name)}</a></li>`).join(''); }
             if (filter && data?.length) { filter.innerHTML = '<option value="all">All Categories</option>' + data.map(cat => `<option value="${escapeHtml(cat.name)}">${escapeHtml(cat.name)}</option>`).join(''); }
         }
         
         async function loadBlogs() {
-            const { data } = await supabaseClient.from('blog_posts').select('*').eq('published', true).order('created_at', { ascending: false });
+            const { data } = await window.supabaseClient.from('blog_posts').select('*').eq('published', true).order('created_at', { ascending: false });
             allPosts = data || [];
             renderBlogs();
             loadRecentPosts();
@@ -147,7 +147,7 @@
         }
         
         async function loadRecentPosts() {
-            const { data } = await supabaseClient.from('blog_posts').select('id,title').eq('published', true).order('created_at', { ascending: false }).limit(5);
+            const { data } = await window.supabaseClient.from('blog_posts').select('id,title').eq('published', true).order('created_at', { ascending: false }).limit(5);
             const container = document.getElementById('recent-posts');
             if (container && data?.length) { container.innerHTML = data.map(post => `<li><a href="post.html?id=${post.id}">${escapeHtml(post.title)}</a></li>`).join(''); }
         }

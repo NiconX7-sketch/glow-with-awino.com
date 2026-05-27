@@ -98,8 +98,8 @@
     </div>
 
     <script>
-        // REMOVED: duplicate supabase declaration - now using supabaseClient from payments.js
-        // REMOVED: duplicate cart declaration - now using window.gwaCart from payments.js
+        // Supabase client is now globally available from payments.js
+        // Cart functions are now globally available from payments.js
         
         function toggleMobileMenu() { document.getElementById('navLinks').classList.toggle('active'); }
         
@@ -112,12 +112,12 @@
         }
         
         async function loadSiteLogo() {
-            const { data } = await supabaseClient.from('site_settings').select('logo_url').single();
+            const { data } = await window.supabaseClient.from('site_settings').select('logo_url').single();
             if (data?.logo_url) document.getElementById('site-logo').src = data.logo_url;
         }
         
         async function loadAffiliateResources() {
-            const { data: settings } = await supabaseClient.from('site_settings').select('affiliate_settings').single();
+            const { data: settings } = await window.supabaseClient.from('site_settings').select('affiliate_settings').single();
             const ids = settings?.affiliate_settings || {};
             const resources = [
                 { name: "Amazon", icon: "fab fa-amazon", color: "#ff9900", url: ids.amazon ? `https://www.amazon.com/?tag=${ids.amazon}` : null, description: "Shop millions of products" },

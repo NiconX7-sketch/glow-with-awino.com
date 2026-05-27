@@ -12,8 +12,13 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 // Create supabase client and expose globally
 window.supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// Also keep a local reference for convenience
-const supabaseClient = window.supabaseClient;
+// Set a flag to indicate supabase is ready
+window.supabaseReady = true;
+
+// Dispatch an event so other scripts know supabase is ready
+if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event('supabase-ready'));
+}
 
 // ============================================
 // CART FUNCTIONS - Using window object to avoid conflicts
